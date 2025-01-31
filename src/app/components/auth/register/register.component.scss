@@ -1,0 +1,106 @@
+@import '../../../../styles/abstracts/variables';
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: $spacing-unit * 2;
+  background-color: $secondary-color;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 500px;
+  background: $light-color;
+  padding: $spacing-unit * 3;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow-lg;
+
+  h1 {
+    color: $primary-color;
+    text-align: center;
+    margin-bottom: $spacing-unit * 2;
+    font-size: $h2-font-size;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-unit * 1.5;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-unit * 0.5;
+
+    label {
+      font-weight: 600;
+      color: $dark-color;
+      font-size: 0.95rem;
+    }
+
+    input {
+      width: 100%;
+      padding: $spacing-unit;
+      border: 2px solid rgba($dark-color, 0.1);
+      border-radius: $border-radius-sm;
+      font-size: 1rem;
+      transition: $transition-fast;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+      }
+    }
+  }
+
+  .btn {
+    width: 100%;
+    margin-top: $spacing-unit;
+    background-color: $primary-color;
+    color: $light-color;
+    padding: $spacing-unit * 1.2;
+    border: none;
+    border-radius: $border-radius-sm;
+    font-weight: 600;
+    cursor: pointer;
+    transition: $transition-normal;
+
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+@media (max-width: $media-md) {
+  .auth-form {
+    padding: $spacing-unit * 2;
+    max-width: 400px;
+
+    h1 {
+      font-size: $h3-font-size;
+    }
+
+    input {
+      padding: $spacing-unit * 0.75 !important;
+    }
+  }
+}
+
+@media (max-width: $media-sm) {
+  .container {
+    padding: $spacing-unit;
+  }
+
+  .auth-form {
+    border-radius: $border-radius-md;
+    padding: $spacing-unit * 1.5;
+  }
+}
