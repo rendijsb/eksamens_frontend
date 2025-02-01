@@ -23,6 +23,11 @@ export const routes: Routes = [
     path: 'admin',
     component: AdminLayoutComponent,
     children: [
+      {
+        path: 'users',
+        loadComponent: () => import('./components/admin/users/users.component')
+          .then(m => m.UsersComponent)
+      }
     ]
   },
 ];
