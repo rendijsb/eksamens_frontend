@@ -88,6 +88,7 @@
       font-weight: 500;
       font-family: $font-stack;
       transition: all $transition-fast;
+      text-decoration: none;
 
       &.login {
         background: transparent;
