@@ -1,29 +1,29 @@
 <div class="auth-container">
   <div class="auth-form">
     <h1>Reģistrēties</h1>
-    <form>
+    <form [formGroup]="registerForm">
       <div class="form-group">
         <label>Vārds uzvārds</label>
-        <input type="email" required>
+        <input type="email"  formControlName="name">
       </div>
       <div class="form-group">
         <label>E-pasts</label>
-        <input type="email" required>
+        <input type="email" formControlName="email">
       </div>
       <div class="form-group">
         <label>Talrunis</label>
-        <input type="tel" required>
+        <input type="tel" formControlName="phone">
       </div>
       <div class="form-group">
         <label>Parole</label>
-        <input type="password" required>
+        <input type="password" formControlName="password">
       </div>
       <div class="form-group">
         <label>Atkārtot paroli</label>
-        <input type="password" required>
+        <input type="password" formControlName="password_confirmation">
       </div>
     </form>
     <p>Jau ir konts? <a href="/login">Ielogoties</a></p>
-    <button class="btn">Reģistrēties</button>
+    <button class="btn" (click)="onSubmit()">Reģistrēties</button>
   </div>
 </div>
