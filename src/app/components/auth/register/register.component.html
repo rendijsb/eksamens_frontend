@@ -4,11 +4,11 @@
     <form [formGroup]="registerForm">
       <div class="form-group">
         <label>Vārds uzvārds</label>
-        <input type="email"  formControlName="name">
+        <input type="email"  formControlName="name" [appValidationError]="isSubmitted()">
       </div>
       <div class="form-group">
         <label>E-pasts</label>
-        <input type="email" formControlName="email">
+        <input type="email" formControlName="email" [appValidationError]="isSubmitted()">
       </div>
       <div class="form-group">
         <label>Talrunis</label>
@@ -16,14 +16,16 @@
       </div>
       <div class="form-group">
         <label>Parole</label>
-        <input type="password" formControlName="password">
+        <input type="password" formControlName="password" [appValidationError]="isSubmitted()">
       </div>
       <div class="form-group">
         <label>Atkārtot paroli</label>
-        <input type="password" formControlName="password_confirmation">
+        <input type="password" formControlName="password_confirmation" [appValidationError]="isSubmitted()">
       </div>
     </form>
     <p>Jau ir konts? <a href="/login">Ielogoties</a></p>
-    <button class="btn" (click)="onSubmit()">Reģistrēties</button>
+    <button class="btn" [appButtonLoader]="isLoading()" (click)="onSubmit()">
+      Reģistrēties
+    </button>
   </div>
 </div>
