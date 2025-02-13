@@ -8,6 +8,6 @@ export class AuthService {
   private readonly http = inject(HttpClient);
 
   register(data: any) {
-    return this.http.post('http://localhost:8000/api/register', data);
+    return this.http.post('http://localhost:8000/api/auth/register', data);
   }
 }
