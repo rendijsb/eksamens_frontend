@@ -18,6 +18,7 @@ export class AuthService {
   private readonly router = inject(Router);
 
   private currentUser = signal<User | null>(this.getUserFromStorage());
+  private token = signal<string | null>(this.getTokenFromStorage());
 
   readonly isAdmin = computed(() => this.currentUser()?.role === RoleEnum.ADMIN);
   readonly isModerator = computed(() => this.currentUser()?.role === RoleEnum.MODERATOR);
@@ -63,7 +64,7 @@ export class AuthService {
         localStorage.removeItem(this.tokenKey);
         localStorage.removeItem(this.userKey);
         this.currentUser.set(null);
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       })
     );
   }
@@ -74,6 +75,10 @@ export class AuthService {
   }
 
   getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  private getTokenFromStorage(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
 

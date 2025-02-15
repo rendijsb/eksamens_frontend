@@ -21,7 +21,7 @@ export const authGuard: CanActivateFn = (route) => {
     } else if (user.role === RoleEnum.MODERATOR) {
       router.navigate(['/moderator/dashboard']);
     } else {
-      router.navigate(['/shop']);
+      router.navigate(['/']);
     }
     return false;
   }

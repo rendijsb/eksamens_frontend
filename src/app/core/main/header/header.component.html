@@ -14,8 +14,13 @@
       </div>
 
       <div class="nav-actions">
-        <a href="/login" class="auth-btn login">Ielogoties</a>
-        <a href="/register" class="auth-btn signup">Reģistrēties</a>
+        @if (this.isLoggedIn()) {
+          <a href="/profile" class="auth-btn profile">Profils</a>
+          <a (click)="logout()" class="auth-btn logout">Izlogoties</a>
+        } @else {
+          <a href="/login" class="auth-btn login">Ielogoties</a>
+          <a href="/register" class="auth-btn signup">Reģistrēties</a>
+        }
         <a class="mobile-menu-btn">
           <span></span>
           <span></span>
