@@ -19,33 +19,34 @@
           <th>E-pasts</th>
           <th>Tālrunis</th>
           <th>Reģistrēts</th>
-          <th>Status</th>
+          <th>Loma</th>
           <th>Darbības</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>
-            <div class="actions">
-              <button class="btn-icon" title="Rediģēt">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn-icon" title="Dzēst">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
+          @for (user of userData(); track user.id) {
+            <tr>
+              <td>{{ user.id }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{user.email}}</td>
+              <td>{{user.phone}}</td>
+              <td>{{formatCreatedAt(user.created_at)}}</td>
+              <td>{{getRoleName(user.role)}}</td>
+              <td>
+                <div class="actions">
+                  <button class="btn-icon" title="Rediģēt">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn-icon" title="Dzēst">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>
 
-    <!-- Vajadzes uztaisit pagination -->
   </div>
 </div>
