@@ -1,10 +1,12 @@
 import {Component, inject, signal, WritableSignal} from '@angular/core';
-import {AbstractControl, ReactiveFormsModule, UntypedFormBuilder, ValidationErrors, Validators} from "@angular/forms";
+import { ReactiveFormsModule, UntypedFormBuilder, Validators} from "@angular/forms";
 import {AuthService} from "../services/auth.service";
-import {finalize} from "rxjs";
+import {catchError, EMPTY, finalize} from "rxjs";
 import {ButtonLoaderDirective} from "../../../shared/directives/button-loader/button-loader.directive";
 import {ValidationErrorDirective} from "../../../shared/directives/validation-error/validation-error.directive";
 import {RegexPatterns} from "../../../shared/constants/regex.constants";
+import {passwordMatchValidator} from "../../../shared/validators/password-match.validator";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-register',
@@ -20,26 +22,10 @@ import {RegexPatterns} from "../../../shared/constants/regex.constants";
 export class RegisterComponent {
   private readonly formBuilder: UntypedFormBuilder = inject(UntypedFormBuilder);
   private readonly authService: AuthService = inject(AuthService);
+  private readonly router: Router = inject(Router);
 
   protected isLoading: WritableSignal<boolean> = signal<boolean>(false);
   protected isSubmitted: WritableSignal<boolean> = signal<boolean>(false);
-
-  private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-    const password = control.get('password');
-    const confirmPassword = control.get('password_confirmation');
-
-    if (password && confirmPassword && password.value !== confirmPassword.value) {
-      confirmPassword.setErrors({ passwordMismatch: true });
-      return { passwordMismatch: true };
-    }
-
-    if (confirmPassword?.errors) {
-      const { passwordMismatch, ...errors } = confirmPassword.errors;
-      confirmPassword.setErrors(Object.keys(errors).length ? errors : null);
-    }
-
-    return null;
-  }
 
   registerForm = this.formBuilder.group({
     name: ['', [Validators.required, Validators.pattern(RegexPatterns.NAME_PATTERN)]],
@@ -48,16 +34,11 @@ export class RegisterComponent {
     password: ['', [Validators.required, Validators.pattern(RegexPatterns.PASSWORD_PATTERN)]],
     password_confirmation: ['', [Validators.required, Validators.pattern(RegexPatterns.PASSWORD_PATTERN)]]
   }, {
-    validators: [this.passwordMatchValidator.bind(this)]
+    validators: [passwordMatchValidator]
   });
 
   onSubmit() {
     this.isSubmitted.set(true);
-
-    if (!this.registerForm.get('phone')?.value) {
-      this.registerForm.get('phone')?.clearValidators();
-      this.registerForm.get('phone')?.updateValueAndValidity();
-    }
 
     if (this.registerForm.invalid) {
       return;
@@ -67,9 +48,13 @@ export class RegisterComponent {
 
     this.authService.register(this.generatePayload())
       .pipe(
+        catchError(() => {
+          return EMPTY;
+        }),
         finalize(() => {
           this.isLoading.set(false);
           this.isSubmitted.set(false);
+          this.router.navigate(['/login']);
         })
       )
       .subscribe();

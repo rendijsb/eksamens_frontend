@@ -36,7 +36,6 @@ export class ValidationErrorDirective implements OnInit {
   });
 
   ngOnInit() {
-    // Handle real-time validation updates
     this.ngControl.control?.valueChanges?.pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(() => {
@@ -55,7 +54,6 @@ export class ValidationErrorDirective implements OnInit {
   }
 
   constructor() {
-    // Handle submission state changes
     effect(() => {
       if (this.appValidationError()) {
         this.ngControl.control?.markAsTouched();
