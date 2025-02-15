@@ -1,4 +1,4 @@
-import {Component, computed, inject, signal} from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import {AuthService} from "../../../components/auth/services/auth.service";
 import {catchError, EMPTY, tap} from "rxjs";
 import {ToastrService} from "ngx-toastr";
