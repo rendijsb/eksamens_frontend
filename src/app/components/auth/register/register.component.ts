@@ -1,12 +1,13 @@
 import {Component, inject, signal, WritableSignal} from '@angular/core';
-import { ReactiveFormsModule, UntypedFormBuilder, Validators} from "@angular/forms";
+import {ReactiveFormsModule, UntypedFormBuilder, Validators} from "@angular/forms";
 import {AuthService} from "../services/auth.service";
-import {catchError, EMPTY, finalize} from "rxjs";
+import {catchError, EMPTY, finalize, tap} from "rxjs";
 import {ButtonLoaderDirective} from "../../../shared/directives/button-loader/button-loader.directive";
 import {ValidationErrorDirective} from "../../../shared/directives/validation-error/validation-error.directive";
 import {RegexPatterns} from "../../../shared/constants/regex.constants";
 import {passwordMatchValidator} from "../../../shared/validators/password-match.validator";
 import {Router} from "@angular/router";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-register',
@@ -23,6 +24,7 @@ export class RegisterComponent {
   private readonly formBuilder: UntypedFormBuilder = inject(UntypedFormBuilder);
   private readonly authService: AuthService = inject(AuthService);
   private readonly router: Router = inject(Router);
+  private readonly toastr: ToastrService = inject(ToastrService);
 
   protected isLoading: WritableSignal<boolean> = signal<boolean>(false);
   protected isSubmitted: WritableSignal<boolean> = signal<boolean>(false);
@@ -48,13 +50,17 @@ export class RegisterComponent {
 
     this.authService.register(this.generatePayload())
       .pipe(
+        tap(() => {
+          this.router.navigate(['/login']);
+          this.toastr.success('Registration successful');
+        }),
         catchError(() => {
+          this.toastr.error('Registration failed');
           return EMPTY;
         }),
         finalize(() => {
           this.isLoading.set(false);
           this.isSubmitted.set(false);
-          this.router.navigate(['/login']);
         })
       )
       .subscribe();

@@ -1,0 +1,107 @@
+@import "../abstracts/variables";
+
+.toast-container {
+  .ngx-toastr {
+    font-family: $font-stack;
+    border-radius: $border-radius-md;
+    box-shadow: $box-shadow-md;
+    padding: 15px 15px 15px 50px;
+    background-position: 15px center;
+    transition: $transition-normal;
+    opacity: 1;
+
+    &:hover {
+      box-shadow: $box-shadow-lg;
+      transform: translateY(-2px);
+    }
+  }
+
+  .toast-success {
+    background-color: #28a745;
+    border-left: 6px solid darken(#28a745, 10%);
+    color: $light-color;
+  }
+
+  .toast-error {
+    background-color: $primary-color;
+    border-left: 6px solid darken($primary-color, 10%);
+    color: $light-color;
+  }
+
+  .toast-info {
+    background-color: #17a2b8;
+    border-left: 6px solid darken(#17a2b8, 10%);
+    color: $light-color;
+  }
+
+  .toast-warning {
+    background-color: $accent-color;
+    border-left: 6px solid darken($accent-color, 10%);
+    color: $light-color;
+  }
+
+  .toast-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .toast-message {
+    font-size: $base-font-size;
+    line-height: $body-line-height;
+  }
+
+  .toast-close-button {
+    font-size: 20px;
+    font-weight: 400;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    opacity: 0.6;
+    transition: $transition-fast;
+    text-shadow: none;
+
+    &:hover {
+      opacity: 1;
+      text-shadow: none;
+    }
+  }
+
+  .toast-progress {
+    height: 4px;
+    opacity: 0.8;
+    bottom: 0;
+    border-bottom-right-radius: $border-radius-md;
+    border-bottom-left-radius: $border-radius-md;
+  }
+}
+
+.toast-top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.toast-top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.toast-bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+
+.toast-bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
+
+@media screen and (max-width: $media-sm) {
+  .toast-container {
+    .ngx-toastr {
+      width: 300px;
+      padding: 12px 12px 12px 45px;
+      background-position: 12px center;
+    }
+  }
+}
