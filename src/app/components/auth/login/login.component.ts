@@ -5,6 +5,7 @@ import {AuthService} from "../services/auth.service";
 import {catchError, EMPTY, finalize, tap} from "rxjs";
 import {ButtonLoaderDirective} from "../../../shared/directives/button-loader/button-loader.directive";
 import {ValidationErrorDirective} from "../../../shared/directives/validation-error/validation-error.directive";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   standalone: true,
@@ -20,6 +21,7 @@ import {ValidationErrorDirective} from "../../../shared/directives/validation-er
 export class LoginComponent {
   private readonly formBuilder: UntypedFormBuilder = inject(UntypedFormBuilder);
   private readonly authService: AuthService = inject(AuthService);
+  private readonly toastr: ToastrService = inject(ToastrService);
 
   protected readonly isLoading: WritableSignal<boolean> = signal<boolean>(false);
   protected readonly isSubmitted: WritableSignal<boolean> = signal<boolean>(false);
@@ -44,10 +46,12 @@ export class LoginComponent {
       .pipe(
         tap(response => {
           const user = response.data;
+          this.toastr.success('Jūs esat veiksmīgi ienācis sistēmā');
           this.authService.handleSuccessfulLogin(user);
         }),
         catchError(error => {
           this.loginError.set(true);
+          this.toastr.error('Nepareizi ievadīti dati');
           return EMPTY;
         }),
         finalize(() => {

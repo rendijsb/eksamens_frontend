@@ -52,10 +52,10 @@ export class RegisterComponent {
       .pipe(
         tap(() => {
           this.router.navigate(['/login']);
-          this.toastr.success('Registration successful');
+          this.toastr.success('Konts veiksmīgi izveidots');
         }),
         catchError(() => {
-          this.toastr.error('Registration failed');
+          this.toastr.error('Reģistrācija neizdevās');
           return EMPTY;
         }),
         finalize(() => {

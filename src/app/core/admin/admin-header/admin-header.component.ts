@@ -17,10 +17,10 @@ export class AdminHeaderComponent {
     this.authService.logout()
       .pipe(
         tap(() => {
-          this.toastr.success('You have been logged out');
+          this.toastr.success('Jūs esat izgājuši no sistēmas');
         }),
         catchError(error => {
-          this.toastr.error('An error occurred while logging out');
+          this.toastr.error('Neizdevās iziet no sistēmas');
           return EMPTY;
         })
       )
