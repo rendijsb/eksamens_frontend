@@ -1,6 +1,6 @@
 import {Component, inject, OnInit, signal, WritableSignal} from '@angular/core';
 import {AdminService} from "../services/admin.service";
-import {catchError, EMPTY, tap} from "rxjs";
+import {catchError, EMPTY, finalize, tap} from "rxjs";
 import {ToastrService} from "ngx-toastr";
 import {RoleEnum, User} from "../../auth/models/user.models";
 
@@ -38,11 +38,27 @@ export class UsersComponent implements OnInit {
       .pipe(
         tap((response) => {
           this.userData.set(response.data);
-          console.log(this.userData());
         }),
         catchError((error) => {
-          this.toastr.error('Failed to fetch users');
+          this.toastr.error('Neizdevās iegūt lietotāju datus');
           return EMPTY;
+        })
+      )
+      .subscribe();
+  }
+
+  deleteUser(userId: number): void {
+    this.adminService.deleteUser(userId)
+      .pipe(
+        tap(() => {
+          this.toastr.success('Lietotājs veiksmīgi dzēsts');
+        }),
+        catchError((error) => {
+          this.toastr.error('Neizdevās dzēst lietotāju');
+          return EMPTY;
+        }),
+        finalize((): void => {
+          this.getUserData();
         })
       )
       .subscribe();

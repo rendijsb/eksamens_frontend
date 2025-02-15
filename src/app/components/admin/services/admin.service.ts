@@ -7,6 +7,8 @@ interface UsersResponse {
   data: User[];
 }
 
+interface EmptyResponse {}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,5 +17,9 @@ export class AdminService {
 
   getUsers(): Observable<UsersResponse> {
     return this.http.get('http://localhost:8000/api/user/getAll') as Observable<UsersResponse>;
+  }
+
+  deleteUser(userId: number): Observable<EmptyResponse> {
+    return this.http.delete(`http://localhost:8000/api/user/delete/${userId}`) as Observable<EmptyResponse>;
   }
 }
