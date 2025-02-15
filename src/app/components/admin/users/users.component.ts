@@ -3,18 +3,25 @@ import {AdminService} from "../services/admin.service";
 import {catchError, EMPTY, finalize, tap} from "rxjs";
 import {ToastrService} from "ngx-toastr";
 import {RoleEnum, User} from "../../auth/models/user.models";
+import {ModalService} from "../../../shared/services/modal.service";
+import {UserFormModalComponent} from "./user-form-modal/user-form-modal.component";
 
 @Component({
     selector: 'app-users',
-    imports: [],
+  imports: [
+    UserFormModalComponent
+  ],
     templateUrl: './users.component.html',
     styleUrl: './users.component.scss'
 })
 export class UsersComponent implements OnInit {
   private readonly adminService: AdminService = inject(AdminService);
   private readonly toastr: ToastrService = inject(ToastrService);
+  protected readonly modalService = inject(ModalService);
 
   protected readonly userData: WritableSignal<User[]> = signal<User[]>([]);
+  protected readonly isModalOpen = this.modalService.isOpen;
+  protected selectedUser?: User;
 
   getRoleName(roleId: number): string {
     switch (roleId) {
@@ -66,5 +73,15 @@ export class UsersComponent implements OnInit {
 
   formatCreatedAt(createdAt: string): string {
     return new Date(createdAt).toDateString();
+  }
+
+  openUserForm(user?: User): void {
+    this.selectedUser = user;
+    this.modalService.open();
+  }
+
+  onUserSaved(): void {
+    this.modalService.close();
+    this.getUserData();
   }
 }

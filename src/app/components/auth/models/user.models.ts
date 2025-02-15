@@ -2,7 +2,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  phone: number;
+  phone: string;
   created_at: string;
   role: RoleEnum;
   token?: string;

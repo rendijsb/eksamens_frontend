@@ -6,7 +6,7 @@
         <div class="search">
           <input type="search" placeholder="Meklēt lietotāju...">
         </div>
-        <button class="btn-primary">+ Pievienot Lietotāju</button>
+        <button class="btn-primary" (click)="openUserForm()">+ Pievienot Lietotāju</button>
       </div>
     </div>
 
@@ -34,7 +34,7 @@
               <td>{{getRoleName(user.role)}}</td>
               <td>
                 <div class="actions">
-                  <button class="btn-icon" title="Rediģēt">
+                  <button class="btn-icon" (click)="openUserForm(user)" title="Rediģēt">
                     <i class="fas fa-edit"></i>
                   </button>
                   <button class="btn-icon" (click)="deleteUser(user.id)" title="Dzēst">
@@ -50,3 +50,11 @@
 
   </div>
 </div>
+
+@if (isModalOpen()) {
+  <app-user-form-modal
+    [user]="selectedUser"
+    (close)="modalService.close()"
+    (saved)="onUserSaved()">
+  </app-user-form-modal>
+}
