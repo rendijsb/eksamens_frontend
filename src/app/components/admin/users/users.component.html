@@ -50,11 +50,3 @@
 
   </div>
 </div>
-
-@if (isModalOpen()) {
-  <app-user-form-modal
-    [user]="selectedUser"
-    (close)="modalService.close()"
-    (saved)="onUserSaved()">
-  </app-user-form-modal>
-}
