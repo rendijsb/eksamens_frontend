@@ -85,7 +85,7 @@ export class AuthService {
   private redirectBasedOnRole(role: RoleEnum) {
     switch (role) {
       case RoleEnum.ADMIN:
-        this.router.navigate(['/admin/users']);
+        this.router.navigate(['/admin/dashboard']);
         break;
       case RoleEnum.MODERATOR:
         this.router.navigate(['/moderator/dashboard']);

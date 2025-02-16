@@ -1,8 +1,9 @@
 import {Component, inject, OnInit, signal, WritableSignal} from '@angular/core';
-import {AdminService} from "../services/admin.service";
+import {AdminUserService} from "../services/admin-user.service";
 import {catchError, EMPTY, finalize, tap} from "rxjs";
 import {ToastrService} from "ngx-toastr";
-import {RoleEnum, User} from "../../auth/models/user.models";
+import {RoleEnum, User} from "../../../auth/models/user.models";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-users',
@@ -11,8 +12,9 @@ import {RoleEnum, User} from "../../auth/models/user.models";
   styleUrl: './users.component.scss'
 })
 export class UsersComponent implements OnInit {
-  private readonly adminService: AdminService = inject(AdminService);
+  private readonly adminService: AdminUserService = inject(AdminUserService);
   private readonly toastr: ToastrService = inject(ToastrService);
+  protected readonly router = inject(Router);
 
   protected readonly userData: WritableSignal<User[]> = signal<User[]>([]);
 
@@ -62,6 +64,14 @@ export class UsersComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  createOrEdit(userId?: number): void {
+    if (userId) {
+      this.router.navigate(['/admin/users', userId, 'edit']);
+    } else {
+      this.router.navigate(['/admin/users/create']);
+    }
   }
 
   formatCreatedAt(createdAt: string): string {
