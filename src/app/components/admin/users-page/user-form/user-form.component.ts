@@ -4,7 +4,7 @@ import {RegexPatterns} from "../../../../shared/constants/regex.constants";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ValidationErrorDirective} from "../../../../shared/directives/validation-error/validation-error.directive";
 import {ButtonLoaderDirective} from "../../../../shared/directives/button-loader/button-loader.directive";
-import {RoleEnum, User} from "../../../auth/models/user.models";
+import {RoleEnum} from "../../../auth/models/user.models";
 import {CommonModule} from "@angular/common";
 import {AdminUserService} from "../services/admin-user.service";
 import {catchError, EMPTY, finalize, tap} from "rxjs";

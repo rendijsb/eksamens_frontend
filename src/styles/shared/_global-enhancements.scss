@@ -1,0 +1,32 @@
+@import "../abstracts/_variables";
+
+body {
+  font-family: $font-stack;
+  color: $dark-color;
+  background-color: $secondary-color;
+  line-height: $body-line-height;
+}
+
+a,
+button {
+  transition: transform $transition-fast, background-color $transition-fast, color $transition-fast;
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: $spacing-unit;
+  font-weight: 600;
+}
+
+.container {
+  padding: $spacing-unit * 2;
+}
+
+.interactive-element {
+  box-shadow: $box-shadow-sm;
+  &:hover {
+    box-shadow: $box-shadow-md;
+  }
+}

@@ -5,10 +5,24 @@
     font-family: $font-stack;
     border-radius: $border-radius-md;
     box-shadow: $box-shadow-md;
-    padding: 15px 15px 15px 50px;
-    background-position: 15px center;
+    padding: 16px 16px 16px 48px;
+    background: linear-gradient(to right, rgba($dark-color, 0.85), rgba($primary-color, 0.85)) no-repeat 16px center;
+    background-size: 24px 24px;
     transition: $transition-normal;
+    position: relative;
     opacity: 1;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      background: $light-color;
+      mask-size: cover;
+    }
 
     &:hover {
       box-shadow: $box-shadow-lg;
@@ -17,25 +31,25 @@
   }
 
   .toast-success {
-    background-color: #28a745;
+    background: linear-gradient(to right, #28a745, lighten(#28a745, 10%));
     border-left: 6px solid darken(#28a745, 10%);
     color: $light-color;
   }
 
   .toast-error {
-    background-color: $primary-color;
+    background: linear-gradient(to right, $primary-color, lighten($primary-color, 10%));
     border-left: 6px solid darken($primary-color, 10%);
     color: $light-color;
   }
 
   .toast-info {
-    background-color: #17a2b8;
+    background: linear-gradient(to right, #17a2b8, lighten(#17a2b8, 10%));
     border-left: 6px solid darken(#17a2b8, 10%);
     color: $light-color;
   }
 
   .toast-warning {
-    background-color: $accent-color;
+    background: linear-gradient(to right, $accent-color, lighten($accent-color, 10%));
     border-left: 6px solid darken($accent-color, 10%);
     color: $light-color;
   }
@@ -43,7 +57,7 @@
   .toast-title {
     font-size: 1.1rem;
     font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
   }
 
   .toast-message {
@@ -99,9 +113,9 @@
 @media screen and (max-width: $media-sm) {
   .toast-container {
     .ngx-toastr {
-      width: 300px;
-      padding: 12px 12px 12px 45px;
-      background-position: 12px center;
+      width: 280px;
+      padding: 14px 14px 14px 44px;
+      background-position: 14px center;
     }
   }
 }

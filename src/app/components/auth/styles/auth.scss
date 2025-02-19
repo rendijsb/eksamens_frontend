@@ -13,62 +13,62 @@
 
 .auth-form {
   width: 100%;
-  max-width: 400px;  // Reduced from 500px
+  max-width: 400px;
   background: $light-color;
-  padding: $spacing-unit * 2;  // Reduced from 3
+  padding: $spacing-unit * 2;
   border-radius: $border-radius-lg;
   box-shadow: $box-shadow-lg;
 
   h1 {
     color: $primary-color;
     text-align: center;
-    margin-bottom: $spacing-unit * 1.5;  // Reduced from 2
-    font-size: $h3-font-size;  // Reduced from h2
+    margin-bottom: $spacing-unit * 1.5;
+    font-size: $h3-font-size;
   }
 
   form {
     display: flex;
     flex-direction: column;
-    gap: $spacing-unit;  // Reduced from 1.5
+    gap: $spacing-unit;
   }
 
   .form-group {
     display: flex;
     flex-direction: column;
-    gap: $spacing-unit * 0.4;  // Reduced from 0.5
+    gap: $spacing-unit * 0.4;
 
     label {
       font-weight: 600;
       color: $dark-color;
-      font-size: 0.875rem;  // Reduced from 0.95rem
+      font-size: 0.875rem;
     }
 
     input {
       width: 100%;
-      padding: $spacing-unit * 0.75;  // Reduced from 1
-      border: 1px solid rgba($dark-color, 0.1);  // Reduced from 2px
+      padding: $spacing-unit * 0.75;
+      border: 1px solid rgba($dark-color, 0.1);
       border-radius: $border-radius-sm;
-      font-size: 0.9375rem;  // Reduced from 1rem
+      font-size: 0.9375rem;
       transition: $transition-fast;
 
       &:focus {
         outline: none;
         border-color: $primary-color;
-        box-shadow: 0 0 0 2px rgba($primary-color, 0.1);  // Reduced from 3px
+        box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
       }
     }
   }
 
   .btn {
     width: 100%;
-    margin-top: $spacing-unit * 0.75;  // Reduced from 1
+    margin-top: $spacing-unit * 0.75;
     background-color: $primary-color;
     color: $light-color;
-    padding: $spacing-unit;  // Reduced from 1.2
+    padding: $spacing-unit;
     border: none;
     border-radius: $border-radius-sm;
     font-weight: 600;
-    font-size: 0.9375rem;  // Added to match input
+    font-size: 0.9375rem;
     cursor: pointer;
     transition: $transition-normal;
 
