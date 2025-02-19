@@ -10,7 +10,10 @@
       <div class="nav-items">
         <ul class="nav-list">
           <li><a href="/admin/dashboard" class="active">Dashboards</a></li>
-          <li><a href="/admin/users" class="active">Lietotāji</a></li>
+          @if (isAdmin()) {
+            <li><a href="/admin/users" class="active">Lietotāji</a></li>
+          }
+          <li><a href="/admin/categories" class="active">Kategorijas</a></li>
         </ul>
       </div>
 

@@ -6,6 +6,7 @@ import {RoleEnum} from "./components/auth/models/user.models";
 import {UsersComponent} from "./components/admin/users-page/users/users.component";
 import {UserFormComponent} from "./components/admin/users-page/user-form/user-form.component";
 import {DashboardComponent} from "./components/admin/dashboard-page/dashboard/dashboard.component";
+import {CategoriesAdminComponent} from "./components/admin/categories-page/categories-admin/categories-admin.component";
 
 export const routes: Routes = [
   {
@@ -44,27 +45,13 @@ export const routes: Routes = [
       { path: '', component: DashboardComponent },
     ]
   },
-  // {
-  //   path: 'moderator',
-  //   component: AdminLayoutComponent, // Using same layout for moderator
-  //   canActivate: [authGuard],
-  //   data: { roles: [RoleEnum.MODERATOR, RoleEnum.ADMIN] }, // Allow both moderators and admins
-  //   children: [
-  //     {
-  //       path: 'products',
-  //       loadComponent: () => import('./components/moderator/products/products.component')
-  //         .then(m => m.ProductsComponent)
-  //     },
-  //     {
-  //       path: 'products/create',
-  //       loadComponent: () => import('./components/moderator/products/product-form/product-form.component')
-  //         .then(m => m.ProductFormComponent)
-  //     },
-  //     {
-  //       path: 'products/edit/:id',
-  //       loadComponent: () => import('./components/moderator/products/product-form/product-form.component')
-  //         .then(m => m.ProductFormComponent)
-  //     }
-  //   ]
-  // }
+  {
+    path: 'admin/categories',
+    component: AdminLayoutComponent,
+    canActivate: [authGuard],
+    data: { roles: [RoleEnum.ADMIN, RoleEnum.MODERATOR] },
+    children: [
+      { path: '', component: CategoriesAdminComponent },
+    ]
+  },
 ];

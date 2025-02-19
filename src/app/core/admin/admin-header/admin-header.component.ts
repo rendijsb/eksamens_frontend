@@ -13,6 +13,8 @@ export class AdminHeaderComponent {
   private readonly authService: AuthService = inject(AuthService);
   private readonly toastr: ToastrService = inject(ToastrService);
 
+  protected readonly isAdmin = computed(() => this.authService.isAdmin());
+
   logout() {
     this.authService.logout()
       .pipe(

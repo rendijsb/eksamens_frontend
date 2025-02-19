@@ -9,7 +9,7 @@ import {Router} from "@angular/router";
   selector: 'app-users',
   imports: [],
   templateUrl: './users.component.html',
-  styleUrl: './users.component.scss'
+  styleUrl: '../../styles/data-table-styles.scss'
 })
 export class UsersComponent implements OnInit {
   private readonly adminService: AdminUserService = inject(AdminUserService);
