@@ -1,0 +1,31 @@
+<div class="auth-container">
+  <div class="category-form">
+    <h1>{{ isEditing() ? 'Rediģēt Kategoriju' : 'Pievienot Kategoriju' }}</h1>
+    <form class="form-content" [formGroup]="categoryForm">
+      <div class="form-group">
+        <label>Nosaukums</label>
+        <input
+          type="text"
+          formControlName="name"
+          [appValidationError]="isSubmitted()"
+          placeholder="Ievadiet kategorijas nosaukumu">
+      </div>
+
+      <div class="form-group">
+        <label>Apraksts</label>
+        <textarea
+          formControlName="description"
+          [appValidationError]="isSubmitted()"
+          rows="4"
+          placeholder="Ievadiet kategorijas aprakstu"></textarea>
+      </div>
+
+    </form>
+    <div class="form-actions">
+      <button class="btn-secondary">Atcelt</button>
+      <button class="btn" [appButtonLoader]="isLoading()" (click)="submit()">
+        {{ isEditing() ? 'Saglabāt' : 'Izveidot' }}
+      </button>
+    </div>
+  </div>
+</div>

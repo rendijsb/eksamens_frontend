@@ -48,7 +48,7 @@ export class UserFormComponent implements OnInit {
   });
 
   ngOnInit() {
-    const userId = this.route.snapshot.params['id'];
+    const userId = this.route.snapshot.params['userId'];
     if (userId) {
       this.isEditing.set(true);
       this.getUserById(userId);
@@ -141,7 +141,7 @@ export class UserFormComponent implements OnInit {
         )
         .subscribe();
     } else {
-      const userId = this.route.snapshot.params['id'];
+      const userId = this.route.snapshot.params['userId'];
 
       this.adminService.editUser(this.generatePayload(), userId)
         .pipe(

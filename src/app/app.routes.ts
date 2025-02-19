@@ -7,6 +7,9 @@ import {UsersComponent} from "./components/admin/users-page/users/users.componen
 import {UserFormComponent} from "./components/admin/users-page/user-form/user-form.component";
 import {DashboardComponent} from "./components/admin/dashboard-page/dashboard/dashboard.component";
 import {CategoriesAdminComponent} from "./components/admin/categories-page/categories-admin/categories-admin.component";
+import {
+  CategoriesAdminFormComponent
+} from "./components/admin/categories-page/categories-admin-form/categories-admin-form.component";
 
 export const routes: Routes = [
   {
@@ -33,7 +36,7 @@ export const routes: Routes = [
     children: [
       { path: '', component: UsersComponent },
       { path: 'create', component: UserFormComponent },
-      { path: ':id/edit', component: UserFormComponent }
+      { path: ':userId/edit', component: UserFormComponent }
     ]
   },
   {
@@ -52,6 +55,8 @@ export const routes: Routes = [
     data: { roles: [RoleEnum.ADMIN, RoleEnum.MODERATOR] },
     children: [
       { path: '', component: CategoriesAdminComponent },
+      { path: 'create', component: CategoriesAdminFormComponent },
+      { path: ':categoryId/edit', component: CategoriesAdminFormComponent }
     ]
   },
 ];

@@ -6,7 +6,7 @@
         <div class="search">
           <input type="search" placeholder="Meklēt kategoriju...">
         </div>
-        <button class="btn-primary">+ Pievienot Kategoriju</button>
+        <button class="btn-primary" (click)="createOrEdit()">+ Pievienot Kategoriju</button>
       </div>
     </div>
 
@@ -33,7 +33,7 @@
               <td></td>
               <td>
                 <div class="actions">
-                  <button class="btn-icon interactive-element" title="Dzēst">
+                  <button class="btn-icon" title="Dzēst">
                     <i class="fas fa-trash"></i>
                   </button>
                 </div>
