@@ -88,7 +88,7 @@ export class AuthService {
         this.router.navigate(['/admin/dashboard']);
         break;
       case RoleEnum.MODERATOR:
-        this.router.navigate(['/moderator/dashboard']);
+        this.router.navigate(['/admin/dashboard']);
         break;
       case RoleEnum.CLIENT:
         this.router.navigate(['/']);

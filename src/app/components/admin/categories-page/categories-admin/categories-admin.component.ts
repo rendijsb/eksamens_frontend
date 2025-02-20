@@ -2,7 +2,7 @@ import {Component, inject, OnInit, signal, WritableSignal} from '@angular/core';
 import {Router} from "@angular/router";
 import {AdminCategoryService} from "../services/admin-category.service";
 import {CategoriesResponse, Category} from "../models/categories.models";
-import {catchError, EMPTY, tap} from "rxjs";
+import {catchError, EMPTY, finalize, tap} from "rxjs";
 import {ToastrService} from "ngx-toastr";
 
 @Component({
@@ -41,5 +41,26 @@ export class CategoriesAdminComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  deleteCategory(categoryId: number): void {
+    this.adminCategoryService.deleteCategory(categoryId)
+      .pipe(
+        tap(() => {
+          this.toastr.success('Kategorija veiksmīgi dzēsta');
+        }),
+        catchError((error) => {
+          this.toastr.error('Neizdevās dzēst kategoriju');
+          return EMPTY;
+        }),
+        finalize((): void => {
+          this.getCategories();
+        })
+      )
+      .subscribe();
+  }
+
+  formatCreatedAt(createdAt: string): string {
+    return new Date(createdAt).toDateString();
   }
 }

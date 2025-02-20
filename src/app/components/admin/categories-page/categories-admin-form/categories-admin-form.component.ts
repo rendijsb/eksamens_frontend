@@ -39,6 +39,7 @@ export class CategoriesAdminFormComponent implements OnInit {
 
     if (categoryId) {
       this.isEditing.set(true);
+      this.getCategory(categoryId);
     }
   }
 
@@ -52,13 +53,46 @@ export class CategoriesAdminFormComponent implements OnInit {
     this.isLoading.set(true);
 
     if (this.isEditing()) {
+      this.editCategory();
     } else {
       this.createCategory();
     }
   }
 
+  getCategory(categoryId: number): void {
+    this.adminCategoryService.getCategory(categoryId)
+      .pipe(
+        tap((response) => {
+          this.categoryForm.patchValue(response.data);
+        }),
+        catchError(() => {
+          this.toastr.error('Nevarēja ielādēt kategoriju');
+          return EMPTY;
+        })
+      )
+      .subscribe();
+  }
+
   createCategory(): void {
     this.adminCategoryService.createCategory(this.generatePayload())
+      .pipe(
+        tap(() => {
+          this.toastr.success('Kategorija veiksmīgi izveidota');
+          this.router.navigate(['/admin/categories']);
+        }),
+        catchError((error: any) => {
+          this.toastr.error('Neizdevās izveidot kategoriju');
+          return EMPTY;
+        }),
+        finalize((): void => this.isLoading.set(false))
+      )
+      .subscribe();
+  }
+
+  editCategory(): void {
+    const categoryId: number = this.route.snapshot.params['categoryId'];
+
+    this.adminCategoryService.editCategory(categoryId, this.generatePayload())
       .pipe(
         tap(() => {
           this.toastr.success('Kategorija veiksmīgi izveidota');

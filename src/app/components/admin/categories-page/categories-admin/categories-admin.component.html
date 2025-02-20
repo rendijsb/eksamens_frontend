@@ -25,16 +25,16 @@
         </thead>
         <tbody>
         @for (category of categories(); track category.id) {
-            <tr class="interactive-element">
+            <tr (click)="createOrEdit(category.id)">
               <td>{{ category.id }}</td>
               <td>{{ category.name }}</td>
               <td>{{ category.description }}</td>
               <td>{{ category.slug }}</td>
-              <td>{{ category.created_at }}</td>
+              <td>{{ formatCreatedAt(category.created_at) }}</td>
               <td></td>
               <td>
                 <div class="actions">
-                  <button class="btn-icon" title="Dzēst">
+                  <button class="btn-icon" (click)="$event.stopPropagation(); deleteCategory(category.id)" title="Dzēst">
                     <i class="fas fa-trash"></i>
                   </button>
                 </div>
