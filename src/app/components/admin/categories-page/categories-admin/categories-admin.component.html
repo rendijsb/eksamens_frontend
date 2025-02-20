@@ -24,12 +24,13 @@
         </tr>
         </thead>
         <tbody>
+        @for (category of categories(); track category.id) {
             <tr class="interactive-element">
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td>{{ category.id }}</td>
+              <td>{{ category.name }}</td>
+              <td>{{ category.description }}</td>
+              <td>{{ category.slug }}</td>
+              <td>{{ category.created_at }}</td>
               <td></td>
               <td>
                 <div class="actions">
@@ -39,6 +40,7 @@
                 </div>
               </td>
             </tr>
+        }
         </tbody>
       </table>
     </div>
