@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import {Observable, tap} from "rxjs";
+import {Observable} from "rxjs";
 import {User} from "../../../auth/models/user.models";
 
 interface UsersResponse {
