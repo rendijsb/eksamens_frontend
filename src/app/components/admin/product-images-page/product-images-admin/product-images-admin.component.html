@@ -1,0 +1,48 @@
+<div class="image-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Produkta Attēli</h2>
+      <button class="btn-icon" (click)="close.emit()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="image-upload">
+      <label class="upload-zone">
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+        >
+        <i class="fas fa-cloud-upload-alt"></i>
+        <span>Velciet attēlus šeit vai klikšķiniet, lai augšupielādētu</span>
+      </label>
+    </div>
+
+    <div class="image-grid">
+        <div class="image-item">
+          <img>
+          <div class="image-actions">
+              <button
+                class="btn-icon"
+                title="Iestatīt kā galveno attēlu"
+              >
+                <i class="fas fa-star"></i>
+              </button>
+
+            <button
+              class="btn-icon"
+              title="Dzēst attēlu"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+            <div class="primary-badge">
+              Galvenais attēls
+            </div>
+
+        </div>
+
+    </div>
+  </div>
+</div>

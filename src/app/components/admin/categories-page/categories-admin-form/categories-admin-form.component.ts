@@ -81,7 +81,11 @@ export class CategoriesAdminFormComponent implements OnInit {
           this.router.navigate(['/admin/categories']);
         }),
         catchError((error: any) => {
-          this.toastr.error('Neizdevās izveidot kategoriju');
+          if (error.status === 422 && error.error?.errors) {
+            this.toastr.error('Kategorija ar šādu nosaukumu jau eksistē');
+          } else {
+            this.toastr.error('Neizdevās izveidot kategoriju');
+          }
           return EMPTY;
         }),
         finalize((): void => this.isLoading.set(false))
@@ -95,11 +99,15 @@ export class CategoriesAdminFormComponent implements OnInit {
     this.adminCategoryService.editCategory(categoryId, this.generatePayload())
       .pipe(
         tap(() => {
-          this.toastr.success('Kategorija veiksmīgi izveidota');
+          this.toastr.success('Kategorija veiksmīgi rediğēta');
           this.router.navigate(['/admin/categories']);
         }),
         catchError((error: any) => {
-          this.toastr.error('Neizdevās izveidot kategoriju');
+          if (error.status === 422 && error.error?.errors) {
+            this.toastr.error('Kategorija ar šādu nosaukumu jau eksistē');
+          } else {
+            this.toastr.error('Neizdevās rediğēt kategoriju');
+          }
           return EMPTY;
         }),
         finalize((): void => this.isLoading.set(false))

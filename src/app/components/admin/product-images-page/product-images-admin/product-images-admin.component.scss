@@ -1,0 +1,129 @@
+@import "../../../../../styles/abstracts/_variables";
+
+.image-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba($dark-color, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  .modal-content {
+    background: $light-color;
+    padding: $spacing-unit * 2;
+    border-radius: $border-radius-lg;
+    width: 90%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: $box-shadow-lg;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-unit * 2;
+
+    h2 {
+      font-size: $h3-font-size;
+      color: $dark-color;
+      margin: 0;
+    }
+  }
+
+  .image-upload {
+    margin: $spacing-unit * 2 0;
+
+    .upload-zone {
+      border: 2px dashed rgba($dark-color, 0.2);
+      border-radius: $border-radius-md;
+      padding: $spacing-unit * 2;
+      text-align: center;
+      cursor: pointer;
+      transition: $transition-normal;
+
+      &.dragging {
+        border-color: $primary-color;
+        background: rgba($primary-color, 0.1);
+      }
+
+      input {
+        display: none;
+      }
+
+      i {
+        font-size: $h2-font-size;
+        margin-bottom: $spacing-unit;
+        color: rgba($dark-color, 0.5);
+      }
+
+      &:hover {
+        border-color: $primary-color;
+      }
+    }
+  }
+
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: $spacing-unit;
+    margin-top: $spacing-unit * 2;
+  }
+
+  .image-item {
+    position: relative;
+    aspect-ratio: 1;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: $border-radius-md;
+      box-shadow: $box-shadow-sm;
+    }
+
+    .image-actions {
+      position: absolute;
+      inset: 0;
+      background: rgba($dark-color, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: $spacing-unit;
+      opacity: 0;
+      transition: $transition-fast;
+      border-radius: $border-radius-md;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .primary-badge {
+      position: absolute;
+      top: $spacing-unit * 0.5;
+      left: $spacing-unit * 0.5;
+      background: $primary-color;
+      color: $light-color;
+      padding: $spacing-unit * 0.25 $spacing-unit * 0.5;
+      border-radius: $border-radius-sm;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+  }
+}
+
+@media (max-width: $media-md) {
+  .image-modal {
+    .modal-content {
+      padding: $spacing-unit;
+      width: 95%;
+    }
+
+    .image-grid {
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+  }
+}

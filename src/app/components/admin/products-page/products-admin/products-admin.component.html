@@ -1,0 +1,80 @@
+<div class="container">
+  <div class="dashboard">
+    <div class="dashboard-header">
+      <h1>Produktu Pārvaldība</h1>
+      <div class="actions">
+        <div class="search">
+          <input type="search" placeholder="Meklēt produktu...">
+        </div>
+        <div class="filters">
+          <select>
+            <option value="">Visas kategorijas</option>
+              <option></option>
+          </select>
+          <select>
+            <option value="">Visi statusi</option>
+            <option value="active">Aktīvs</option>
+            <option value="inactive">Neaktīvs</option>
+          </select>
+        </div>
+        <button class="btn-primary">+ Pievienot Produktu</button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Galvenais attēls</th>
+          <th>Nosaukums</th>
+          <th>Kategorija</th>
+          <th>Cena</th>
+          <th>Akcijas Cena</th>
+          <th>Noliktavā</th>
+          <th>Status</th>
+          <th>Darbības</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+              <td></td>
+              <td>
+                <img class="product-thumbnail">
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>
+                <span>
+                </span>
+              </td>
+              <td>
+                <span class="badge">
+                </span>
+              </td>
+              <td>
+                <div class="actions">
+                  <button class="btn-icon" (click)="$event.stopPropagation(); openImageModal(4)" title="Attēli">
+                    <i class="fas fa-images"></i>
+                  </button>
+                  <button class="btn-icon"
+                          title="Dzēst">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+@if (showImageModal()) {
+  <app-product-images-admin
+    [productId]="4"
+    (close)="showImageModal.set(false)"
+  />
+}
