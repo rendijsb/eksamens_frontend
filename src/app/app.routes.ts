@@ -11,9 +11,6 @@ import {
   CategoriesAdminFormComponent
 } from "./components/admin/categories-page/categories-admin-form/categories-admin-form.component";
 import {ProductsAdminComponent} from "./components/admin/products-page/products-admin/products-admin.component";
-import {
-  ProductImagesAdminComponent
-} from "./components/admin/product-images-page/product-images-admin/product-images-admin.component";
 
 export const routes: Routes = [
   {

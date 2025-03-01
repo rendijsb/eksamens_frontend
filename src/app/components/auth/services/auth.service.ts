@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { RoleEnum, User } from "../models/user.models";
 import { Router } from "@angular/router";
 import { tap } from "rxjs";
+import {ApiUrlService} from "../../../shared/services/api.service";
 
 interface AuthResponse {
   data: User;
@@ -16,6 +17,7 @@ export class AuthService {
   private readonly userKey = 'user_data';
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly apiUrlService = inject(ApiUrlService);
 
   private currentUser = signal<User | null>(this.getUserFromStorage());
   private token = signal<string | null>(this.getTokenFromStorage());
@@ -35,7 +37,7 @@ export class AuthService {
   }
 
   register(data: FormData) {
-    return this.http.post<AuthResponse>('http://localhost:8000/api/auth/register', data)
+    return this.http.post<AuthResponse>(this.apiUrlService.getUrl('api/auth/register'), data)
       .pipe(
         tap(response => {
           const user = response.data;
@@ -47,7 +49,7 @@ export class AuthService {
   }
 
   login(data: FormData) {
-    return this.http.post<AuthResponse>('http://localhost:8000/api/auth/login', data)
+    return this.http.post<AuthResponse>(this.apiUrlService.getUrl('api/auth/login'), data)
       .pipe(
         tap(response => {
           const user = response.data;
@@ -59,12 +61,12 @@ export class AuthService {
   }
 
   logout() {
-    return this.http.post('http://localhost:8000/api/auth/logout', {}).pipe(
+    return this.http.post(this.apiUrlService.getUrl('api/auth/logout'), {}).pipe(
       tap(() => {
         localStorage.removeItem(this.tokenKey);
         localStorage.removeItem(this.userKey);
         this.currentUser.set(null);
-        this.router.navigate(['/']);
+        this.router.navigate(['/login']);
       })
     );
   }
