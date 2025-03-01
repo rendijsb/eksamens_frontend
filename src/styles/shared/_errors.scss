@@ -1,10 +1,49 @@
+@import "../abstracts/variables";
+
 .validation-error {
   margin-top: 4px;
 
   .error-message {
-    color: #dc3545;
-    font-size: 0.875rem;
+    color: $danger-color;
+    font-size: $small-font-size;
     margin: 0;
-    padding: 2px 0;
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+
+    &:before {
+      content: "!";
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: $danger-color;
+      color: $light-color;
+      font-size: 11px;
+      font-weight: bold;
+      margin-right: 6px;
+    }
   }
+}
+
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
+  border-color: $danger-color !important;
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba($danger-color, 0.1);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
 }

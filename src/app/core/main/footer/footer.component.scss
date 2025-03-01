@@ -16,15 +16,43 @@
 .footer-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: $spacing-unit * 3;
-  margin-bottom: $spacing-unit * 4;
+  gap: $spacing-xl;
+  margin-bottom: $spacing-xl;
+
+  @media (max-width: $media-md) {
+    gap: $spacing-lg;
+  }
+
+  @media (max-width: $media-sm) {
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+  }
 }
 
 .footer-section {
   h4 {
     color: $light-color;
-    margin-bottom: $spacing-unit * 1.5;
-    font-size: 1.1rem;
+    margin-bottom: $spacing-md;
+    font-size: $h5-font-size;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: $spacing-sm;
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background-color: $primary-color;
+      border-radius: $border-radius-pill;
+    }
+  }
+
+  p {
+    color: rgba($light-color, 0.7);
+    line-height: 1.6;
   }
 }
 
@@ -34,39 +62,78 @@
   margin: 0;
 
   li {
-    margin-bottom: $spacing-unit;
-  }
+    margin-bottom: $spacing-sm;
 
-  a {
-    color: inherit;
-    text-decoration: none;
-    transition: $transition-fast;
+    a {
+      color: rgba($light-color, 0.7);
+      text-decoration: none;
+      transition: all $transition-fast;
+      display: inline-block;
+      position: relative;
+      padding-left: 0;
 
-    &:hover {
-      color: $primary-color;
+      &:hover {
+        color: $light-color;
+        transform: translateX(5px);
+      }
+
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background-color: $light-color;
+        transition: width $transition-fast;
+      }
+
+      &:hover:after {
+        width: 100%;
+      }
     }
   }
 }
 
 .social-links {
   display: flex;
-  gap: $spacing-unit * 1.5;
+  gap: $spacing-md;
+  margin-top: $spacing-sm;
 
   a {
-    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba($light-color, 0.1);
     color: rgba($light-color, 0.8);
-    transition: $transition-fast;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all $transition-normal;
+    font-size: 1.2rem;
 
     &:hover {
-      color: $primary-color;
-      transform: translateY(-2px);
+      background-color: $primary-color;
+      color: $light-color;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: translateY(-1px);
     }
   }
 }
 
 .copyright {
   text-align: center;
-  padding-top: $spacing-unit * 3;
+  padding-top: $spacing-lg;
   border-top: 1px solid rgba($light-color, 0.1);
   font-size: 0.9rem;
+  color: rgba($light-color, 0.6);
+
+  p {
+    margin: 0;
+  }
 }

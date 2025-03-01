@@ -1,34 +1,54 @@
 @import '../../../../styles/abstracts/variables';
 
 .dashboard {
-  margin-top: $spacing-unit * 3;
-  padding: $spacing-unit * 2;
+  margin-top: $spacing-lg;
+  padding: $spacing-lg;
   background: $light-color;
   border-radius: $border-radius-lg;
   box-shadow: $box-shadow-md;
 
   .dashboard-header {
-    margin-bottom: $spacing-unit * 3;
+    margin-bottom: $spacing-xl;
 
     h1 {
       font-size: $h2-font-size;
       color: $dark-color;
-      margin-bottom: $spacing-unit * 2;
+      margin-bottom: $spacing-lg;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: $spacing-sm;
+
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background-color: $primary-color;
+        border-radius: $border-radius-pill;
+      }
     }
 
     .actions {
       display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: $spacing-unit;
-      align-items: start;
+      grid-template-columns: 1fr auto;
+      gap: $spacing-md;
+
+      @media (max-width: $media-lg) {
+        grid-template-columns: 1fr;
+        gap: $spacing-sm;
+      }
 
       .search {
+        position: relative;
+
         input {
           width: 100%;
-          padding: $spacing-unit;
+          padding: $spacing-md $spacing-md $spacing-md ($spacing-xl + $spacing-xs);
           border: 1px solid rgba($dark-color, 0.1);
           border-radius: $border-radius-md;
-          transition: $transition-fast;
+          transition: all $transition-fast;
           font-size: $base-font-size;
 
           &:focus {
@@ -41,22 +61,54 @@
             color: rgba($dark-color, 0.5);
           }
         }
+
+        &:before {
+          content: "\f002";
+          font-family: "Font Awesome 6 Free", serif;
+          font-weight: 900;
+          position: absolute;
+          left: $spacing-md;
+          top: 50%;
+          transform: translateY(-50%);
+          color: rgba($dark-color, 0.5);
+        }
       }
 
       .filters {
         display: flex;
-        gap: $spacing-unit;
-        margin: 0;
+        gap: $spacing-md;
+        margin-top: $spacing-sm;
+
+        @media (max-width: $media-md) {
+          flex-wrap: wrap;
+
+          select {
+            flex: 1 1 calc(50% - #{$spacing-md/2});
+            min-width: unset;
+          }
+        }
+
+        @media (max-width: $media-sm) {
+          select {
+            flex: 1 1 100%;
+          }
+        }
 
         select {
-          min-width: 200px;
-          padding: $spacing-unit;
+          min-width: 180px;
+          padding: $spacing-md $spacing-xl $spacing-md $spacing-md;
           border: 1px solid rgba($dark-color, 0.1);
           border-radius: $border-radius-md;
           font-size: $base-font-size;
           cursor: pointer;
-          transition: $transition-fast;
+          transition: all $transition-fast;
           background-color: $light-color;
+          appearance: none;
+
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23757575' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right $spacing-md center;
+          background-size: 16px;
 
           &:focus {
             outline: none;
@@ -69,9 +121,11 @@
   }
 
   .table-responsive {
-    margin-top: $spacing-unit * 2;
+    margin-top: $spacing-lg;
     border: 1px solid rgba($dark-color, 0.1);
     border-radius: $border-radius-lg;
+    overflow: hidden;
+
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 
@@ -95,68 +149,205 @@
 
     .data-table {
       width: 100%;
-      min-width: 800px;
-      border-collapse: collapse;
+      min-width: 900px;
+      border-collapse: separate;
+      border-spacing: 0;
 
       th, td {
-        padding: $spacing-unit * 1.25;
-        border-bottom: 1px solid rgba($dark-color, 0.1);
+        padding: $spacing-md;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba($dark-color, 0.05);
       }
 
       th {
-        background: rgba($secondary-color, 0.3);
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.875rem;
-        letter-spacing: 0.5px;
-        white-space: nowrap;
         position: sticky;
         top: 0;
+        background: rgba($secondary-color, 0.4);
+        font-weight: 600;
+        font-size: $small-font-size;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        color: $dark-medium;
         z-index: 1;
+        box-shadow: 0 1px 0 rgba($dark-color, 0.1);
+        padding-top: $spacing-md;
+        padding-bottom: $spacing-md;
+        text-align: left;
+
+        &:first-child {
+          padding-left: $spacing-lg;
+        }
+
+        &:last-child {
+          text-align: right;
+          padding-right: $spacing-lg;
+        }
       }
 
       tbody {
         tr {
-          transition: $transition-fast;
+          transition: all $transition-fast;
+          cursor: pointer;
 
           &:hover {
-            background: rgba($secondary-color, 0.15);
+            background: rgba($secondary-color, 0.2);
           }
 
-          td {
-            vertical-align: middle;
+          &:active {
+            background: rgba($primary-color, 0.05);
           }
+
+          td:first-child {
+            padding-left: $spacing-lg;
+            font-weight: 500;
+          }
+
+          td:last-child {
+            padding-right: $spacing-lg;
+            text-align: right;
+          }
+        }
+      }
+
+      .product-thumbnail {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: $border-radius-sm;
+        box-shadow: $box-shadow-sm;
+        transition: all $transition-normal;
+        border: 2px solid transparent;
+
+        &:hover {
+          transform: scale(1.2);
+          z-index: 10;
+          position: relative;
+          border-color: $light-color;
+          box-shadow: $box-shadow-md;
         }
       }
 
       .badge {
         display: inline-flex;
         align-items: center;
-        padding: $spacing-unit * 0.5 $spacing-unit;
-        border-radius: $border-radius-lg;
+        padding: $spacing-xs $spacing-sm;
+        border-radius: $border-radius-pill;
         font-weight: 500;
-        font-size: 0.875rem;
+        font-size: $mini-font-size;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        &:before {
+          content: "";
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          margin-right: $spacing-xs;
+        }
 
         &.active {
-          background: rgba(#22c55e, 0.1);
-          color: #22c55e;
+          background: rgba($success-color, 0.1);
+          color: $success-color;
+
+          &:before {
+            background-color: $success-color;
+          }
         }
 
         &.inactive {
           background: rgba($accent-color, 0.1);
           color: $accent-color;
+
+          &:before {
+            background-color: $accent-color;
+          }
         }
       }
 
-      .stock-low {
-        color: $accent-color;
-        font-weight: 600;
+      span {
+        &.stock-low {
+          color: $warning-color;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+
+          &:before {
+            content: "\f071";
+            font-family: "Font Awesome 6 Free", serif;
+            font-weight: 900;
+            margin-right: $spacing-xs;
+            font-size: $small-font-size;
+          }
+        }
+
+        &.stock-out {
+          color: $danger-color;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+
+          &:before {
+            content: "\f057";
+            font-family: "Font Awesome 6 Free", serif;
+            font-weight: 900;
+            margin-right: $spacing-xs;
+            font-size: $small-font-size;
+          }
+        }
       }
 
       .actions {
         display: flex;
         justify-content: flex-end;
-        gap: $spacing-unit * 0.5;
+        gap: $spacing-xs;
+
+        .btn-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: $border-radius-md;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: transparent;
+          color: $dark-medium;
+          border: none;
+          cursor: pointer;
+          transition: all $transition-fast;
+
+          &:hover {
+            background: rgba($primary-color, 0.1);
+            color: $primary-color;
+            transform: translateY(-2px);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+
+          &[title="Attēli"] {
+            color: $info-color;
+
+            &:hover {
+              background: rgba($info-color, 0.1);
+              color: darken($info-color, 10%);
+            }
+          }
+
+          &[title="Dzēst"] {
+            color: $danger-color;
+
+            &:hover {
+              background: rgba($danger-color, 0.1);
+              color: darken($danger-color, 10%);
+            }
+          }
+
+          i {
+            font-size: 1rem;
+          }
+        }
       }
     }
   }
@@ -165,8 +356,8 @@
 .btn-primary {
   display: inline-flex;
   align-items: center;
-  gap: $spacing-unit * 0.5;
-  padding: $spacing-unit $spacing-unit * 1.5;
+  gap: $spacing-xs;
+  padding: $spacing-md $spacing-lg;
   background: $primary-color;
   color: $light-color;
   border: none;
@@ -174,11 +365,11 @@
   font-size: $base-font-size;
   font-weight: 500;
   cursor: pointer;
-  transition: $transition-fast;
+  transition: all $transition-fast;
 
   &:hover {
-    background: darken($primary-color, 5%);
-    transform: translateY(-1px);
+    background: $primary-light;
+    transform: translateY(-2px);
     box-shadow: $box-shadow-sm;
   }
 
@@ -187,112 +378,215 @@
   }
 }
 
-.btn-icon {
-  padding: $spacing-unit * 0.75;
-  border: none;
-  background: none;
-  color: $dark-color;
-  border-radius: $border-radius-sm;
-  cursor: pointer;
-  transition: $transition-fast;
-
-  &:hover {
-    background: rgba($primary-color, 0.1);
-    color: $primary-color;
-  }
-}
-
-.pagination {
+.image-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba($dark-color, 0.7);
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: $spacing-unit;
-  margin-top: $spacing-unit * 2;
-  padding: $spacing-unit 0;
+  justify-content: center;
+  z-index: $z-index-modal;
+  backdrop-filter: blur(3px);
 
-  .page-numbers {
-    display: flex;
-    gap: $spacing-unit * 0.5;
-  }
-
-  .btn-page {
-    padding: $spacing-unit * 0.5 $spacing-unit;
-    border: 1px solid rgba($dark-color, 0.1);
+  .modal-content {
     background: $light-color;
-    border-radius: $border-radius-sm;
-    cursor: pointer;
-    transition: $transition-fast;
+    border-radius: $border-radius-lg;
+    width: 90%;
+    max-width: 800px;
+    max-height: 85vh;
+    padding: $spacing-lg;
+    overflow: auto;
+    box-shadow: $box-shadow-lg;
+    animation: fadeIn 0.3s ease, scaleIn 0.4s ease;
 
-    &:hover {
-      border-color: $primary-color;
-      color: $primary-color;
-    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: $spacing-lg;
+      padding-bottom: $spacing-md;
+      border-bottom: 1px solid rgba($dark-color, 0.1);
 
-    &.active {
-      background-color: $primary-color;
-      color: $light-color;
-      border-color: $primary-color;
+      h2 {
+        font-size: $h4-font-size;
+        margin: 0;
+        color: $primary-color;
+      }
+
+      .btn-icon {
+        color: $dark-medium;
+
+        &:hover {
+          color: $danger-color;
+        }
+      }
     }
   }
-}
 
-.product-thumbnail {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: $border-radius-sm;
-}
+  .image-upload {
+    margin: $spacing-lg 0;
 
-@media (max-width: $media-lg) {
-  .dashboard {
-    .dashboard-header {
-      .actions {
-        grid-template-columns: 1fr;
+    .upload-zone {
+      border: 2px dashed rgba($dark-color, 0.2);
+      border-radius: $border-radius-md;
+      padding: $spacing-lg;
+      text-align: center;
+      cursor: pointer;
+      transition: all $transition-normal;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
-        .filters {
-          flex-wrap: wrap;
-          select {
-            flex: 1;
-            min-width: 150px;
+      input {
+        display: none;
+      }
+
+      i {
+        font-size: $h2-font-size;
+        color: rgba($dark-color, 0.5);
+        margin-bottom: $spacing-md;
+      }
+
+      span {
+        color: $dark-medium;
+        max-width: 80%;
+      }
+
+      &:hover {
+        border-color: $primary-color;
+        background: rgba($primary-color, 0.03);
+
+        i {
+          color: $primary-color;
+        }
+      }
+
+      &.dragging {
+        border-color: $primary-color;
+        background: rgba($primary-color, 0.05);
+
+        i {
+          color: $primary-color;
+          transform: scale(1.2);
+        }
+      }
+    }
+  }
+
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: $spacing-md;
+    margin: $spacing-lg 0;
+
+    @media (max-width: $media-md) {
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .image-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: $border-radius-md;
+      overflow: hidden;
+      box-shadow: $box-shadow-sm;
+      transition: all $transition-fast;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: $box-shadow-md;
+
+        .image-actions {
+          opacity: 1;
+        }
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .image-actions {
+        position: absolute;
+        inset: 0;
+        background: rgba($dark-color, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: $spacing-md;
+        opacity: 0;
+        transition: all $transition-normal;
+
+        .btn-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: rgba($light-color, 0.2);
+          color: $light-color;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          transition: all $transition-fast;
+          border: none;
+          cursor: pointer;
+
+          &:hover {
+            background: rgba($light-color, 0.3);
+            transform: scale(1.1);
+          }
+
+          &[title="Iestatīt kā galveno attēlu"] {
+            color: $warning-color;
+
+            &:hover {
+              background: rgba($warning-color, 0.3);
+            }
+          }
+
+          &[title="Dzēst attēlu"] {
+            color: $danger-color;
+
+            &:hover {
+              background: rgba($danger-color, 0.3);
+            }
           }
         }
       }
-    }
-  }
-}
 
-@media (max-width: $media-md) {
-  .dashboard {
-    padding: $spacing-unit;
-    margin-top: $spacing-unit;
+      .primary-badge {
+        position: absolute;
+        top: $spacing-xs;
+        left: $spacing-xs;
+        background: $primary-color;
+        color: $light-color;
+        font-size: $mini-font-size;
+        font-weight: 500;
+        padding: $spacing-xs $spacing-sm;
+        border-radius: $border-radius-pill;
+        display: flex;
+        align-items: center;
+        z-index: 5;
+        box-shadow: $box-shadow-sm;
 
-    .dashboard-header {
-      h1 {
-        font-size: $h3-font-size;
-      }
-    }
-
-    .table-responsive {
-      border-radius: $border-radius-md;
-
-      .data-table {
-        th, td {
-          padding: $spacing-unit;
+        &:before {
+          content: "\f005";
+          font-family: "Font Awesome 6 Free", serif;
+          font-weight: 900;
+          margin-right: $spacing-xs;
+          font-size: 0.7em;
         }
       }
     }
   }
 }
 
-@media (max-width: $media-sm) {
-  .dashboard {
-    margin-top: 0;
-    border-radius: 0;
+// Animations
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-    .table-responsive {
-      border-left: 0;
-      border-right: 0;
-      border-radius: 0;
-    }
-  }
+@keyframes scaleIn {
+  from { transform: scale(0.9); }
+  to { transform: scale(1); }
 }
