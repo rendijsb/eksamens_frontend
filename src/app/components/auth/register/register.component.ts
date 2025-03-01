@@ -6,7 +6,7 @@ import {ButtonLoaderDirective} from "../../../shared/directives/button-loader/bu
 import {ValidationErrorDirective} from "../../../shared/directives/validation-error/validation-error.directive";
 import {RegexPatterns} from "../../../shared/constants/regex.constants";
 import {passwordMatchValidator} from "../../../shared/validators/password-match.validator";
-import {Router} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
 
 @Component({
@@ -16,6 +16,7 @@ import {ToastrService} from "ngx-toastr";
     ReactiveFormsModule,
     ButtonLoaderDirective,
     ValidationErrorDirective,
+    RouterLink,
   ],
   templateUrl: './register.component.html',
   styleUrl: '../styles/auth.scss'

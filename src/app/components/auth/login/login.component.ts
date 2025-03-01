@@ -6,6 +6,7 @@ import {catchError, EMPTY, finalize, tap} from "rxjs";
 import {ButtonLoaderDirective} from "../../../shared/directives/button-loader/button-loader.directive";
 import {ValidationErrorDirective} from "../../../shared/directives/validation-error/validation-error.directive";
 import {ToastrService} from "ngx-toastr";
+import {RouterLink} from "@angular/router";
 
 @Component({
   standalone: true,
@@ -13,7 +14,8 @@ import {ToastrService} from "ngx-toastr";
   imports: [
     ReactiveFormsModule,
     ButtonLoaderDirective,
-    ValidationErrorDirective
+    ValidationErrorDirective,
+    RouterLink
   ],
   templateUrl: './login.component.html',
   styleUrl: '../styles/auth.scss'

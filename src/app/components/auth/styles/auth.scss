@@ -12,6 +12,33 @@
   backdrop-filter: blur(5px);
 }
 
+.back-link {
+  position: absolute;
+  top: $spacing-md;
+  left: $spacing-md;
+
+  a {
+    display: flex;
+    align-items: center;
+    color: $primary-color;
+    text-decoration: none;
+    font-size: $small-font-size;
+    font-weight: 500;
+    transition: all $transition-fast;
+
+    i {
+      margin-right: $spacing-xs;
+      font-size: 14px;
+    }
+
+    &:hover {
+      color: darken($primary-color, 15%);
+      transform: translateX(-3px);
+    }
+  }
+}
+
+
 .auth-form {
   width: 100%;
   max-width: 400px;
@@ -20,6 +47,7 @@
   border-radius: $border-radius-lg;
   box-shadow: $box-shadow-lg;
   animation: slideUp 0.5s ease;
+  position: relative;
 
   h1 {
     color: $primary-color;
