@@ -159,6 +159,20 @@
         border-bottom: 1px solid rgba($dark-color, 0.05);
       }
 
+      th.sortable {
+        cursor: pointer;
+        user-select: none;
+
+        &:hover {
+          background-color: rgba($secondary-color, 0.6);
+        }
+
+        i {
+          margin-left: 5px;
+          font-size: 0.8rem;
+        }
+      }
+
       th {
         position: sticky;
         top: 0;

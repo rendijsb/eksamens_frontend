@@ -4,7 +4,11 @@
       <h1>Produktu Kategoriju Pārvaldība</h1>
       <div class="actions">
         <div class="search">
-          <input type="search" placeholder="Meklēt kategoriju...">
+          <input
+            type="search"
+            placeholder="Meklēt kategoriju..."
+            [value]="searchTerm()"
+            (input)="onSearch($event)">
         </div>
         <button class="btn-primary" (click)="createOrEdit()">+ Pievienot Kategoriju</button>
       </div>
@@ -14,11 +18,36 @@
       <table class="data-table">
         <thead>
         <tr>
-          <th>ID</th>
-          <th>Nosaukums</th>
-          <th>Apraksts</th>
-          <th>Slug</th>
-          <th>Izveidota</th>
+          <th (click)="onSort('id')" class="sortable">
+            ID
+            @if (sortBy() === 'id') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('name')" class="sortable">
+            Nosaukums
+            @if (sortBy() === 'name') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('description')" class="sortable">
+            Apraksts
+          @if (sortBy() === 'description') {
+            <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+          }
+          </th>
+          <th (click)="onSort('slug')" class="sortable">
+            Slug
+            @if (sortBy() === 'slug') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('created_at')" class="sortable">
+            Izveidota
+            @if (sortBy() === 'created_at') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
           <th>Produktu skaits</th>
           <th>Darbības</th>
         </tr>
@@ -31,7 +60,7 @@
               <td>{{ category.description }}</td>
               <td>{{ category.slug }}</td>
               <td>{{ formatCreatedAt(category.created_at) }}</td>
-              <td></td>
+              <td>{{ category.products_count }}</td>
               <td>
                 <div class="actions">
                   <button class="btn-icon" (click)="$event.stopPropagation(); deleteCategory(category.id)" title="Dzēst">

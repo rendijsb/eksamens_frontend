@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {CategoriesResponse, CreateCategoriesRequest, SingleCategoriesResponse} from "../models/categories.models";
 import {ApiUrlService} from "../../../../shared/services/api.service";
@@ -17,8 +17,19 @@ export class AdminCategoryService {
     return this.http.post(this.apiUrlService.getUrl('api/categories/create'), data) as Observable<SingleCategoriesResponse>;
   }
 
-  getCategories(): Observable<CategoriesResponse> {
-    return this.http.get(this.apiUrlService.getUrl('api/categories/getAll')) as Observable<CategoriesResponse>;
+  getCategories(params?: { search?: string, sort_by?: string, sort_dir?: string }): Observable<CategoriesResponse> {
+    let queryParams = new HttpParams();
+
+    if (params?.search) {
+      queryParams = queryParams.append('search', params.search);
+    }
+
+    if (params?.sort_by) {
+      queryParams = queryParams.append('sort_by', params.sort_by);
+      queryParams = queryParams.append('sort_dir', params.sort_dir || 'asc');
+    }
+
+    return this.http.get(this.apiUrlService.getUrl('api/categories/getAll'), { params: queryParams }) as Observable<CategoriesResponse>;
   }
 
   getCategory(categoryId: number): Observable<SingleCategoriesResponse> {
