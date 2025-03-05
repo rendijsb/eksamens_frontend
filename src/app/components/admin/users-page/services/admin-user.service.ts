@@ -1,7 +1,7 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { User } from "../../../auth/models/user.models";
+import {inject, Injectable} from '@angular/core';
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {User} from "../../../auth/models/user.models";
 import {ApiUrlService} from "../../../../shared/services/api.service";
 
 interface UsersResponse {
@@ -21,8 +21,19 @@ export class AdminUserService {
   private readonly http = inject(HttpClient);
   private readonly apiUrlService = inject(ApiUrlService);
 
-  getUsers(): Observable<UsersResponse> {
-    return this.http.get(this.apiUrlService.getUrl('api/user/getAll')) as Observable<UsersResponse>;
+  getUsers(params?: { search?: string, sort_by?: string, sort_dir?: string }): Observable<UsersResponse> {
+    let queryParams = new HttpParams();
+
+    if (params?.search) {
+      queryParams = queryParams.append('search', params.search);
+    }
+
+    if (params?.sort_by) {
+      queryParams = queryParams.append('sort_by', params.sort_by);
+      queryParams = queryParams.append('sort_dir', params.sort_dir || 'asc');
+    }
+
+    return this.http.get(this.apiUrlService.getUrl('api/user/getAll'), {params: queryParams}) as Observable<UsersResponse>;
   }
 
   deleteUser(userId: number): Observable<EmptyResponse> {

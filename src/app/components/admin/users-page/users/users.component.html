@@ -4,7 +4,9 @@
       <h1>Lietotāju Pārvaldība</h1>
       <div class="actions">
         <div class="search">
-          <input type="search" placeholder="Meklēt lietotāju...">
+          <input type="search" placeholder="Meklēt lietotāju..."
+                 [value]="searchTerm()"
+                 (input)="onSearch($event)">
         </div>
         <button class="btn-primary" (click)="createOrEdit()">+ Pievienot Lietotāju</button>
       </div>
@@ -14,12 +16,42 @@
       <table class="data-table">
         <thead>
         <tr>
-          <th>ID</th>
-          <th>Vārds Uzvārds</th>
-          <th>E-pasts</th>
-          <th>Tālrunis</th>
-          <th>Reģistrēts</th>
-          <th>Loma</th>
+          <th (click)="onSort('id')" class="sortable">
+            ID
+            @if (sortBy() === 'id') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('name')" class="sortable">
+            Vārds Uzvārds
+            @if (sortBy() === 'name') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('email')" class="sortable">
+            E-pasts
+            @if (sortBy() === 'email') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('phone')" class="sortable">
+            Tālrunis
+            @if (sortBy() === 'phone') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('created_at')" class="sortable">
+            Reģistrēts
+            @if (sortBy() === 'created_at') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('role_name')" class="sortable">
+            Loma
+            @if (sortBy() === 'role_name') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
           <th>Darbības</th>
         </tr>
         </thead>

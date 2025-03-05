@@ -1,6 +1,6 @@
 import {Component, inject, OnInit, signal, WritableSignal} from '@angular/core';
 import {AdminUserService} from "../services/admin-user.service";
-import {catchError, EMPTY, finalize, tap} from "rxjs";
+import {catchError, distinctUntilChanged, EMPTY, finalize, Subject, tap, debounceTime} from "rxjs";
 import {ToastrService} from "ngx-toastr";
 import {RoleEnum, User} from "../../../auth/models/user.models";
 import {Router} from "@angular/router";
@@ -17,6 +17,12 @@ export class UsersComponent implements OnInit {
   protected readonly router = inject(Router);
 
   protected readonly userData: WritableSignal<User[]> = signal<User[]>([]);
+  protected readonly searchTerm: WritableSignal<string> = signal<string>('');
+  protected readonly sortBy: WritableSignal<string> = signal<string>('id');
+  protected readonly sortDir: WritableSignal<string> = signal<string>('desc');
+
+  private searchSubject = new Subject<string>();
+  private readonly debounceTime: number = 300;
 
   getRoleName(roleId: number): string {
     switch (roleId) {
@@ -32,11 +38,24 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.searchSubject.pipe(
+      debounceTime(this.debounceTime),
+      distinctUntilChanged(),
+      tap((value: string) => {
+        this.searchTerm.set(value);
+        this.getUserData();
+      })
+    ).subscribe();
+
     this.getUserData();
   }
 
   getUserData(): void {
-    this.adminService.getUsers()
+    this.adminService.getUsers({
+      search: this.searchTerm(),
+      sort_by: this.sortBy(),
+      sort_dir: this.sortDir()
+    })
       .pipe(
         tap((response) => {
           this.userData.set(response.data);
@@ -47,6 +66,22 @@ export class UsersComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  onSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchSubject.next(input.value);
+  }
+
+  onSort(field: string): void {
+    if (this.sortBy() === field) {
+      this.sortDir.set(this.sortDir() === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.sortBy.set(field);
+      this.sortDir.set('asc');
+    }
+
+    this.getUserData();
   }
 
   deleteUser(userId: number): void {
