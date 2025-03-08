@@ -11,6 +11,9 @@ import {
   CategoriesAdminFormComponent
 } from "./components/admin/categories-page/categories-admin-form/categories-admin-form.component";
 import {ProductsAdminComponent} from "./components/admin/products-page/products-admin/products-admin.component";
+import {
+  ProductsAdminFormComponent
+} from "./components/admin/products-page/products-admin-form/products-admin-form.component";
 
 export const routes: Routes = [
   {
@@ -67,6 +70,8 @@ export const routes: Routes = [
     data: { roles: [RoleEnum.ADMIN, RoleEnum.MODERATOR] },
     children: [
       { path: '', component: ProductsAdminComponent },
+      { path: 'create', component: ProductsAdminFormComponent },
+      { path: ':productId/edit', component: ProductsAdminFormComponent }
     ]
   },
 ];

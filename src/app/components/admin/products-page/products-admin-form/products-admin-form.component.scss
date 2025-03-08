@@ -1,0 +1,132 @@
+@import '../../../../../styles/abstracts/variables';
+
+.auth-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: $spacing-unit * 1.5;
+  background-color: $secondary-color;
+  overflow: auto;
+}
+
+.product-form {
+  width: 100%;
+  max-width: 800px;
+  background: $light-color;
+  padding: $spacing-unit * 2;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow-lg;
+
+  h1 {
+    color: $primary-color;
+    text-align: center;
+    margin-bottom: $spacing-unit * 1.5;
+    font-size: $h3-font-size;
+  }
+
+  .form-content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-unit;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-unit;
+
+    @media (max-width: $media-md) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-unit * 0.4;
+
+    label {
+      font-weight: 600;
+      color: $dark-color;
+      font-size: 0.875rem;
+
+      .optional {
+        font-weight: normal;
+        font-style: italic;
+        color: $dark-medium;
+      }
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: $spacing-unit * 0.75;
+      border: 1px solid rgba($dark-color, 0.1);
+      border-radius: $border-radius-sm;
+      font-size: 0.9375rem;
+      transition: $transition-fast;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-unit;
+    margin-top: $spacing-unit * 1.5;
+  }
+
+  .btn, .btn-secondary {
+    padding: $spacing-unit * 0.75 $spacing-unit * 1.5;
+    border-radius: $border-radius-sm;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    transition: $transition-normal;
+  }
+
+  .btn {
+    background-color: $primary-color;
+    color: $light-color;
+    border: none;
+
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    border: 1px solid $primary-color;
+    color: $primary-color;
+
+    &:hover {
+      background-color: rgba($primary-color, 0.1);
+    }
+  }
+}
+
+@media (max-width: $media-md) {
+  .product-form {
+    padding: $spacing-unit;
+
+    .form-actions {
+      flex-direction: column-reverse;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

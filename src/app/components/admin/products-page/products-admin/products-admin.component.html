@@ -4,20 +4,26 @@
       <h1>Produktu Pārvaldība</h1>
       <div class="actions">
         <div class="search">
-          <input type="search" placeholder="Meklēt produktu...">
+          <input
+            type="search"
+            placeholder="Meklēt produktu..."
+            [value]="searchTerm()"
+            (input)="onSearch($event)">
         </div>
         <div class="filters">
-          <select>
+          <select (change)="onCategoryChange($event)">
             <option value="">Visas kategorijas</option>
-              <option></option>
+            @for (category of categories(); track category.id) {
+              <option [value]="category.id">{{ category.name }}</option>
+            }
           </select>
-          <select>
+          <select (change)="onStatusChange($event)">
             <option value="">Visi statusi</option>
             <option value="active">Aktīvs</option>
             <option value="inactive">Neaktīvs</option>
           </select>
         </div>
-        <button class="btn-primary">+ Pievienot Produktu</button>
+        <button class="btn-primary" (click)="createOrEdit()">+ Pievienot Produktu</button>
       </div>
     </div>
 
@@ -25,47 +31,86 @@
       <table class="data-table">
         <thead>
         <tr>
-          <th>ID</th>
+          <th (click)="onSort('id')" class="sortable">
+            ID
+            @if (sortBy() === 'id') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
           <th>Galvenais attēls</th>
-          <th>Nosaukums</th>
-          <th>Kategorija</th>
-          <th>Cena</th>
-          <th>Akcijas Cena</th>
-          <th>Noliktavā</th>
-          <th>Status</th>
+          <th (click)="onSort('name')" class="sortable">
+            Nosaukums
+            @if (sortBy() === 'name') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('category_id')" class="sortable">
+            Kategorija
+            @if (sortBy() === 'category_id') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('price')" class="sortable">
+            Cena
+            @if (sortBy() === 'price') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('sale_price')" class="sortable">
+            Akcijas Cena
+            @if (sortBy() === 'sale_price') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('stock')" class="sortable">
+            Noliktavā
+            @if (sortBy() === 'stock') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('status')" class="sortable">
+            Status
+            @if (sortBy() === 'status') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
           <th>Darbības</th>
         </tr>
         </thead>
         <tbody>
-            <tr>
-              <td></td>
-              <td>
-                <img class="product-thumbnail">
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>
-                <span>
-                </span>
-              </td>
-              <td>
-                <span class="badge">
-                </span>
-              </td>
-              <td>
-                <div class="actions">
-                  <button class="btn-icon" (click)="$event.stopPropagation(); openImageModal(4)" title="Attēli">
-                    <i class="fas fa-images"></i>
-                  </button>
-                  <button class="btn-icon"
-                          title="Dzēst">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
+            @for (product of products(); track product.id) {
+              <tr (click)="createOrEdit(product.id)">
+                <td>{{ product.id }}</td>
+                <td>
+                  <img class="product-thumbnail" src="https://via.placeholder.com/50" alt="{{ product.name }}">
+                </td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.category }}</td>
+                <td>€{{ product.price.toFixed(2) }}</td>
+                <td>{{ product.sale_price ? '€' + product.sale_price.toFixed(2) : '-' }}</td>
+                <td>
+                  <span [class.stock-low]="product.stock > 0 && product.stock <= 5"
+                        [class.stock-out]="product.stock === 0">
+                    {{ product.stock }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [class]="product.status">
+                    {{ product.status === 'active' ? 'Aktīvs' : 'Neaktīvs' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="actions">
+                    <button class="btn-icon" (click)="$event.stopPropagation(); openImageModal(product.id)" title="Attēli">
+                      <i class="fas fa-images"></i>
+                    </button>
+                    <button class="btn-icon" title="Dzēst" (click)="$event.stopPropagation(); deleteProduct(product.id)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
         </tbody>
       </table>
     </div>
@@ -74,7 +119,7 @@
 
 @if (showImageModal()) {
   <app-product-images-admin
-    [productId]="4"
+    [productId]="selectedProductId()!"
     (close)="showImageModal.set(false)"
   />
 }
