@@ -5,10 +5,12 @@
   inset: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   padding: $spacing-unit * 1.5;
+  padding-top: 100px;
   background-color: $secondary-color;
-  overflow: auto;
+  overflow-y: auto;
+  z-index: 950;
 }
 
 .product-form {

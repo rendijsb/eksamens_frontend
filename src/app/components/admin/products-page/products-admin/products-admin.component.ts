@@ -146,12 +146,22 @@ export class ProductsAdminComponent implements OnInit {
       .subscribe();
   }
 
-  formatCreatedAt(createdAt: string): string {
-    return new Date(createdAt).toDateString();
-  }
-
   openImageModal(productId: number) {
     this.selectedProductId.set(productId);
     this.showImageModal.set(true);
+  }
+
+  formatPrice(price: any): string {
+    if (price === null || price === undefined) {
+      return '0.00';
+    }
+
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+
+    if (isNaN(numPrice)) {
+      return '0.00';
+    }
+
+    return numPrice.toFixed(2);
   }
 }

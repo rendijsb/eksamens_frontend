@@ -79,7 +79,7 @@ export class ProductsAdminFormComponent implements OnInit {
       .pipe(
         tap((response) => {
           this.productForm.patchValue({
-            category_id: response.data.category_id.toString(),
+            category_id: String(response.data.category_id),
             name: response.data.name,
             description: response.data.description,
             price: String(response.data.price),
@@ -90,7 +90,7 @@ export class ProductsAdminFormComponent implements OnInit {
             status: response.data.status
           });
         }),
-        catchError(() => {
+        catchError((error) => {
           this.toastr.error('Nevarēja ielādēt produktu');
           return EMPTY;
         }),

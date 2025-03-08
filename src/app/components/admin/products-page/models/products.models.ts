@@ -3,8 +3,8 @@ export interface Product {
   name: string;
   slug: string;
   description: string;
-  price: number;
-  sale_price: number | null;
+  price: number | string;
+  sale_price: number | string | null;
   stock: number;
   specifications: string | null;
   additional_info: string | null;

@@ -86,8 +86,8 @@
                 </td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.category }}</td>
-                <td>€{{ product.price.toFixed(2) }}</td>
-                <td>{{ product.sale_price ? '€' + product.sale_price.toFixed(2) : '-' }}</td>
+                <td>€{{ formatPrice(product.price) }}</td>
+                <td>{{ product.sale_price ? '€' + formatPrice(product.sale_price) : '-' }}</td>
                 <td>
                   <span [class.stock-low]="product.stock > 0 && product.stock <= 5"
                         [class.stock-out]="product.stock === 0">
