@@ -82,7 +82,7 @@
               <tr (click)="createOrEdit(product.id)">
                 <td>{{ product.id }}</td>
                 <td>
-                  <img class="product-thumbnail" src="https://via.placeholder.com/50" alt="{{ product.name }}">
+                  <img class="product-thumbnail" [src]="product.primary_image" alt="">
                 </td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.category }}</td>
@@ -120,6 +120,6 @@
 @if (showImageModal()) {
   <app-product-images-admin
     [productId]="selectedProductId()!"
-    (close)="showImageModal.set(false)"
+    (close)="modalClosed()"
   />
 }

@@ -8,41 +8,67 @@
     </div>
 
     <div class="image-upload">
-      <label class="upload-zone">
+      <label #dropZone class="upload-zone" [class.dragging]="isDragging()">
         <input
+          #fileInput
           type="file"
           multiple
           accept="image/*"
+          (change)="onFileSelected($event)"
         >
         <i class="fas fa-cloud-upload-alt"></i>
-        <span>Velciet attēlus šeit vai klikšķiniet, lai augšupielādētu</span>
+        <span>Velciet attēlus šeit vai <a (click)="onBrowseClick()">klikšķiniet, lai augšupielādētu</a></span>
+        @if (isUploading()) {
+          <div class="upload-progress">
+            <div class="spinner"></div>
+            <span>Notiek augšupielāde...</span>
+          </div>
+        }
       </label>
     </div>
 
     <div class="image-grid">
-        <div class="image-item">
-          <img>
-          <div class="image-actions">
+      @if (isLoading()) {
+        <div class="loading-indicator">
+          <div class="spinner"></div>
+          <span>Ielādē attēlus...</span>
+        </div>
+      } @else if (images().length === 0) {
+        <div class="no-images">
+          <i class="fas fa-image"></i>
+          <p>Šim produktam vēl nav pievienoti attēli</p>
+        </div>
+      } @else {
+        @for (image of images(); track image.id) {
+          <div class="image-item">
+            <img [src]="image.image_url" [alt]="'Product image ' + image.id">
+            <div class="image-actions">
+              @if (!image.is_primary) {
+                <button
+                  class="btn-icon"
+                  title="Iestatīt kā galveno attēlu"
+                  (click)="setPrimaryImage(image.id)"
+                >
+                  <i class="fas fa-star"></i>
+                </button>
+              }
+
               <button
                 class="btn-icon"
-                title="Iestatīt kā galveno attēlu"
+                title="Dzēst attēlu"
+                (click)="deleteImage(image.id)"
               >
-                <i class="fas fa-star"></i>
+                <i class="fas fa-trash"></i>
               </button>
-
-            <button
-              class="btn-icon"
-              title="Dzēst attēlu"
-            >
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
-            <div class="primary-badge">
-              Galvenais attēls
             </div>
-
-        </div>
-
+            @if (image.is_primary) {
+              <div class="primary-badge">
+                Galvenais attēls
+              </div>
+            }
+          </div>
+        }
+      }
     </div>
   </div>
 </div>

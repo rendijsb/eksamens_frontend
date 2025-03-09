@@ -10,6 +10,7 @@ export interface Product {
   additional_info: string | null;
   status: 'active' | 'inactive';
   category: string;
+  primary_image: string;
   category_id: number;
   created_at: string;
 }

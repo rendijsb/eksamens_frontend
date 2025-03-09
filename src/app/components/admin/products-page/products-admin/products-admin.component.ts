@@ -164,4 +164,9 @@ export class ProductsAdminComponent implements OnInit {
 
     return numPrice.toFixed(2);
   }
+
+  modalClosed(): void {
+    this.getProducts();
+    this.showImageModal.set(false);
+  }
 }
