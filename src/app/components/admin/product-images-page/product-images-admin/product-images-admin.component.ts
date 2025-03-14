@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, inject, input, OnInit, output, OutputEmitterRef, signal, ViewChild, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
-import { ProductImageService, ProductImage } from '../services/product-image.service';
+import { ImageService, Image } from '../../shared/services/image.service';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 
 @Component({
@@ -18,12 +18,12 @@ export class ProductImagesAdminComponent implements OnInit {
   productId = input.required<number>();
   close = output<void>();
 
-  private readonly productImageService = inject(ProductImageService);
+  private readonly productImageService = inject(ImageService);
   private readonly toastr = inject(ToastrService);
 
   protected readonly isLoading: WritableSignal<boolean> = signal(false);
   protected readonly isUploading: WritableSignal<boolean> = signal(false);
-  protected readonly images: WritableSignal<ProductImage[]> = signal<ProductImage[]>([]);
+  protected readonly images: WritableSignal<Image[]> = signal<Image[]>([]);
   protected readonly isDragging: WritableSignal<boolean> = signal(false);
 
   ngOnInit(): void {
@@ -66,7 +66,7 @@ export class ProductImagesAdminComponent implements OnInit {
 
     this.isUploading.set(true);
 
-    this.productImageService.uploadImages(this.productId(), imageFiles)
+    this.productImageService.uploadProductImages(this.productId(), imageFiles)
       .pipe(
         tap(response => {
           this.images.update(currentImages => [...currentImages, ...response.data]);

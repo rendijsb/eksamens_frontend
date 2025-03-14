@@ -1,27 +1,29 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import { Observable } from "rxjs";
 import { ApiUrlService } from "../../../../shared/services/api.service";
+import {ImageTypeEnum} from "../models/image.models";
 
-export interface ProductImage {
+export interface Image {
   id: number;
-  product_id: number;
+  related_id: number;
+  type: string;
   image_url: string;
   is_primary: boolean;
 }
 
-interface ProductImagesResponse {
-  data: ProductImage[];
+interface ImagesResponse {
+  data: Image[];
 }
 
 interface UploadImagesResponse {
   message: string;
-  data: ProductImage[];
+  data: Image[];
 }
 
 interface SetPrimaryResponse {
   message: string;
-  data: ProductImage;
+  data: Image;
 }
 
 interface DeleteImageResponse {
@@ -31,39 +33,43 @@ interface DeleteImageResponse {
 @Injectable({
   providedIn: 'root'
 })
-export class ProductImageService {
+export class ImageService {
   private readonly http = inject(HttpClient);
   private readonly apiUrlService = inject(ApiUrlService);
 
-  getProductImages(productId: number): Observable<ProductImagesResponse> {
-    return this.http.get<ProductImagesResponse>(
-      this.apiUrlService.getUrl(`api/product-images/${productId}`)
+  getProductImages(relatedId: number): Observable<ImagesResponse> {
+    const params = new HttpParams()
+      .set('type', ImageTypeEnum.PRODUCT);
+
+    return this.http.get<ImagesResponse>(
+      this.apiUrlService.getUrl(`api/images/${relatedId}`), { params }
     );
   }
 
-  uploadImages(productId: number, images: File[]): Observable<UploadImagesResponse> {
+  uploadProductImages(relatedId: number, images: File[]): Observable<UploadImagesResponse> {
     const formData = new FormData();
 
     images.forEach((image, index) => {
       formData.append(`images[${index}]`, image);
+      formData.append('type', ImageTypeEnum.PRODUCT)
     });
 
     return this.http.post<UploadImagesResponse>(
-      this.apiUrlService.getUrl(`api/product-images/upload/${productId}`),
+      this.apiUrlService.getUrl(`api/images/upload/${relatedId}`),
       formData
     );
   }
 
   setPrimaryImage(imageId: number): Observable<SetPrimaryResponse> {
     return this.http.patch<SetPrimaryResponse>(
-      this.apiUrlService.getUrl(`api/product-images/set-primary/${imageId}`),
+      this.apiUrlService.getUrl(`api/images/set-primary/${imageId}`),
       {}
     );
   }
 
   deleteImage(imageId: number): Observable<DeleteImageResponse> {
     return this.http.delete<DeleteImageResponse>(
-      this.apiUrlService.getUrl(`api/product-images/delete/${imageId}`)
+      this.apiUrlService.getUrl(`api/images/delete/${imageId}`)
     );
   }
 }
