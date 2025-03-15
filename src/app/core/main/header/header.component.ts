@@ -1,4 +1,4 @@
-import {Component, HostListener, inject, Input, input, InputSignal, OnInit, signal} from '@angular/core';
+import {Component, computed, HostListener, inject, Input, input, InputSignal, OnInit, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {Category} from "../../../components/admin/categories-page/models/categories.models";
@@ -6,6 +6,7 @@ import {PublicService} from "../../../components/main/service/public.service";
 import {ToastrService} from "ngx-toastr";
 import {Product} from "../../../components/admin/products-page/models/products.models";
 import {catchError, EMPTY, tap} from "rxjs";
+import {AuthService} from "../../../components/auth/services/auth.service";
 
 @Component({
   selector: 'app-header',
@@ -21,6 +22,7 @@ import {catchError, EMPTY, tap} from "rxjs";
 export class HeaderComponent implements OnInit {
   private readonly publicService = inject(PublicService);
   private readonly toastr = inject(ToastrService);
+  private readonly authService = inject(AuthService);
 
   protected readonly products = signal<Product[] | null>(null);
   protected readonly categories = signal<Category[] | null>(null);
@@ -31,7 +33,7 @@ export class HeaderComponent implements OnInit {
   isUserMenuOpen = signal(false);
   cartItemCount = signal(0);
   searchQuery = signal('');
-  isLoggedIn = signal(false);
+  protected isLoggedIn = computed(() => this.authService.isAuthenticated());
 
   ngOnInit(): void {
     this.fetchAllCategories();
@@ -94,7 +96,16 @@ export class HeaderComponent implements OnInit {
   }
 
   logout(): void {
-    this.isLoggedIn.set(false);
-    this.isUserMenuOpen.set(false);
+    this.authService.logout()
+      .pipe(
+        tap(() => {
+          this.isUserMenuOpen.set(false);
+        }),
+        catchError(() => {
+          this.toastr.error('Neizdevās izrakstīties');
+          return EMPTY;
+        })
+      )
+      .subscribe();
   }
 }
