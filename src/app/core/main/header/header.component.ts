@@ -1,12 +1,12 @@
-import {Component, computed, HostListener, inject, Input, input, InputSignal, OnInit, signal} from '@angular/core';
+import {Component, HostListener, inject, OnInit, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import {Category} from "../../../components/admin/categories-page/models/categories.models";
 import {PublicService} from "../../../components/main/service/public.service";
 import {ToastrService} from "ngx-toastr";
-import {Product} from "../../../components/admin/products-page/models/products.models";
 import {catchError, EMPTY, tap} from "rxjs";
 import {AuthService} from "../../../components/auth/services/auth.service";
+import {RoleEnum} from "../../../components/auth/models/user.models";
 
 @Component({
   selector: 'app-header',
@@ -23,9 +23,9 @@ export class HeaderComponent implements OnInit {
   private readonly publicService = inject(PublicService);
   private readonly toastr = inject(ToastrService);
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  protected readonly products = signal<Product[] | null>(null);
-  protected readonly categories = signal<Category[] | null>(null);
+  protected readonly categories = signal<Category[]>([]);
 
   isScrolled = signal(false);
   isMobileMenuOpen = signal(false);
@@ -33,10 +33,12 @@ export class HeaderComponent implements OnInit {
   isUserMenuOpen = signal(false);
   cartItemCount = signal(0);
   searchQuery = signal('');
-  protected isLoggedIn = computed(() => this.authService.isAuthenticated());
+  isAuthenticated = signal(false);
+  currentUser = signal<any>(null);
 
   ngOnInit(): void {
     this.fetchAllCategories();
+    this.checkAuthStatus();
   }
 
   fetchAllCategories(): void {
@@ -51,6 +53,13 @@ export class HeaderComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  checkAuthStatus(): void {
+    this.isAuthenticated.set(this.authService.isAuthenticated());
+    if (this.isAuthenticated()) {
+      this.currentUser.set(this.authService.user());
+    }
   }
 
   @HostListener('window:scroll')
@@ -91,7 +100,14 @@ export class HeaderComponent implements OnInit {
   }
 
   submitSearch(): void {
-    console.log('Search submitted:', this.searchQuery());
+    if (!this.searchQuery()) {
+      return;
+    }
+
+    this.router.navigate(['/search'], {
+      queryParams: { q: this.searchQuery() }
+    });
+
     this.isSearchOpen.set(false);
   }
 
@@ -100,6 +116,9 @@ export class HeaderComponent implements OnInit {
       .pipe(
         tap(() => {
           this.isUserMenuOpen.set(false);
+          this.isAuthenticated.set(false);
+          this.currentUser.set(null);
+          this.toastr.success('Jūs esat veiksmīgi izrakstījies');
         }),
         catchError(() => {
           this.toastr.error('Neizdevās izrakstīties');
@@ -107,5 +126,13 @@ export class HeaderComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  isAdmin(): boolean {
+    return this.currentUser()?.role === RoleEnum.ADMIN;
+  }
+
+  isModerator(): boolean {
+    return this.currentUser()?.role === RoleEnum.MODERATOR;
   }
 }
