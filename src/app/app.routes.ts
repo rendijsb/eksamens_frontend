@@ -20,6 +20,11 @@ export const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/main/home/home.component')
+          .then(m => m.HomeComponent)
+      },
     ]
   },
   {
