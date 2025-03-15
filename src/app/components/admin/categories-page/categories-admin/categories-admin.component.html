@@ -24,6 +24,7 @@
               <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
             }
           </th>
+          <th>Galvenais attēls</th>
           <th (click)="onSort('name')" class="sortable">
             Nosaukums
             @if (sortBy() === 'name') {
@@ -56,6 +57,9 @@
         @for (category of categories(); track category.id) {
             <tr (click)="createOrEdit(category.id)">
               <td>{{ category.id }}</td>
+              <td>
+                <img class="product-thumbnail" [src]="category.image" alt="">
+              </td>
               <td>{{ category.name }}</td>
               <td>{{ category.description }}</td>
               <td>{{ category.slug }}</td>

@@ -20,9 +20,52 @@
           placeholder="Ievadiet kategorijas aprakstu"></textarea>
       </div>
 
+      <div class="form-group image-upload-group">
+        <label>Kategorijas attēls <span class="required">*</span></label>
+        <input type="hidden" formControlName="image" [appValidationError]="isSubmitted()">
+
+        <div class="image-upload-container"
+             (dragover)="onDragOver($event)"
+             (dragleave)="onDragLeave($event)"
+             (drop)="onDrop($event)"
+             [class.dragging]="isDragging()"
+             [class.has-image]="imagePreview() !== null">
+
+          @if (imagePreview()) {
+            <div class="image-preview">
+              <img [src]="imagePreview()" alt="Kategorijas attēls">
+              <button type="button" class="remove-image-btn" (click)="removeImage($event)">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          }
+
+          @if (!imagePreview()) {
+            <div class="upload-placeholder">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Velciet attēlu šeit vai <span class="browse-text" (click)="triggerFileInput($event)">izvēlieties failu</span></p>
+              <span class="file-types">Atbalstītie formāti: JPG, PNG, GIF (maks. 2MB)</span>
+            </div>
+          }
+
+          <input
+            type="file"
+            #fileInput
+            class="file-input"
+            accept="image/*"
+            (change)="onFileSelected($event)">
+        </div>
+
+        @if (imageError()) {
+          <div class="image-error">
+            <p>{{ imageError() }}</p>
+          </div>
+        }
+      </div>
+
     </form>
     <div class="form-actions">
-      <button class="btn-secondary">Atcelt</button>
+      <button class="btn-secondary" (click)="onCancel()">Atcelt</button>
       <button class="btn" [appButtonLoader]="isLoading()" (click)="submit()">
         {{ isEditing() ? 'Saglabāt' : 'Izveidot' }}
       </button>

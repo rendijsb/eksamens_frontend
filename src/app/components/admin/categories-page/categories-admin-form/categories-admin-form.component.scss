@@ -70,6 +70,128 @@
     }
   }
 
+  .image-upload-group {
+    margin-top: $spacing-unit * 0.5;
+
+    .image-upload-container {
+      position: relative;
+      min-height: 180px;
+      border: 2px dashed rgba($dark-color, 0.2);
+      border-radius: $border-radius-md;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all $transition-normal;
+
+      &:hover {
+        border-color: $primary-color;
+      }
+
+      &.dragging {
+        border-color: $primary-color;
+        background-color: rgba($primary-color, 0.05);
+      }
+
+      &.has-image {
+        border-style: solid;
+        border-color: rgba($dark-color, 0.1);
+      }
+
+      .upload-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: $spacing-unit * 2;
+        text-align: center;
+        color: $dark-medium;
+        height: 100%;
+        min-height: 180px;
+
+        i {
+          font-size: $h2-font-size;
+          margin-bottom: $spacing-unit;
+          color: rgba($dark-color, 0.4);
+        }
+
+        p {
+          margin-bottom: $spacing-unit * 0.5;
+        }
+
+        .browse-text {
+          color: $primary-color;
+          font-weight: 600;
+          cursor: pointer;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .file-types {
+          font-size: $mini-font-size;
+          color: $dark-medium;
+        }
+      }
+
+      .image-preview {
+        width: 100%;
+        position: relative;
+
+        img {
+          width: 100%;
+          height: auto;
+          max-height: 300px;
+          object-fit: contain;
+          display: block;
+        }
+
+        .remove-image-btn {
+          position: absolute;
+          top: $spacing-unit * 0.5;
+          right: $spacing-unit * 0.5;
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          background-color: rgba($dark-color, 0.7);
+          color: $light-color;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: $transition-fast;
+
+          &:hover {
+            background-color: $danger-color;
+          }
+        }
+      }
+
+      .file-input {
+        position: absolute;
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        z-index: -1;
+      }
+    }
+
+    .image-error {
+      margin-top: $spacing-unit * 0.5;
+      padding: $spacing-unit * 0.5;
+      background-color: rgba($danger-color, 0.1);
+      border-left: 3px solid $danger-color;
+      color: $danger-color;
+      font-size: $small-font-size;
+      border-radius: $border-radius-sm;
+
+      p {
+        margin: 0;
+      }
+    }
+  }
+
   .form-actions {
     display: flex;
     justify-content: flex-end;

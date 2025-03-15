@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {CategoriesResponse, CreateCategoriesRequest, SingleCategoriesResponse} from "../models/categories.models";
+import {CategoriesResponse, SingleCategoriesResponse} from "../models/categories.models";
 import {ApiUrlService} from "../../../../shared/services/api.service";
 
 interface EmptyResponse {}
@@ -13,7 +13,7 @@ export class AdminCategoryService {
   private readonly http = inject(HttpClient);
   private readonly apiUrlService = inject(ApiUrlService);
 
-  createCategory(data: CreateCategoriesRequest): Observable<SingleCategoriesResponse> {
+  createCategory(data: FormData): Observable<SingleCategoriesResponse> {
     return this.http.post(this.apiUrlService.getUrl('api/categories/create'), data) as Observable<SingleCategoriesResponse>;
   }
 
@@ -36,8 +36,8 @@ export class AdminCategoryService {
     return this.http.get(this.apiUrlService.getUrl(`api/categories/${categoryId}`)) as Observable<SingleCategoriesResponse>;
   }
 
-  editCategory(categoryId: number, data: CreateCategoriesRequest): Observable<SingleCategoriesResponse> {
-    return this.http.patch(this.apiUrlService.getUrl(`api/categories/edit/${categoryId}`), data) as Observable<SingleCategoriesResponse>;
+  editCategory(categoryId: number, data: FormData): Observable<SingleCategoriesResponse> {
+    return this.http.post(this.apiUrlService.getUrl(`api/categories/edit/${categoryId}`), data) as Observable<SingleCategoriesResponse>;
   }
 
   deleteCategory(categoryId: number): Observable<EmptyResponse> {
