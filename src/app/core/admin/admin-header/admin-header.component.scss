@@ -1,0 +1,234 @@
+@import '../../../../styles/abstracts/variables';
+
+.admin-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background-color: $primary-color;
+  box-shadow: $box-shadow-md;
+  z-index: 1000;
+  color: $light-color;
+}
+
+.container {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+  height: 100%;
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+
+  a {
+    text-decoration: none;
+  }
+
+  .logo-text {
+    font-size: $h4-font-size;
+    font-weight: 700;
+    color: $light-color;
+  }
+}
+
+.nav-items {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: $media-lg) {
+    display: none;
+  }
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  gap: $spacing-md;
+
+  li {
+    a {
+      color: rgba($light-color, 0.9);
+      text-decoration: none;
+      font-weight: 500;
+      padding: $spacing-sm $spacing-md;
+      border-radius: $border-radius-sm;
+      transition: $transition-fast;
+
+      &:hover {
+        color: $light-color;
+        background-color: rgba($light-color, 0.1);
+      }
+
+      &.active {
+        color: $light-color;
+        background-color: rgba($light-color, 0.2);
+      }
+    }
+  }
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.view-site-btn {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-md;
+  background-color: $light-color;
+  color: $primary-color;
+  border-radius: $border-radius-md;
+  text-decoration: none;
+  font-weight: 600;
+  transition: $transition-fast;
+
+  &:hover {
+    background-color: darken($light-color, 5%);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: $media-md) {
+    display: none;
+  }
+}
+
+.auth-btn {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-md;
+  border: 1px solid rgba($light-color, 0.3);
+  border-radius: $border-radius-md;
+  color: $light-color;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-fast;
+
+  &:hover {
+    background-color: rgba($light-color, 0.1);
+  }
+
+  @media (max-width: $media-md) {
+    display: none;
+  }
+}
+
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: $light-color;
+  font-size: $h4-font-size;
+  cursor: pointer;
+
+  @media (max-width: $media-lg) {
+    display: block;
+  }
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 280px;
+  height: 100vh;
+  background-color: $light-color;
+  box-shadow: $box-shadow-lg;
+  z-index: 1010;
+  transition: right $transition-normal;
+  overflow-y: auto;
+
+  &.open {
+    right: 0;
+  }
+
+  .mobile-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-lg;
+    border-bottom: 1px solid rgba($dark-color, 0.1);
+    color: $dark-color;
+    font-weight: 600;
+
+    .mobile-menu-close {
+      background: none;
+      border: none;
+      color: $dark-color;
+      font-size: $h5-font-size;
+      cursor: pointer;
+
+      &:hover {
+        color: $primary-color;
+      }
+    }
+  }
+
+  .mobile-nav-list {
+    list-style: none;
+    padding: $spacing-md 0;
+
+    li {
+      a {
+        display: block;
+        padding: $spacing-md $spacing-lg;
+        color: $dark-color;
+        text-decoration: none;
+        transition: $transition-fast;
+
+        &:hover {
+          background-color: rgba($primary-color, 0.1);
+          color: $primary-color;
+        }
+
+        &.active {
+          background-color: rgba($primary-color, 0.1);
+          color: $primary-color;
+          border-left: 4px solid $primary-color;
+        }
+      }
+
+      .logout-link {
+        color: $danger-color;
+
+        &:hover {
+          background-color: rgba($danger-color, 0.1);
+          color: $danger-color;
+        }
+      }
+    }
+  }
+}
+
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba($dark-color, 0.5);
+  z-index: 1005;
+  opacity: 0;
+  visibility: hidden;
+  transition: all $transition-normal;
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}

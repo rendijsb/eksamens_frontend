@@ -1,32 +1,92 @@
-<header class="main-header">
-  <div class="container">
-    <nav class="main-nav">
-      <div class="logo">
-        <a href="/">
-          <span></span>
-        </a>
-      </div>
+<header class="shop-header" [class.scrolled]="isScrolled()">
+  <div class="header-container">
+    <a routerLink="/" class="logo">
+      <span class="logo-text">E-Shop</span>
+    </a>
 
-      <div class="nav-items">
-        <ul class="nav-list">
-          <li><a href="/" class="active">Sākums</a></li>
-        </ul>
-      </div>
+    <nav class="main-nav" [class.mobile-open]="isMobileMenuOpen()">
+      <ul class="nav-list">
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Sākums</a></li>
+        <li><a routerLink="/products" routerLinkActive="active">Visi Produkti</a></li>
+        <li class="has-dropdown">
+          <a routerLink="/categories" routerLinkActive="active">Kategorijas</a>
+          <ul class="dropdown-menu">
+            @for (category of categories(); track category.id) {
+              <li><a [routerLink]="['/category', category.slug]">{{ category.name }}</a></li>
+            }
+          </ul>
+        </li>
+        <li><a routerLink="/sale" routerLinkActive="active">Izpārdošana</a></li>
+        <li><a routerLink="/about" routerLinkActive="active">Par mums</a></li>
+        <li><a routerLink="/contact" routerLinkActive="active">Kontakti</a></li>
+      </ul>
 
-      <div class="nav-actions">
-        @if (this.isLoggedIn()) {
-          <a href="/profile" class="auth-btn profile">Profils</a>
-          <a (click)="logout()" class="auth-btn logout">Izlogoties</a>
-        } @else {
-          <a href="/login" class="auth-btn login">Ielogoties</a>
-          <a href="/register" class="auth-btn signup">Reģistrēties</a>
-        }
-        <a class="mobile-menu-btn">
-          <span></span>
-          <span></span>
-          <span></span>
-        </a>
-      </div>
+      <button class="mobile-close-btn" (click)="toggleMobileMenu()">
+        <i class="fas fa-times"></i>
+      </button>
     </nav>
+
+    <div class="header-actions">
+      <div class="search-container" [class.open]="isSearchOpen()">
+        <button class="action-btn search-toggle" (click)="toggleSearch()" title="Search">
+          <i class="fas fa-search"></i>
+        </button>
+        <div class="search-form">
+          <input
+            type="text"
+            placeholder="Search products..."
+            [value]="searchQuery()"
+            (input)="updateSearchQuery($event)"
+            (keyup.enter)="submitSearch()">
+          <button class="search-submit" (click)="submitSearch()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="user-container" [class.open]="isUserMenuOpen()">
+        <button class="action-btn user-toggle" (click)="toggleUserMenu()" title="Account">
+          <i class="fas fa-user"></i>
+        </button>
+        <div class="user-menu">
+          @if (isLoggedIn()) {
+            <div class="user-menu-header">
+              <span>My Account</span>
+            </div>
+            <ul>
+              <li><a routerLink="/profile">Profils</a></li>
+              <li><a routerLink="/orders">Sūtijumi</a></li>
+              <li><a routerLink="/wishlist">Vēlmju saraksts</a></li>
+              <li><button class="logout-btn" (click)="logout()">Izlogoties</button></li>
+            </ul>
+          } @else {
+            <div class="user-menu-header">
+              <span>Account</span>
+            </div>
+            <div class="auth-buttons">
+              <a routerLink="/login" class="btn-login">Ielogoties</a>
+              <a routerLink="/register" class="btn-register">Reğistrēties</a>
+            </div>
+          }
+        </div>
+      </div>
+
+      <a routerLink="/cart" class="action-btn cart-toggle" title="Cart">
+        <i class="fas fa-shopping-cart"></i>
+        @if (cartItemCount() > 0) {
+          <span class="cart-count">{{ cartItemCount() }}</span>
+        }
+      </a>
+
+      <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
   </div>
 </header>
+
+<div
+  class="menu-overlay"
+  [class.active]="isMobileMenuOpen() || isSearchOpen() || isUserMenuOpen()"
+  (click)="isMobileMenuOpen.set(false); isSearchOpen.set(false); isUserMenuOpen.set(false)">
+</div>

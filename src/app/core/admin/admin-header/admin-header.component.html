@@ -1,31 +1,58 @@
-<header class="main-header">
+<header class="admin-header">
   <div class="container">
     <nav class="main-nav">
       <div class="logo">
-        <a href="/">
-          <span></span>
+        <a href="/admin/dashboard">
+          <span class="logo-text">Admin Panel</span>
         </a>
       </div>
 
       <div class="nav-items">
         <ul class="nav-list">
-          <li><a href="/admin/dashboard" class="active">Dashboards</a></li>
+          <li><a href="/admin/dashboard" routerLinkActive="active">Dashboards</a></li>
           @if (isAdmin()) {
-            <li><a href="/admin/users" class="active">Lietotāji</a></li>
+            <li><a href="/admin/users" routerLinkActive="active">Lietotāji</a></li>
           }
-          <li><a href="/admin/categories" class="active">Kategorijas</a></li>
-          <li><a href="/admin/products" class="active">Produkti</a></li>
+          <li><a href="/admin/categories" routerLinkActive="active">Kategorijas</a></li>
+          <li><a href="/admin/products" routerLinkActive="active">Produkti</a></li>
         </ul>
       </div>
 
       <div class="nav-actions">
-        <a (click)="logout()" class="auth-btn logout">Izlogoties</a>
-        <a class="mobile-menu-btn">
-          <span></span>
-          <span></span>
-          <span></span>
+        <a href="/" class="view-site-btn" target="_blank">
+          <i class="fas fa-external-link-alt"></i> Skatīt lapu
         </a>
+
+        <a (click)="logout()" class="auth-btn logout">
+          <i class="fas fa-sign-out-alt"></i> Izlogoties
+        </a>
+
+        <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+          <i class="fas fa-bars"></i>
+        </button>
       </div>
     </nav>
   </div>
+
+  <div class="mobile-menu" [class.open]="isMobileMenuOpen">
+    <div class="mobile-menu-header">
+      <span>Admin Menu</span>
+      <button class="mobile-menu-close" (click)="toggleMobileMenu()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <ul class="mobile-nav-list">
+      <li><a href="/admin/dashboard" routerLinkActive="active">Dashboards</a></li>
+      @if (isAdmin()) {
+        <li><a href="/admin/users" routerLinkActive="active">Lietotāji</a></li>
+      }
+      <li><a href="/admin/categories" routerLinkActive="active">Kategorijas</a></li>
+      <li><a href="/admin/products" routerLinkActive="active">Produkti</a></li>
+      <li><a href="/" target="_blank">Skatīt lapu</a></li>
+      <li><a (click)="logout()" class="logout-link">Izlogoties</a></li>
+    </ul>
+  </div>
+
+  <div class="menu-overlay" [class.active]="isMobileMenuOpen" (click)="toggleMobileMenu()"></div>
 </header>
