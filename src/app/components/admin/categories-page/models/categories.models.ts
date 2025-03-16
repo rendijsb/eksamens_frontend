@@ -1,3 +1,5 @@
+import {PaginationMeta} from "../../../../shared/models/pagination.models";
+
 export interface Category {
   id: number;
   name: string;
@@ -15,6 +17,7 @@ export interface SingleCategoriesResponse {
 
 export interface CategoriesResponse {
   data: Category[];
+  meta: PaginationMeta;
 }
 
 export interface CreateCategoriesRequest {

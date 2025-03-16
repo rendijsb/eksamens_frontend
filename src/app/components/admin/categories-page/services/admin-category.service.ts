@@ -17,8 +17,18 @@ export class AdminCategoryService {
     return this.http.post(this.apiUrlService.getUrl('api/categories/create'), data) as Observable<SingleCategoriesResponse>;
   }
 
-  getCategories(params?: { search?: string, sort_by?: string, sort_dir?: string }): Observable<CategoriesResponse> {
+  getCategories(params?: {
+    page?: number,
+    search?: string,
+    sort_by?: string,
+    sort_dir?: string
+  }
+  ): Observable<CategoriesResponse> {
     let queryParams = new HttpParams();
+
+    if (params?.page) {
+      queryParams = queryParams.append('page', params.page.toString());
+    }
 
     if (params?.search) {
       queryParams = queryParams.append('search', params.search);

@@ -6,6 +6,7 @@ import { catchError, EMPTY, finalize, tap, Subject, debounceTime, distinctUntilC
 import { ToastrService } from "ngx-toastr";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import {PaginationMeta} from "../../../../shared/models/pagination.models";
 
 @Component({
   selector: 'app-categories-admin',
@@ -22,6 +23,8 @@ export class CategoriesAdminComponent implements OnInit {
   protected readonly searchTerm: WritableSignal<string> = signal<string>('');
   protected readonly sortBy: WritableSignal<string> = signal<string>('id');
   protected readonly sortDir: WritableSignal<string> = signal<string>('desc');
+  protected readonly pagination = signal<PaginationMeta | null>(null);
+  protected readonly currentPage = signal<number>(1);
 
   private searchSubject = new Subject<string>();
   private readonly debounceTime: number = 300;
@@ -49,6 +52,7 @@ export class CategoriesAdminComponent implements OnInit {
 
   getCategories(): void {
     this.adminCategoryService.getCategories({
+      page: this.currentPage(),
       search: this.searchTerm(),
       sort_by: this.sortBy(),
       sort_dir: this.sortDir()
@@ -56,6 +60,7 @@ export class CategoriesAdminComponent implements OnInit {
       .pipe(
         tap((response: CategoriesResponse): void => {
           this.categories.set(response.data);
+          this.pagination.set(response.meta);
         }),
         catchError(() => {
           this.toastr.error('Nevarēja ielādēt kategorijas');
@@ -99,5 +104,40 @@ export class CategoriesAdminComponent implements OnInit {
 
   formatCreatedAt(createdAt: string): string {
     return new Date(createdAt).toDateString();
+  }
+
+
+  getDisplayRange(): { start: number, end: number, total: number } {
+    if (!this.pagination()) {
+      return { start: 0, end: 0, total: 0 };
+    }
+
+    const paginationData = this.pagination()!;
+    const start = (this.currentPage() - 1) * paginationData.per_page + 1;
+    const end = Math.min(this.currentPage() * paginationData.per_page, paginationData.total);
+
+    return { start, end, total: paginationData.total };
+  }
+
+  getPageNumbers(): number[] {
+    if (!this.pagination()) return [];
+
+    const totalPages = this.pagination()!.last_page;
+    const currentPage = this.currentPage();
+
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+
+    return Array.from({length: endPage - startPage + 1}, (_, i) => startPage + i);
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage.set(page);
+    this.getCategories();
   }
 }

@@ -3,9 +3,11 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {User} from "../../../auth/models/user.models";
 import {ApiUrlService} from "../../../../shared/services/api.service";
+import {PaginationMeta} from "../../../../shared/models/pagination.models";
 
 interface UsersResponse {
   data: User[];
+  meta: PaginationMeta;
 }
 
 interface SingleUsersResponse {
@@ -21,8 +23,17 @@ export class AdminUserService {
   private readonly http = inject(HttpClient);
   private readonly apiUrlService = inject(ApiUrlService);
 
-  getUsers(params?: { search?: string, sort_by?: string, sort_dir?: string }): Observable<UsersResponse> {
+  getUsers(params?: {
+    page?: number,
+    search?: string,
+    sort_by?: string,
+    sort_dir?: string
+  }): Observable<UsersResponse> {
     let queryParams = new HttpParams();
+
+    if (params?.page) {
+      queryParams = queryParams.append('page', params.page.toString());
+    }
 
     if (params?.search) {
       queryParams = queryParams.append('search', params.search);
