@@ -1,0 +1,115 @@
+<div class="auth-container">
+  <div class="banner-form">
+    <h1>{{ isEditing() ? 'Rediģēt Baneri' : 'Pievienot Baneri' }}</h1>
+    <form class="form-content" [formGroup]="bannerForm">
+      <div class="form-group">
+        <label>Virsraksts</label>
+        <input
+          type="text"
+          formControlName="title"
+          [appValidationError]="isSubmitted()"
+          placeholder="Ievadiet banera virsrakstu">
+      </div>
+
+      <div class="form-group">
+        <label>Apakšvirsraksts</label>
+        <textarea
+          formControlName="subtitle"
+          [appValidationError]="isSubmitted()"
+          rows="2"
+          placeholder="Ievadiet banera apakšvirsrakstu"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Pogas teksts</label>
+          <input
+            type="text"
+            formControlName="button_text"
+            [appValidationError]="isSubmitted()"
+            placeholder="Ievadiet pogas tekstu">
+        </div>
+
+        <div class="form-group">
+          <label>Pogas saite</label>
+          <input
+            type="text"
+            formControlName="button_link"
+            [appValidationError]="isSubmitted()"
+            placeholder="Ievadiet pogas URL">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Kārtošanas secība</label>
+          <input
+            type="number"
+            formControlName="sort_order"
+            [appValidationError]="isSubmitted()"
+            placeholder="Ievadiet kārtošanas secību">
+        </div>
+
+        <div class="form-group">
+          <label>Statuss</label>
+          <select
+            formControlName="is_active"
+            [appValidationError]="isSubmitted()">
+            <option [ngValue]="true">Aktīvs</option>
+            <option [ngValue]="false">Neaktīvs</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group image-upload-group">
+        <label>Banera attēls <span class="required">*</span></label>
+        <input type="hidden" formControlName="image" [appValidationError]="isSubmitted()">
+
+        <div class="image-upload-container"
+             (dragover)="onDragOver($event)"
+             (dragleave)="onDragLeave($event)"
+             (drop)="onDrop($event)"
+             [class.dragging]="isDragging()"
+             [class.has-image]="imagePreview() !== null">
+
+          @if (imagePreview()) {
+            <div class="image-preview">
+              <img [src]="imagePreview()" alt="Banera attēls">
+              <button type="button" class="remove-image-btn" (click)="removeImage($event)">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          }
+
+          @if (!imagePreview()) {
+            <div class="upload-placeholder">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Velciet attēlu šeit vai <span class="browse-text" (click)="triggerFileInput($event)">izvēlieties failu</span></p>
+              <span class="file-types">Atbalstītie formāti: JPG, PNG, GIF (maks. 2MB)</span>
+            </div>
+          }
+
+          <input
+            type="file"
+            #fileInput
+            class="file-input"
+            accept="image/*"
+            (change)="onFileSelected($event)">
+        </div>
+
+        @if (imageError()) {
+          <div class="image-error">
+            <p>{{ imageError() }}</p>
+          </div>
+        }
+      </div>
+
+    </form>
+    <div class="form-actions">
+      <button class="btn-secondary" (click)="onCancel()">Atcelt</button>
+      <button class="btn" [appButtonLoader]="isLoading()" (click)="submit()">
+        {{ isEditing() ? 'Saglabāt' : 'Izveidot' }}
+      </button>
+    </div>
+  </div>
+</div>

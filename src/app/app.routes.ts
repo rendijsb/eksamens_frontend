@@ -14,6 +14,8 @@ import {ProductsAdminComponent} from "./components/admin/products-page/products-
 import {
   ProductsAdminFormComponent
 } from "./components/admin/products-page/products-admin-form/products-admin-form.component";
+import {BannersAdminComponent} from "./components/admin/banners-page/banners-admin/banners-admin.component";
+import {BannerFormComponent} from "./components/admin/banners-page/banner-form/banner-form.component";
 
 export const routes: Routes = [
   {
@@ -77,6 +79,17 @@ export const routes: Routes = [
       { path: '', component: ProductsAdminComponent },
       { path: 'create', component: ProductsAdminFormComponent },
       { path: ':productId/edit', component: ProductsAdminFormComponent }
+    ]
+  },
+  {
+    path: 'admin/banners',
+    component: AdminLayoutComponent,
+    canActivate: [authGuard],
+    data: { roles: [RoleEnum.ADMIN, RoleEnum.MODERATOR] },
+    children: [
+      { path: '', component: BannersAdminComponent },
+      { path: 'create', component: BannerFormComponent },
+      { path: ':bannerId/edit', component: BannerFormComponent }
     ]
   },
 ];

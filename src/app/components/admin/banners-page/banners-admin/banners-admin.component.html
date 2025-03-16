@@ -1,0 +1,90 @@
+<div class="container">
+  <div class="dashboard">
+    <div class="dashboard-header">
+      <h1>Baneru Pārvaldība</h1>
+      <div class="actions">
+        <div class="search">
+          <input
+            type="search"
+            placeholder="Meklēt baneri..."
+            [value]="searchTerm()"
+            (input)="onSearch($event)">
+        </div>
+        <div class="filters">
+          <select (change)="onStatusChange($event)">
+            <option value="">Visi statusi</option>
+            <option value="active">Aktīvi</option>
+            <option value="inactive">Neaktīvi</option>
+          </select>
+        </div>
+        <button class="btn-primary" (click)="createOrEdit()">+ Pievienot Baneri</button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+        <tr>
+          <th (click)="onSort('id')" class="sortable">
+            ID
+            @if (sortBy() === 'id') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th>Attēls</th>
+          <th (click)="onSort('title')" class="sortable">
+            Virsraksts
+            @if (sortBy() === 'title') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('sort_order')" class="sortable">
+            Kārtošanas secība
+            @if (sortBy() === 'sort_order') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('is_active')" class="sortable">
+            Statuss
+            @if (sortBy() === 'is_active') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('created_at')" class="sortable">
+            Izveidots
+            @if (sortBy() === 'created_at') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th>Darbības</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (banner of banners(); track banner.id) {
+            <tr (click)="createOrEdit(banner.id)">
+              <td>{{ banner.id }}</td>
+              <td>
+                <img class="product-thumbnail" [src]="banner.image_link" alt="">
+              </td>
+              <td>{{ banner.title }}</td>
+              <td>{{ banner.sort_order }}</td>
+              <td>
+                <span class="badge" [class]="banner.is_active ? 'active' : 'inactive'">
+                  {{ getStatusLabel(banner.is_active) }}
+                </span>
+              </td>
+              <td>{{ formatCreatedAt(banner.created_at) }}</td>
+              <td>
+                <div class="actions">
+                  <button class="btn-icon" (click)="$event.stopPropagation(); deleteBanner(banner.id)" title="Dzēst">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
