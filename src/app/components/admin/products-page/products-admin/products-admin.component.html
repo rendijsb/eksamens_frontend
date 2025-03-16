@@ -120,6 +120,40 @@
             }
         </tbody>
       </table>
+
+      @if (pagination()) {
+        <div class="pagination-controls">
+          <div class="pagination-info">
+            Rādīts {{ getDisplayRange().start }} līdz {{ getDisplayRange().end }} no {{ getDisplayRange().total }} ierakstiem
+          </div>
+
+          <div class="pagination-buttons">
+            <button
+              [disabled]="currentPage() === 1"
+              (click)="onPageChange(currentPage() - 1)"
+              class="pagination-btn">
+              <i class="fas fa-chevron-left"></i> Iepriekšējā
+            </button>
+
+            @for (page of getPageNumbers(); track page) {
+              <button
+                class="pagination-btn"
+                [class.active]="currentPage() === page"
+                (click)="onPageChange(page)">
+                {{ page }}
+              </button>
+            }
+
+            <button
+              [disabled]="currentPage() === pagination()?.last_page"
+              (click)="onPageChange(currentPage() + 1)"
+              class="pagination-btn">
+              Nākamā <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      }
+
     </div>
   </div>
 </div>

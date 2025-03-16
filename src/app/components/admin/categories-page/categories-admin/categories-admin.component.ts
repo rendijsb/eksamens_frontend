@@ -106,7 +106,6 @@ export class CategoriesAdminComponent implements OnInit {
     return new Date(createdAt).toDateString();
   }
 
-
   getDisplayRange(): { start: number, end: number, total: number } {
     if (!this.pagination()) {
       return { start: 0, end: 0, total: 0 };

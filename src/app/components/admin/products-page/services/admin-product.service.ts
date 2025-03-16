@@ -18,6 +18,7 @@ export class AdminProductService {
   }
 
   getProducts(params?: {
+    page?: number,
     search: string;
     sort_by: string;
     sort_dir: string;
@@ -25,6 +26,10 @@ export class AdminProductService {
     status: "active" | "inactive" | null
   }): Observable<ProductsResponse> {
     let queryParams = new HttpParams();
+
+    if (params?.page) {
+      queryParams = queryParams.append('page', params.page.toString());
+    }
 
     if (params?.search) {
       queryParams = queryParams.append('search', params.search);

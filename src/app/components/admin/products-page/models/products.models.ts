@@ -1,3 +1,5 @@
+import {PaginationMeta} from "../../../../shared/models/pagination.models";
+
 export interface Product {
   id: number;
   name: string;
@@ -24,6 +26,7 @@ export interface SingleProductResponse {
 
 export interface ProductsResponse {
   data: Product[];
+  meta: PaginationMeta;
 }
 
 export interface CreateProductRequest {

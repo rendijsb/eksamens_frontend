@@ -1,3 +1,5 @@
+import {PaginationMeta} from "../../../../shared/models/pagination.models";
+
 export interface Banner {
   id: number;
   title: string;
@@ -15,4 +17,5 @@ export interface SingleBannerResponse {
 
 export interface BannersResponse {
   data: Banner[];
+  meta: PaginationMeta;
 }

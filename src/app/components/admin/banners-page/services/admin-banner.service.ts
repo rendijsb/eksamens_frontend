@@ -17,8 +17,12 @@ export class AdminBannerService {
     return this.http.post(this.apiUrlService.getUrl('api/banners/create'), data) as Observable<SingleBannerResponse>;
   }
 
-  getBanners(params?: { search?: string, sort_by?: string, sort_dir?: string, status?: boolean|string }): Observable<BannersResponse> {
+  getBanners(params?: { page?: number, search?: string, sort_by?: string, sort_dir?: string, status?: boolean|string }): Observable<BannersResponse> {
     let queryParams = new HttpParams();
+
+    if (params?.page) {
+      queryParams = queryParams.append('page', params.page.toString());
+    }
 
     if (params?.search) {
       queryParams = queryParams.append('search', params.search);
