@@ -54,6 +54,33 @@
             [appValidationError]="isSubmitted()"
             placeholder="0.00">
         </div>
+
+        @if (productForm.get('sale_price')?.value) {
+        <div class="form-group">
+          <label>Izpārdošanas ilgums <span class="optional">- neobligāti</span></label>
+          <select formControlName="sale_duration" (change)="updateSaleEndDate()">
+            <option value="">Nav beigu datums</option>
+            <option value="1">1 diena</option>
+            <option value="3">3 dienas</option>
+            <option value="7">1 nedēļa</option>
+            <option value="14">2 nedēļas</option>
+            <option value="30">1 mēnesis</option>
+            <option value="custom">Cits datums</option>
+          </select>
+        </div>
+        }
+
+        @if (showCustomDate()) {
+          <div class="form-group">
+            <label>Beiga Datums</label>
+            <input
+              type="date"
+              formControlName="sale_ends_at_custom"
+              [min]="minSaleEndDate"
+              [appValidationError]="isSubmitted()"
+              (change)="updateSaleEndDateFromCustom()">
+          </div>
+        }
       </div>
 
       <div class="form-row">

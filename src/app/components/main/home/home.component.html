@@ -97,7 +97,7 @@
             <span class="product-category">{{ product.category }}</span>
             <h3 class="product-name">{{ product.name }}</h3>
             <div class="product-price">
-              @if (product.sale_price) {
+              @if (product.is_sale_active) {
                 <span class="price sale">€{{ product.sale_price }}</span>
                 <span class="price original">€{{ product.price }}</span>
               } @else {

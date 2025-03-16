@@ -35,6 +35,8 @@ export class ProductsAdminFormComponent implements OnInit {
   protected readonly isSubmitted: WritableSignal<boolean> = signal(false);
   protected readonly isEditing: WritableSignal<boolean> = signal<boolean>(false);
   protected readonly categories: WritableSignal<Category[]> = signal<Category[]>([]);
+  showCustomDate = signal(false);
+  minSaleEndDate = signal(new Date().toISOString().split('T')[0]);
 
   protected readonly productForm = this.fb.group({
     category_id: ['', Validators.required],
@@ -45,7 +47,10 @@ export class ProductsAdminFormComponent implements OnInit {
     stock: ['', [Validators.required, Validators.min(0)]],
     specifications: [''],
     additional_info: [''],
-    status: ['inactive', Validators.required]
+    status: ['inactive', Validators.required],
+    sale_duration: [''],
+    sale_ends_at_custom: [''],
+    sale_ends_at: ['']
   });
 
   ngOnInit(): void {
@@ -83,12 +88,29 @@ export class ProductsAdminFormComponent implements OnInit {
             name: response.data.name,
             description: response.data.description,
             price: String(response.data.price),
-            sale_price: String(response.data.sale_price),
+            sale_price: response.data.sale_price ? String(response.data.sale_price) : '',
             stock: String(response.data.stock),
             specifications: response.data.specifications,
             additional_info: response.data.additional_info,
-            status: response.data.status
+            status: response.data.status,
+            sale_ends_at: response.data.sale_ends_at ? response.data.sale_ends_at.split('T')[0] : null
           });
+
+          if (response.data.sale_price && response.data.sale_ends_at) {
+            this.productForm.patchValue({
+              sale_ends_at: response.data.sale_ends_at.split('T')[0],
+              sale_ends_at_custom: response.data.sale_ends_at.split('T')[0],
+              sale_duration: 'custom'
+            });
+            this.showCustomDate.set(true);
+          } else {
+            this.productForm.patchValue({
+              sale_ends_at: null,
+              sale_ends_at_custom: '',
+              sale_duration: ''
+            });
+            this.showCustomDate.set(false);
+          }
         }),
         catchError((error) => {
           this.toastr.error('Nevarēja ielādēt produktu');
@@ -148,7 +170,7 @@ export class ProductsAdminFormComponent implements OnInit {
         }),
         catchError((error: any) => {
           if (error.status === 422 && error.error?.message) {
-            this.toastr.error(error.error.message);
+            this.toastr.error('Beigu datumam jabūt nākotnē');
           } else {
             this.toastr.error('Neizdevās rediģēt produktu');
           }
@@ -173,7 +195,41 @@ export class ProductsAdminFormComponent implements OnInit {
       stock: parseInt(this.productForm.get('stock')?.value || '0'),
       specifications: this.productForm.get('specifications')?.value || undefined,
       additional_info: this.productForm.get('additional_info')?.value || undefined,
-      status: (this.productForm.get('status')?.value || 'inactive') as 'active' | 'inactive'
+      status: (this.productForm.get('status')?.value || 'inactive') as 'active' | 'inactive',
+      sale_ends_at: this.productForm.get('sale_ends_at')?.value || undefined,
     };
+  }
+
+  updateSaleEndDate(): void {
+    const duration = this.productForm.get('sale_duration')?.value;
+
+    if (duration === 'custom') {
+      this.showCustomDate.set(true);
+      this.productForm.get('sale_ends_at_custom')?.setValidators(Validators.required);
+      return;
+    }
+
+    this.showCustomDate.set(false);
+    this.productForm.get('sale_ends_at_custom')?.clearValidators();
+
+    if (!duration) {
+      this.productForm.get('sale_ends_at')?.setValue(null);
+      return;
+    }
+
+    const days = parseInt(duration);
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + days);
+
+    this.productForm.get('sale_ends_at')?.setValue(
+      endDate.toISOString().split('T')[0]
+    );
+  }
+
+  updateSaleEndDateFromCustom(): void {
+    const customDate = this.productForm.get('sale_ends_at_custom')?.value;
+    if (customDate) {
+      this.productForm.get('sale_ends_at')?.setValue(customDate);
+    }
   }
 }

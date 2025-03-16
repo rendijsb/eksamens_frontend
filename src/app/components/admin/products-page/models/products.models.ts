@@ -5,6 +5,7 @@ export interface Product {
   description: string;
   price: number | string;
   sale_price: number | string | null;
+  sale_ends_at: string | null;
   stock: number;
   specifications: string | null;
   additional_info: string | null;
@@ -12,6 +13,7 @@ export interface Product {
   sold: number;
   category: string;
   primary_image: string;
+  is_sale_active: boolean;
   category_id: number;
   created_at: string;
 }
@@ -30,6 +32,7 @@ export interface CreateProductRequest {
   description: string;
   price: number;
   sale_price?: number;
+  sale_ends_at?: string;
   stock: number;
   specifications?: string;
   additional_info?: string;
