@@ -6,15 +6,7 @@ import {Category} from "../../admin/categories-page/models/categories.models";
 import {PublicService} from "../service/public.service";
 import {ToastrService} from "ngx-toastr";
 import {catchError, EMPTY, tap} from "rxjs";
-
-interface BannerType {
-  id: number,
-  title: string,
-  subtitle: string,
-  buttonText: string,
-  buttonLink: string,
-  image: string
-}
+import {Banner} from "../../admin/banners-page/models/banner.models";
 
 @Component({
   selector: 'app-home',
@@ -33,7 +25,7 @@ export class HomeComponent implements OnInit {
   protected readonly featuredProducts: WritableSignal<Product[] | null> = signal<Product[] | null>(null);
   protected readonly categories: WritableSignal<Category[] | null> = signal<Category[] | null>(null);
 
-  bannerSlides: WritableSignal<BannerType[]> = signal([]);
+  bannerSlides: WritableSignal<Banner[]> = signal([]);
 
   currentSlideIndex = signal(0);
   emailInput = signal('');
@@ -41,6 +33,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.fetchAllProducts();
     this.fetchAllCategories();
+    this.fetchAllBanners();
   }
 
   fetchAllCategories(): void {
@@ -65,6 +58,20 @@ export class HomeComponent implements OnInit {
         }),
         catchError(() => {
           this.toastr.error('Neizdevās atrast produktus')
+          return EMPTY;
+        })
+      )
+      .subscribe();
+  }
+
+  fetchAllBanners(): void {
+    this.publicService.getBanners()
+      .pipe(
+        tap((response) => {
+          this.bannerSlides.set(response.data)
+        }),
+        catchError(() => {
+          this.toastr.error('Neizdevās atrast bannerus')
           return EMPTY;
         })
       )

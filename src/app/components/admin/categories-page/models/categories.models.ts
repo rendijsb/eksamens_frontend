@@ -6,6 +6,7 @@ export interface Category {
   description: string;
   created_at: string;
   products_count: number;
+  active_products_count: number;
 }
 
 export interface SingleCategoriesResponse {

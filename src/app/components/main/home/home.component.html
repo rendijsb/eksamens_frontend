@@ -7,10 +7,15 @@
             <div class="banner-content">
               <h1 class="banner-title">{{ slide.title }}</h1>
               <p class="banner-subtitle">{{ slide.subtitle }}</p>
-              <a [routerLink]="slide.buttonLink" class="btn-primary">{{ slide.buttonText }}</a>
+              <a [routerLink]="slide.button_link" class="btn-primary">{{ slide.button_text }}</a>
             </div>
             <div class="banner-image">
-              <div class="placeholder-image">{{ slide.title }} Attēls</div>
+              @if (slide.image_link) {
+                <img class="placeholder-image" [src]="slide.image_link" alt="Bannera attēls">
+              }
+              @if (!slide.image_link) {
+                <div class="placeholder-image">{{ slide.title }} Attēls</div>
+              }
             </div>
           </div>
         }
@@ -56,7 +61,12 @@
           </div>
           <div class="category-info">
             <h3>{{ category.name }}</h3>
-            <p>{{ category.products_count }} produkti</p>
+            @if (category.active_products_count === 1) {
+              <p>{{ category.active_products_count }} produkts</p>
+            }
+            @if (category.active_products_count !== 1) {
+              <p>{{ category.active_products_count }} produkti</p>
+            }
           </div>
         </a>
       }

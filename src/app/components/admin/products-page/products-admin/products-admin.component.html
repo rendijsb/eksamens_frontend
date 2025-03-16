@@ -68,6 +68,12 @@
               <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
             }
           </th>
+          <th (click)="onSort('sold')" class="sortable">
+            Pārdotie
+            @if (sortBy() === 'sold') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
           <th (click)="onSort('status')" class="sortable">
             Status
             @if (sortBy() === 'status') {
@@ -94,6 +100,7 @@
                     {{ product.stock }}
                   </span>
                 </td>
+                <td>{{ product.sold }}</td>
                 <td>
                   <span class="badge" [class]="product.status">
                     {{ product.status === 'active' ? 'Aktīvs' : 'Neaktīvs' }}

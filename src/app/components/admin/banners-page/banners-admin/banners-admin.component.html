@@ -38,12 +38,6 @@
               <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
             }
           </th>
-          <th (click)="onSort('sort_order')" class="sortable">
-            Kārtošanas secība
-            @if (sortBy() === 'sort_order') {
-              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
-            }
-          </th>
           <th (click)="onSort('is_active')" class="sortable">
             Statuss
             @if (sortBy() === 'is_active') {
@@ -67,7 +61,6 @@
                 <img class="product-thumbnail" [src]="banner.image_link" alt="">
               </td>
               <td>{{ banner.title }}</td>
-              <td>{{ banner.sort_order }}</td>
               <td>
                 <span class="badge" [class]="banner.is_active ? 'active' : 'inactive'">
                   {{ getStatusLabel(banner.is_active) }}

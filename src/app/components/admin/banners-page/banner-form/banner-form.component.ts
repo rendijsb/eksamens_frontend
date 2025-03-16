@@ -1,12 +1,12 @@
-import { Component, ElementRef, HostListener, inject, OnInit, signal, ViewChild, WritableSignal } from '@angular/core';
-import { ActivatedRoute, Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
-import { ValidationErrorDirective } from "../../../../shared/directives/validation-error/validation-error.directive";
-import { ButtonLoaderDirective } from "../../../../shared/directives/button-loader/button-loader.directive";
-import { AdminBannerService } from "../services/admin-banner.service";
-import { catchError, EMPTY, finalize, tap } from "rxjs";
-import { CommonModule } from "@angular/common";
+import {Component, ElementRef, HostListener, inject, OnInit, signal, ViewChild, WritableSignal} from '@angular/core';
+import {ActivatedRoute, Router} from "@angular/router";
+import {ToastrService} from "ngx-toastr";
+import {FormBuilder, FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
+import {ValidationErrorDirective} from "../../../../shared/directives/validation-error/validation-error.directive";
+import {ButtonLoaderDirective} from "../../../../shared/directives/button-loader/button-loader.directive";
+import {AdminBannerService} from "../services/admin-banner.service";
+import {catchError, EMPTY, finalize, tap} from "rxjs";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-banner-form',
@@ -45,7 +45,6 @@ export class BannerFormComponent implements OnInit {
     subtitle: ['', Validators.required],
     button_text: ['', Validators.required],
     button_link: ['', Validators.required],
-    sort_order: [0, Validators.required],
     is_active: [true, Validators.required],
     image: this.imageControl
   });
@@ -68,7 +67,6 @@ export class BannerFormComponent implements OnInit {
             subtitle: response.data.subtitle,
             button_text: response.data.button_text,
             button_link: response.data.button_link,
-            sort_order: response.data.sort_order,
             is_active: response.data.is_active
           });
 
@@ -192,9 +190,7 @@ export class BannerFormComponent implements OnInit {
           return EMPTY;
         }),
         finalize((): void => {
-          if (!this.selectedFile) {
-            this.isLoading.set(false);
-          }
+          this.isLoading.set(false);
         })
       )
       .subscribe();
@@ -218,9 +214,7 @@ export class BannerFormComponent implements OnInit {
           return EMPTY;
         }),
         finalize((): void => {
-          if (!this.selectedFile) {
-            this.isLoading.set(false);
-          }
+          this.isLoading.set(false);
         })
       )
       .subscribe();
@@ -233,7 +227,6 @@ export class BannerFormComponent implements OnInit {
     formData.append('subtitle', this.bannerForm.get('subtitle')?.value || '');
     formData.append('button_text', this.bannerForm.get('button_text')?.value || '');
     formData.append('button_link', this.bannerForm.get('button_link')?.value || '');
-    formData.append('sort_order', String(this.bannerForm.get('sort_order')?.value || 0));
 
     const isActive = this.bannerForm.get('is_active')?.value === true ? 1 : 0;
     formData.append('is_active', isActive.toString());

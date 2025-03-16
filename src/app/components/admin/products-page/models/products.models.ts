@@ -9,6 +9,7 @@ export interface Product {
   specifications: string | null;
   additional_info: string | null;
   status: 'active' | 'inactive';
+  sold: number;
   category: string;
   primary_image: string;
   category_id: number;
