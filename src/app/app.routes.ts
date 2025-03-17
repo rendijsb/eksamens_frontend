@@ -27,6 +27,17 @@ export const routes: Routes = [
         loadComponent: () => import('./components/main/home/home.component')
           .then(m => m.HomeComponent)
       },
+      {
+        path: 'products',
+        component: MainLayoutComponent,
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./components/main/products/products.component')
+              .then(m => m.ProductsComponent)
+          }
+        ]
+      },
     ]
   },
   {

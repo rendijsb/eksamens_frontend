@@ -1,0 +1,230 @@
+<div class="products-container">
+  <div class="products-header">
+    <h1>Visi Produkti</h1>
+    <div class="view-controls">
+      <button
+        class="view-btn"
+        [class.active]="viewMode() === 'grid'"
+        (click)="toggleView('grid')"
+        title="Režģa Skats">
+        <i class="fas fa-th-large"></i>
+      </button>
+      <button
+        class="view-btn"
+        [class.active]="viewMode() === 'list'"
+        (click)="toggleView('list')"
+        title="Saraksta Skats">
+        <i class="fas fa-list"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="products-layout">
+    <aside class="products-sidebar">
+      <form [formGroup]="filterForm" class="filter-form">
+        <div class="filter-section">
+          <h3>Meklēt</h3>
+          <div class="search-box">
+            <input
+              type="text"
+              formControlName="search"
+              placeholder="Meklēt produktus..."/>
+            @if (filterForm.get('search')?.value) {
+              <button type="button" class="clear-search" (click)="filterForm.get('search')?.setValue('')">
+                <i class="fas fa-times"></i>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h3>Kategorijas</h3>
+          <div class="category-list">
+            <div class="category-item">
+              <input
+                type="radio"
+                id="cat-all"
+                [value]="null"
+                formControlName="category"/>
+              <label for="cat-all">Visas Kategorijas</label>
+            </div>
+            @for (category of categories(); track category.id) {
+              <div class="category-item">
+                <input
+                  type="radio"
+                  [id]="'cat-' + category.id"
+                  [value]="category.id"
+                  formControlName="category"/>
+                <label [for]="'cat-' + category.id">{{ category.name }}</label>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="filter-section" formGroupName="priceRange">
+          <h3>Cenas</h3>
+          <div class="price-ranges">
+            @for (range of priceRanges; track range.label) {
+              <button
+                type="button"
+                class="price-range-btn"
+                [class.active]="minPrice() === range.min && (maxPrice() === range.max || (!range.max && maxPrice() === 1000))"
+                (click)="selectPriceRange(range.min, range.max)">
+                {{ range.label }}
+              </button>
+            }
+          </div>
+          <div class="price-inputs">
+            <div class="price-input-group">
+              <label for="min-price">Min:</label>
+              <div class="input-prefix">
+                <span>€</span>
+                <input
+                  type="number"
+                  id="min-price"
+                  formControlName="min"
+                  min="0"/>
+              </div>
+            </div>
+            <div class="price-input-group">
+              <label for="max-price">Max:</label>
+              <div class="input-prefix">
+                <span>€</span>
+                <input
+                  type="number"
+                  id="max-price"
+                  formControlName="max"
+                  min="0"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="clear-filters-btn" (click)="clearFilters()">
+          <i class="fas fa-times"></i> Notīrīt filtrus
+        </button>
+      </form>
+    </aside>
+
+    <main class="products-main">
+      <div class="products-top-bar">
+        <div class="products-count">
+          <span>{{ totalItems() }}</span> produkti atrasti
+        </div>
+        <div class="products-sort">
+          <label for="sort-select">Kārtot Pēc:</label>
+          <select id="sort-select" (change)="onSortChange($event)">
+            @for (option of sortOptions; track option.value) {
+              <option
+                [value]="option.value"
+                [selected]="sortBy() + '-' + sortDirection() === option.value">
+                {{ option.label }}
+              </option>
+            }
+          </select>
+        </div>
+      </div>
+
+      @if (isLoading()) {
+        <div class="loading-container">
+          <div class="spinner"></div>
+          <p>Ielādē produktus...</p>
+        </div>
+      } @else if (products().length === 0) {
+        <div class="no-products">
+          <i class="fas fa-box-open"></i>
+          <h3>Nav produkti atrasti</h3>
+          <p>Mēģini izmainīt filtrus.</p>
+          <button class="clear-filters-btn" (click)="clearFilters()">Notīrīt visus filtrus</button>
+        </div>
+      } @else {
+        <div class="products-grid" [class.products-list]="viewMode() === 'list'">
+          @for (product of products(); track product.id) {
+            <div class="product-card" [class.product-list-item]="viewMode() === 'list'">
+              <div class="product-image">
+                <img [src]="product.primary_image || '/assets/img/product-placeholder.jpg'" [alt]="product.name"/>
+                @if (product.sale_price) {
+                  <span class="product-badge sale">Izpārdošana</span>
+                }
+                @if (product.stock <= 5 && product.stock > 0) {
+                  <span class="product-badge low-stock">Maz Noliktavā</span>
+                }
+                @if (product.stock === 0) {
+                  <span class="product-badge out-of-stock">Nav Noliktavā</span>
+                }
+              </div>
+              <div class="product-info">
+                <div class="product-category">{{ product.category }}</div>
+                <h3 class="product-name">{{ product.name }}</h3>
+                @if (viewMode() === 'list') {
+                  <div class="product-description">
+                    {{ product.description | slice:0:150 }}{{ product.description.length > 150 ? '...' : '' }}
+                  </div>
+                }
+                <div class="product-price">
+                  @if (product.sale_price) {
+                    <span class="price sale">€{{ getFormattedPrice(product.sale_price) }}</span>
+                    <span class="price original">€{{ getFormattedPrice(product.price) }}</span>
+                  } @else {
+                    <span class="price">€{{ getFormattedPrice(product.price) }}</span>
+                  }
+                </div>
+                <div class="product-actions">
+                  <button
+                    class="btn-add-to-cart"
+                    [disabled]="product.stock === 0"
+                    (click)="addToCart(product, $event)">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pievienot grozam</span>
+                  </button>
+                  <a [routerLink]="['/product', product.slug]" class="btn-view-details">
+                    <i class="fas fa-eye"></i>
+                    @if (viewMode() === 'list') {
+                      <span>Skatīt sīkāk</span>
+                    }
+                  </a>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        @if (totalPages() > 1) {
+          <div class="pagination">
+            <button
+              class="pagination-btn"
+              [disabled]="currentPage() === 1"
+              (click)="onPageChange(currentPage() - 1)">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <div class="pagination-numbers">
+              @for (page of [].constructor(totalPages()); let i = $index; track i) {
+                @if (totalPages() <= 7 ||
+                i + 1 === 1 ||
+                i + 1 === totalPages() ||
+                (i + 1 >= currentPage() - 1 && i + 1 <= currentPage() + 1)) {
+                  <button
+                    class="pagination-number"
+                    [class.active]="currentPage() === i + 1"
+                    (click)="onPageChange(i + 1)">
+                    {{ i + 1 }}
+                  </button>
+                } @else if (i + 1 === currentPage() - 2 || i + 1 === currentPage() + 2) {
+                  <span class="pagination-ellipsis">...</span>
+                }
+              }
+            </div>
+
+            <button
+              class="pagination-btn"
+              [disabled]="currentPage() === totalPages()"
+              (click)="onPageChange(currentPage() + 1)">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        }
+      }
+    </main>
+  </div>
+</div>
