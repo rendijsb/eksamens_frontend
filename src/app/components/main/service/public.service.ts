@@ -3,8 +3,9 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {ApiUrlService} from "../../../shared/services/api.service";
 import {CategoriesResponse} from "../../admin/categories-page/models/categories.models";
-import {ProductsResponse} from "../../admin/products-page/models/products.models";
+import {ProductsResponse, SingleProductResponse} from "../../admin/products-page/models/products.models";
 import {BannersResponse} from "../../admin/banners-page/models/banner.models";
+import {Image} from "../../admin/shared/services/image.service";
 
 export interface PaginatedResponse<T> {
   data: T[];
@@ -86,5 +87,32 @@ export class PublicService {
       this.apiUrlService.getUrl('api/public/products/getAllSearchableProducts'),
       { params }
     ) as Observable<PaginatedResponse<any>>;
+  }
+
+  getProductBySlug(slug: string): Observable<SingleProductResponse> {
+    return this.http.get(
+      this.apiUrlService.getUrl(`api/public/products/${slug}`)
+    ) as Observable<SingleProductResponse>;
+  }
+
+  getProductImages(productId: number): Observable<{ data: Image[] }> {
+    return this.http.get(
+      this.apiUrlService.getUrl(`api/public/images/${productId}?type=product`)
+    ) as Observable<{ data: Image[] }>;
+  }
+
+  getRelatedProducts(categoryId: number, currentProductId?: number): Observable<ProductsResponse> {
+    let params = new HttpParams()
+      .append('category_id', categoryId.toString())
+      .append('limit', '4');
+
+    if (currentProductId) {
+      params = params.append('exclude_id', currentProductId.toString());
+    }
+
+    return this.http.get(
+      this.apiUrlService.getUrl('api/public/products/getRelatedProducts'),
+      { params }
+    ) as Observable<ProductsResponse>;
   }
 }
