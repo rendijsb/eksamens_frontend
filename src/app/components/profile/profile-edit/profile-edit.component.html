@@ -1,0 +1,58 @@
+<div class="profile-edit">
+  <div class="section-header">
+    <h1>Mans Profils</h1>
+    <p>Pārvaldiet savu personīgo informāciju</p>
+  </div>
+
+  <form [formGroup]="profileForm" class="profile-form">
+    <div class="form-section">
+      <h2>Personīgā informācija</h2>
+
+      <div class="form-group">
+        <label for="name">Vārds un uzvārds</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          [appValidationError]="isSubmitted()"
+          placeholder="Jūsu pilnais vārds">
+      </div>
+
+      <div class="form-group">
+        <label for="email">E-pasta adrese</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          [appValidationError]="isSubmitted()"
+          placeholder="Jūsu e-pasta adrese">
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Tālrunis</label>
+        <input
+          type="tel"
+          id="phone"
+          formControlName="phone"
+          [appValidationError]="isSubmitted()"
+          placeholder="Jūsu tālruņa numurs">
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="resetForm()">
+        Atcelt izmaiņas
+      </button>
+      <button
+        type="submit"
+        class="btn"
+        [appButtonLoader]="isLoading()"
+        (click)="submitForm()">
+        Saglabāt izmaiņas
+      </button>
+    </div>
+  </form>
+</div>

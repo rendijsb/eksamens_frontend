@@ -1,0 +1,58 @@
+<div class="profile-container">
+  <div class="back-to-shop">
+    <a routerLink="/" class="back-link">
+      <i class="fas fa-arrow-left"></i> Atgriezties uz veikalu
+    </a>
+  </div>
+
+  <div class="profile-sidebar">
+    <div class="profile-user-info">
+      <div class="profile-avatar">
+        <span class="profile-initials">{{ getUserInitials() }}</span>
+      </div>
+      <div class="profile-user-details">
+        <h3 class="profile-name">{{ user()?.name }}</h3>
+        <p class="profile-email">{{ user()?.email }}</p>
+      </div>
+    </div>
+
+    <nav class="profile-nav">
+      <ul class="profile-nav-list">
+        <li>
+          <a routerLink="/profile" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <i class="fas fa-user"></i> Mans Profils
+          </a>
+        </li>
+        <li>
+          <a routerLink="/profile/addresses" routerLinkActive="active">
+            <i class="fas fa-map-marker-alt"></i> Manas Adreses
+          </a>
+        </li>
+        <li>
+          <a routerLink="/profile/orders" routerLinkActive="active">
+            <i class="fas fa-box"></i> Pasūtījumu Vēsture
+          </a>
+        </li>
+        <li>
+          <a routerLink="/profile/change-password" routerLinkActive="active">
+            <i class="fas fa-lock"></i> Mainīt Paroli
+          </a>
+        </li>
+        <li>
+          <a routerLink="/profile/notifications" routerLinkActive="active">
+            <i class="fas fa-bell"></i> Paziņojumu Iestatījumi
+          </a>
+        </li>
+        <li>
+          <a (click)="logout()" class="logout-link">
+            <i class="fas fa-sign-out-alt"></i> Izlogoties
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="profile-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

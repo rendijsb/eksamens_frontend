@@ -16,6 +16,8 @@ import {
 } from "./components/admin/products-page/products-admin-form/products-admin-form.component";
 import {BannersAdminComponent} from "./components/admin/banners-page/banners-admin/banners-admin.component";
 import {BannerFormComponent} from "./components/admin/banners-page/banner-form/banner-form.component";
+import {ProfileLayoutComponent} from "./core/layouts/profile-layout/profile-layout.component";
+import {ProfileEditComponent} from "./components/profile/profile-edit/profile-edit.component";
 
 export const routes: Routes = [
   {
@@ -108,4 +110,15 @@ export const routes: Routes = [
       { path: ':bannerId/edit', component: BannerFormComponent }
     ]
   },
+  {
+    path: 'profile',
+    component: ProfileLayoutComponent,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: ProfileEditComponent
+      },
+    ]
+  }
 ];

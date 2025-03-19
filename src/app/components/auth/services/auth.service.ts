@@ -103,4 +103,16 @@ export class AuthService {
     this.currentUser.set(user);
     this.redirectBasedOnRole(user.role);
   }
+
+  updateUserData(userData: Partial<User>) {
+    if (!this.currentUser()) return;
+
+    const updatedUser = {
+      ...this.currentUser()!,
+      ...userData
+    };
+
+    this.setUserData(updatedUser);
+    this.currentUser.set(updatedUser);
+  }
 }

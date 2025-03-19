@@ -1,0 +1,157 @@
+@import "../../../../styles/abstracts/variables";
+
+.profile-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: $spacing-xl;
+  max-width: $max-width;
+  margin: 120px auto 60px;
+  padding: 0 $spacing-md;
+
+  @media (max-width: $media-lg) {
+    grid-template-columns: 1fr;
+    margin-top: 100px;
+  }
+}
+
+.profile-sidebar {
+  background: $light-color;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow-sm;
+  overflow: hidden;
+
+  @media (max-width: $media-lg) {
+    margin-bottom: $spacing-lg;
+  }
+}
+
+.profile-user-info {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: linear-gradient(to right, $primary-color, $primary-light);
+  color: $light-color;
+}
+
+.profile-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba($light-color, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $h3-font-size;
+  font-weight: 600;
+}
+
+.profile-user-details {
+  .profile-name {
+    margin: 0 0 $spacing-xs;
+    font-size: $h5-font-size;
+  }
+
+  .profile-email {
+    margin: 0;
+    font-size: $small-font-size;
+    opacity: 0.8;
+  }
+}
+
+.profile-nav {
+  padding: $spacing-md 0;
+
+  .profile-nav-list {
+    list-style: none;
+
+    li {
+      a {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        padding: $spacing-md $spacing-lg;
+        color: $dark-color;
+        text-decoration: none;
+        transition: all $transition-fast;
+
+        i {
+          width: 20px;
+          text-align: center;
+          color: $dark-medium;
+          transition: color $transition-fast;
+        }
+
+        &:hover {
+          background: rgba($primary-color, 0.05);
+          color: $primary-color;
+
+          i {
+            color: $primary-color;
+          }
+        }
+
+        &.active {
+          background: rgba($primary-color, 0.1);
+          color: $primary-color;
+          border-left: 3px solid $primary-color;
+
+          i {
+            color: $primary-color;
+          }
+        }
+
+        &.logout-link {
+          color: $danger-color;
+          cursor: pointer;
+
+          i {
+            color: $danger-color;
+          }
+
+          &:hover {
+            background: rgba($danger-color, 0.05);
+          }
+        }
+      }
+    }
+  }
+}
+
+.back-to-shop {
+  grid-column: 1 / -1;
+  margin-bottom: $spacing-md;
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    color: $primary-color;
+    text-decoration: none;
+    font-weight: 500;
+    transition: $transition-fast;
+
+    i {
+      transition: transform $transition-fast;
+    }
+
+    &:hover {
+      color: $primary-dark;
+
+      i {
+        transform: translateX(-4px);
+      }
+    }
+  }
+}
+
+.profile-content {
+  background: $light-color;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow-sm;
+  padding: $spacing-xl;
+
+  @media (max-width: $media-sm) {
+    padding: $spacing-lg;
+  }
+}

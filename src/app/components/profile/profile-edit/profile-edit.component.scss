@@ -1,0 +1,128 @@
+@import "../../../../styles/abstracts/variables";
+
+.profile-edit {
+  .section-header {
+    margin-bottom: $spacing-xl;
+
+    h1 {
+      font-size: $h3-font-size;
+      color: $dark-color;
+      margin: 0 0 $spacing-xs;
+    }
+
+    p {
+      color: $dark-medium;
+      margin: 0;
+    }
+  }
+
+  .form-section {
+    margin-bottom: $spacing-xl;
+
+    h2 {
+      font-size: $h5-font-size;
+      color: $dark-color;
+      margin: 0 0 $spacing-md;
+      padding-bottom: $spacing-xs;
+      border-bottom: 1px solid rgba($dark-color, 0.1);
+    }
+  }
+
+  .profile-form {
+    max-width: 600px;
+  }
+
+  .form-group {
+    margin-bottom: $spacing-md;
+
+    label {
+      display: block;
+      margin-bottom: $spacing-xs;
+      font-weight: 500;
+      color: $dark-color;
+    }
+
+    input {
+      width: 100%;
+      padding: $spacing-md;
+      border: 1px solid rgba($dark-color, 0.1);
+      border-radius: $border-radius-md;
+      font-size: $base-font-size;
+      transition: $transition-fast;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: $spacing-md;
+    margin-top: $spacing-lg;
+
+    .btn, .btn-secondary {
+      padding: $spacing-md $spacing-xl;
+      font-weight: 600;
+      font-size: $base-font-size;
+      border-radius: $border-radius-md;
+      transition: all $transition-normal;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 150px;
+      height: 48px;
+    }
+
+    .btn {
+      background-color: $primary-color;
+      color: $light-color;
+      border: none;
+
+      &:hover {
+        background-color: $primary-dark;
+        transform: translateY(-2px);
+        box-shadow: $box-shadow-sm;
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 2px solid $primary-color;
+      color: $primary-color;
+
+      &:hover {
+        background-color: rgba($primary-color, 0.08);
+        transform: translateY(-2px);
+        box-shadow: $box-shadow-sm;
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: $media-sm) {
+      flex-direction: column;
+
+      .btn, .btn-secondary {
+        width: 100%;
+      }
+
+      .btn-secondary {
+        order: 2;
+      }
+
+      .btn {
+        order: 1;
+        margin-bottom: $spacing-sm;
+      }
+    }
+  }
+}
