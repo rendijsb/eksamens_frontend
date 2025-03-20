@@ -1,0 +1,79 @@
+<div class="profile-image-container">
+  <div class="profile-image-header">
+    <h2>Profila attēls</h2>
+    <p>Augšupielādējiet attēlu, lai personalizētu savu profilu</p>
+  </div>
+
+  <div class="profile-image-upload">
+    <div
+      class="image-upload-area"
+      [class.dragging]="isDragging()"
+      [class.has-image]="imagePreview() !== null"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
+      (click)="triggerFileInput()">
+
+      @if (imagePreview()) {
+        <div class="preview-container">
+          <img [src]="imagePreview()" alt="Profila attēls">
+          <button
+            type="button"
+            class="remove-image-btn"
+            (click)="$event.stopPropagation(); removeImage()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      } @else if (userInitials()) {
+        <div class="user-initials">
+          {{ userInitials() }}
+        </div>
+      } @else {
+        <div class="upload-placeholder">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Velciet attēlu šeit vai klikšķiniet, lai augšupielādētu</p>
+          <span class="upload-hint">Ieteicamais izmērs: 200x200px (maks. 2MB)</span>
+        </div>
+      }
+
+      <input
+        #fileInput
+        type="file"
+        accept="image/*"
+        class="file-input"
+        (change)="onFileSelected($event)">
+    </div>
+
+    @if (imageError()) {
+      <div class="image-error">{{ imageError() }}</div>
+    }
+
+    <div class="upload-actions">
+      @if (imagePreview() && imagePreview() !== currentUserImage()) {
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="cancelUpload()">
+          Atcelt
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [appButtonLoader]="isUploading()"
+          (click)="uploadImage()">
+          Saglabāt attēlu
+        </button>
+      }
+
+      @if (currentUserImage()) {
+        <button
+          type="button"
+          class="btn-danger"
+          [appButtonLoader]="isUploading()"
+          (click)="deleteProfileImage()">
+          Dzēst profila attēlu
+        </button>
+      }
+    </div>
+  </div>
+</div>

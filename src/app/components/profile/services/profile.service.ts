@@ -42,4 +42,17 @@ export class ProfileService {
       data
     );
   }
+
+  updateProfileImage(data: FormData): Observable<ProfileUpdateResponse> {
+    return this.http.post<ProfileUpdateResponse>(
+      this.apiUrlService.getUrl('api/profile/update-image'),
+      data
+    );
+  }
+
+  removeProfileImage(): Observable<ProfileUpdateResponse> {
+    return this.http.delete<ProfileUpdateResponse>(
+      this.apiUrlService.getUrl('api/profile/remove-image')
+    );
+  }
 }

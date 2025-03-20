@@ -8,7 +8,14 @@
   <div class="profile-sidebar">
     <div class="profile-user-info">
       <div class="profile-avatar">
-        <span class="profile-initials">{{ getUserInitials() }}</span>
+        @if (user()?.profile_image) {
+          <img [src]="user()?.profile_image" alt="Profila attēls" class="profile-image">
+        } @else {
+          <span class="profile-initials">{{ getUserInitials() }}</span>
+        }
+        <a routerLink="/profile/image" class="edit-avatar-btn">
+          <i class="fas fa-pencil-alt"></i>
+        </a>
       </div>
       <div class="profile-user-details">
         <h3 class="profile-name">{{ user()?.name }}</h3>

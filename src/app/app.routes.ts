@@ -18,6 +18,7 @@ import {BannersAdminComponent} from "./components/admin/banners-page/banners-adm
 import {BannerFormComponent} from "./components/admin/banners-page/banner-form/banner-form.component";
 import {ProfileLayoutComponent} from "./core/layouts/profile-layout/profile-layout.component";
 import {ProfileEditComponent} from "./components/profile/profile-edit/profile-edit.component";
+import {ProfileImageComponent} from "./components/profile/profile-image/profile-image.component";
 
 export const routes: Routes = [
   {
@@ -118,6 +119,10 @@ export const routes: Routes = [
       {
         path: '',
         component: ProfileEditComponent
+      },
+      {
+        path: 'image',
+        component: ProfileImageComponent
       },
     ]
   }

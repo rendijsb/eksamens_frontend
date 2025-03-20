@@ -6,6 +6,7 @@ export interface User {
   created_at: string;
   role: RoleEnum;
   token?: string;
+  profile_image: string;
 }
 
 export enum RoleEnum {
