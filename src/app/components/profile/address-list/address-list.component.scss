@@ -1,0 +1,255 @@
+@import "../../../../styles/abstracts/variables";
+
+.addresses-container {
+  width: 100%;
+
+  .addresses-header {
+    margin-bottom: $spacing-xl;
+
+    h1 {
+      font-size: $h3-font-size;
+      color: $dark-color;
+      margin: 0 0 $spacing-xs;
+      font-weight: 600;
+    }
+
+    p {
+      color: $dark-medium;
+      margin: 0;
+      font-size: 1.05em;
+    }
+  }
+
+  .address-actions {
+    margin-bottom: $spacing-lg;
+    display: flex;
+    justify-content: flex-end;
+
+    .btn-add-address {
+      display: inline-flex;
+      align-items: center;
+      gap: $spacing-xs;
+      padding: $spacing-sm $spacing-md;
+      background-color: $primary-color;
+      color: $light-color;
+      text-decoration: none;
+      border-radius: $border-radius-md;
+      font-weight: 500;
+      transition: all $transition-normal;
+
+      &:hover {
+        background-color: darken($primary-color, 5%);
+        transform: translateY(-2px);
+        box-shadow: $box-shadow-sm;
+      }
+
+      i {
+        font-size: 0.85em;
+      }
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-xxl 0;
+    color: $dark-medium;
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba($primary-color, 0.2);
+      border-radius: 50%;
+      border-top-color: $primary-color;
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: $spacing-md;
+    }
+
+    p {
+      font-size: $base-font-size;
+    }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .no-addresses {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-xxl 0;
+    text-align: center;
+
+    i {
+      font-size: 48px;
+      color: $dark-light;
+      margin-bottom: $spacing-md;
+    }
+
+    h3 {
+      font-size: $h4-font-size;
+      color: $dark-color;
+      margin-bottom: $spacing-sm;
+    }
+
+    p {
+      color: $dark-medium;
+      margin-bottom: $spacing-lg;
+      max-width: 400px;
+    }
+
+    .btn-add-address-empty {
+      display: inline-flex;
+      align-items: center;
+      gap: $spacing-xs;
+      padding: $spacing-md $spacing-xl;
+      background-color: $primary-color;
+      color: $light-color;
+      text-decoration: none;
+      border-radius: $border-radius-md;
+      font-weight: 600;
+      transition: all $transition-normal;
+
+      &:hover {
+        background-color: darken($primary-color, 5%);
+        transform: translateY(-3px);
+        box-shadow: $box-shadow-md;
+      }
+    }
+  }
+
+  .addresses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: $spacing-lg;
+    margin-top: $spacing-lg;
+
+    @media (max-width: $media-sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .address-card {
+    background-color: $light-color;
+    border-radius: $border-radius-lg;
+    box-shadow: $box-shadow-sm;
+    padding: $spacing-lg;
+    border: 1px solid rgba($dark-color, 0.1);
+    transition: all $transition-normal;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: $box-shadow-md;
+    }
+
+    &.default {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 1px rgba($primary-color, 0.3);
+    }
+
+    .default-badge {
+      position: absolute;
+      top: $spacing-sm;
+      right: $spacing-sm;
+      background-color: rgba($primary-color, 0.1);
+      color: $primary-color;
+      font-size: $mini-font-size;
+      font-weight: 600;
+      padding: $spacing-xs $spacing-sm;
+      border-radius: $border-radius-pill;
+      display: flex;
+      align-items: center;
+      gap: $spacing-xs;
+
+      i {
+        font-size: 0.9em;
+      }
+    }
+
+    .address-content {
+      margin-bottom: $spacing-lg;
+    }
+
+    .address-type {
+      font-size: $mini-font-size;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: $dark-medium;
+      margin-bottom: $spacing-xs;
+    }
+
+    .recipient-name {
+      font-size: $h5-font-size;
+      color: $dark-color;
+      font-weight: 600;
+      margin: 0 0 $spacing-xs;
+    }
+
+    .phone, .address-line, .country {
+      margin: 0 0 $spacing-xs;
+      color: $dark-medium;
+      line-height: 1.4;
+    }
+
+    .address-actions {
+      border-top: 1px solid rgba($dark-color, 0.1);
+      padding-top: $spacing-md;
+      display: flex;
+      flex-wrap: wrap;
+      gap: $spacing-sm;
+
+      button, a {
+        font-size: $small-font-size;
+        display: inline-flex;
+        align-items: center;
+        gap: $spacing-xs;
+        padding: $spacing-xs $spacing-sm;
+        border-radius: $border-radius-sm;
+        transition: all $transition-fast;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        background: none;
+        font-weight: 500;
+
+        i {
+          font-size: 0.9em;
+        }
+
+        &:hover {
+          transform: translateY(-2px);
+        }
+      }
+
+      .btn-edit {
+        color: $info-color;
+
+        &:hover {
+          background-color: rgba($info-color, 0.1);
+        }
+      }
+
+      .btn-set-default {
+        color: $warning-color;
+
+        &:hover {
+          background-color: rgba($warning-color, 0.1);
+        }
+      }
+
+      .btn-delete {
+        color: $danger-color;
+
+        &:hover {
+          background-color: rgba($danger-color, 0.1);
+        }
+      }
+    }
+  }
+}

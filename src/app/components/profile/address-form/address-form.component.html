@@ -1,0 +1,147 @@
+<div class="address-form-container">
+  <div class="address-form-header">
+    <div class="back-button" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+    </div>
+    <h1>{{ isEditMode() ? 'Rediģēt adresi' : 'Pievienot jaunu adresi' }}</h1>
+    <p>{{ isEditMode() ? 'Atjaunojiet savas adreses informāciju' : 'Pievienojiet jaunu piegādes vai norēķinu adresi' }}</p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Ielādē adreses informāciju...</p>
+    </div>
+  } @else {
+    <form [formGroup]="addressForm" class="address-form" (ngSubmit)="onSubmit()">
+      <div class="form-section">
+        <h2>Kontaktinformācija</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Vārds un uzvārds <span class="required">*</span></label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              [appValidationError]="isSubmitted()"
+              placeholder="Pilnais vārds">
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Tālrunis <span class="required">*</span></label>
+            <input
+              type="tel"
+              id="phone"
+              formControlName="phone"
+              [appValidationError]="isSubmitted()"
+              placeholder="Tālruņa numurs">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Adreses informācija</h2>
+
+        <div class="form-group">
+          <label for="street_address">Iela un mājas numurs <span class="required">*</span></label>
+          <input
+            type="text"
+            id="street_address"
+            formControlName="street_address"
+            [appValidationError]="isSubmitted()"
+            placeholder="Iela, mājas numurs">
+        </div>
+
+        <div class="form-group">
+          <label for="apartment">Dzīvoklis / Biroja numurs</label>
+          <input
+            type="text"
+            id="apartment"
+            formControlName="apartment"
+            [appValidationError]="isSubmitted()"
+            placeholder="Dzīvoklis, stāvs vai cita papildus informācija">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">Pilsēta <span class="required">*</span></label>
+            <input
+              type="text"
+              id="city"
+              formControlName="city"
+              [appValidationError]="isSubmitted()"
+              placeholder="Pilsēta">
+          </div>
+
+          <div class="form-group">
+            <label for="state">Novads / Reģions</label>
+            <input
+              type="text"
+              id="state"
+              formControlName="state"
+              [appValidationError]="isSubmitted()"
+              placeholder="Novads vai reģions">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="postal_code">Pasta indekss <span class="required">*</span></label>
+            <input
+              type="text"
+              id="postal_code"
+              formControlName="postal_code"
+              [appValidationError]="isSubmitted()"
+              placeholder="Pasta indekss">
+          </div>
+
+          <div class="form-group">
+            <label for="country">Valsts <span class="required">*</span></label>
+            <input
+              type="text"
+              id="country"
+              formControlName="country"
+              [appValidationError]="isSubmitted()"
+              placeholder="Valsts">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Adreses iestatījumi</h2>
+
+        <div class="form-group">
+          <label for="type">Adreses tips <span class="required">*</span></label>
+          <select id="type" formControlName="type" [appValidationError]="isSubmitted()">
+            <option value="shipping">Piegādes adrese</option>
+            <option value="billing">Norēķinu adrese</option>
+            <option value="both">Piegādes un norēķinu adrese</option>
+          </select>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label for="is_default" class="checkbox-label">
+            <input type="checkbox" id="is_default" formControlName="is_default">
+            <span class="checkbox-text">Iestatīt kā noklusējuma adresi</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="goBack()">
+          Atcelt
+        </button>
+        <button
+          type="submit"
+          class="btn-primary"
+          [appButtonLoader]="isSubmitting()">
+          {{ isEditMode() ? 'Saglabāt izmaiņas' : 'Pievienot adresi' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

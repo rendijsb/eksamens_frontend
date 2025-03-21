@@ -1,0 +1,250 @@
+@import "../../../../styles/abstracts/variables";
+
+.address-form-container {
+  width: 100%;
+
+  .address-form-header {
+    margin-bottom: $spacing-xl;
+    position: relative;
+
+    h1 {
+      font-size: $h3-font-size;
+      color: $dark-color;
+      margin: 0 0 $spacing-xs;
+      font-weight: 600;
+    }
+
+    p {
+      color: $dark-medium;
+      margin: 0;
+      font-size: 1.05em;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 0;
+      left: -$spacing-lg;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba($primary-color, 0.1);
+      color: $primary-color;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all $transition-fast;
+
+      &:hover {
+        background-color: $primary-color;
+        color: $light-color;
+        transform: translateX(-3px);
+      }
+
+      @media (max-width: $media-lg) {
+        position: relative;
+        left: 0;
+        margin-bottom: $spacing-md;
+      }
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-xxl 0;
+    color: $dark-medium;
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba($primary-color, 0.2);
+      border-radius: 50%;
+      border-top-color: $primary-color;
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: $spacing-md;
+    }
+
+    p {
+      font-size: $base-font-size;
+    }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .address-form {
+    width: 100%;
+  }
+
+  .form-section {
+    margin-bottom: $spacing-xl;
+    background-color: $light-color;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    box-shadow: $box-shadow-sm;
+
+    h2 {
+      font-size: $h5-font-size;
+      color: $dark-color;
+      margin: 0 0 $spacing-lg;
+      padding-bottom: $spacing-xs;
+      border-bottom: 1px solid rgba($dark-color, 0.1);
+      font-weight: 600;
+    }
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-md;
+
+    @media (max-width: $media-sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .form-group {
+    margin-bottom: $spacing-md;
+
+    label {
+      display: block;
+      margin-bottom: $spacing-xs;
+      font-weight: 500;
+      color: $dark-color;
+      font-size: 0.95em;
+
+      .required {
+        color: $danger-color;
+      }
+    }
+
+    input, select {
+      width: 100%;
+      padding: $spacing-md;
+      border: 1px solid rgba($dark-color, 0.1);
+      border-radius: $border-radius-md;
+      font-size: $base-font-size;
+      transition: $transition-fast;
+      background-color: $light-color;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+      }
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23444' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right $spacing-md center;
+      background-size: 16px 12px;
+      padding-right: $spacing-xl;
+    }
+  }
+
+  .checkbox-group {
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin-right: $spacing-sm;
+        border-radius: $border-radius-xs;
+        border: 1px solid rgba($dark-color, 0.2);
+        appearance: none;
+        background-color: $light-color;
+        transition: $transition-fast;
+
+        &:checked {
+          background-color: $primary-color;
+          border-color: $primary-color;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: 14px;
+        }
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+        }
+      }
+
+      .checkbox-text {
+        font-weight: 500;
+        font-size: 0.95em;
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: $spacing-md;
+    margin-top: $spacing-xl;
+    justify-content: flex-end;
+
+    .btn-primary, .btn-secondary {
+      padding: $spacing-md $spacing-xl;
+      font-weight: 600;
+      font-size: $base-font-size;
+      border-radius: $border-radius-md;
+      cursor: pointer;
+      transition: all $transition-normal;
+      min-width: 180px;
+      text-align: center;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background-color: $primary-color;
+      color: $light-color;
+      border: none;
+
+      &:hover {
+        background-color: darken($primary-color, 5%);
+        transform: translateY(-2px);
+        box-shadow: $box-shadow-sm;
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 2px solid $primary-color;
+      color: $primary-color;
+
+      &:hover {
+        background-color: rgba($primary-color, 0.08);
+        transform: translateY(-2px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: $media-sm) {
+      flex-direction: column-reverse;
+
+      .btn-primary, .btn-secondary {
+        width: 100%;
+      }
+    }
+  }
+}

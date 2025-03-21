@@ -20,6 +20,8 @@ import {ProfileLayoutComponent} from "./core/layouts/profile-layout/profile-layo
 import {ProfileEditComponent} from "./components/profile/profile-edit/profile-edit.component";
 import {ProfileImageComponent} from "./components/profile/profile-image/profile-image.component";
 import {ChangePasswordComponent} from "./components/profile/change-password/change-password.component";
+import {AddressListComponent} from "./components/profile/address-list/address-list.component";
+import {AddressFormComponent} from "./components/profile/address-form/address-form.component";
 
 export const routes: Routes = [
   {
@@ -129,6 +131,23 @@ export const routes: Routes = [
         path: 'change-password',
         component: ChangePasswordComponent
       },
+      {
+        path: 'addresses',
+        children: [
+          {
+            path: '',
+            component: AddressListComponent
+          },
+          {
+            path: 'new',
+            component: AddressFormComponent
+          },
+          {
+            path: 'edit/:id',
+            component: AddressFormComponent
+          }
+        ]
+      }
     ]
   }
 ];

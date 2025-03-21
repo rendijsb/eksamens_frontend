@@ -1,0 +1,82 @@
+<div class="addresses-container">
+  <div class="addresses-header">
+    <h1>Manas adreses</h1>
+    <p>Pārvaldiet savas piegādes un norēķinu adreses</p>
+  </div>
+
+  <div class="address-actions">
+    <a routerLink="/profile/addresses/new" class="btn-add-address">
+      <i class="fas fa-plus"></i> Pievienot jaunu adresi
+    </a>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Ielādē adreses...</p>
+    </div>
+  } @else if (addresses().length === 0) {
+    <div class="no-addresses">
+      <i class="fas fa-map-marker-alt"></i>
+      <h3>Nav pievienotas adreses</h3>
+      <p>Pievienojiet jaunu adresi, lai vienkāršotu pirkumu veikšanu</p>
+      <a routerLink="/profile/addresses/new" class="btn-add-address-empty">Pievienot adresi</a>
+    </div>
+  } @else {
+    <div class="addresses-grid">
+      @for (address of addresses(); track address.id) {
+        <div class="address-card" [class.default]="address.is_default">
+          @if (address.is_default) {
+            <div class="default-badge">
+              <i class="fas fa-check-circle"></i> Noklusējuma
+            </div>
+          }
+
+          <div class="address-content">
+            <div class="address-type">{{ getAddressTypeLabel(address.type) }}</div>
+            <h3 class="recipient-name">{{ address.name }}</h3>
+            <p class="phone">{{ address.phone }}</p>
+            <p class="address-line">
+              {{ address.street_address }}
+              @if (address.apartment) {
+                , {{ address.apartment }}
+              }
+            </p>
+            <p class="address-line">
+              {{ address.city }}
+              @if (address.state) {
+                , {{ address.state }}
+              }
+              , {{ address.postal_code }}
+            </p>
+            <p class="country">{{ address.country }}</p>
+          </div>
+
+          <div class="address-actions">
+            <a
+              [routerLink]="['/profile/addresses/edit', address.id]"
+              class="btn-edit">
+              <i class="fas fa-edit"></i> Rediģēt
+            </a>
+
+            @if (!address.is_default) {
+              <button
+                class="btn-set-default"
+                [appButtonLoader]="processingAddressId() === address.id"
+                (click)="setAsDefault(address.id, $event)">
+                <i class="fas fa-star"></i> Iestatīt kā noklusējuma
+              </button>
+            }
+
+            <button
+              class="btn-delete"
+              [appButtonLoader]="processingAddressId() === address.id"
+              (click)="deleteAddress(address.id, $event)">
+              <i class="fas fa-trash"></i> Dzēst
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
