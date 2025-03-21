@@ -19,6 +19,7 @@ import {BannerFormComponent} from "./components/admin/banners-page/banner-form/b
 import {ProfileLayoutComponent} from "./core/layouts/profile-layout/profile-layout.component";
 import {ProfileEditComponent} from "./components/profile/profile-edit/profile-edit.component";
 import {ProfileImageComponent} from "./components/profile/profile-image/profile-image.component";
+import {ChangePasswordComponent} from "./components/profile/change-password/change-password.component";
 
 export const routes: Routes = [
   {
@@ -123,6 +124,10 @@ export const routes: Routes = [
       {
         path: 'image',
         component: ProfileImageComponent
+      },
+      {
+        path: 'change-password',
+        component: ChangePasswordComponent
       },
     ]
   }
