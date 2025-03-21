@@ -88,7 +88,7 @@
               <tr (click)="createOrEdit(product.id)">
                 <td>{{ product.id }}</td>
                 <td>
-                  <img class="product-thumbnail" [src]="product.primary_image" alt="">
+                  <img class="product-thumbnail" [src]="product.primary_image || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'" alt="">
                 </td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.category }}</td>

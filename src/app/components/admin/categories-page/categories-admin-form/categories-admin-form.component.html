@@ -33,7 +33,7 @@
 
           @if (imagePreview()) {
             <div class="image-preview">
-              <img [src]="imagePreview()" alt="Kategorijas attēls">
+              <img [src]="imagePreview() || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'" alt="Kategorijas attēls">
               <button type="button" class="remove-image-btn" (click)="removeImage($event)">
                 <i class="fas fa-times"></i>
               </button>

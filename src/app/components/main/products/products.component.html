@@ -142,7 +142,9 @@
           @for (product of products(); track product.id) {
             <div class="product-card" [class.product-list-item]="viewMode() === 'list'">
               <div class="product-image">
-                <img [src]="product.primary_image || '/assets/img/product-placeholder.jpg'" [alt]="product.name"/>
+                @if (product.primary_image) {
+                <img [src]="product.primary_image || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'" [alt]="product.name"/>
+                }
                 @if (product.sale_price) {
                   <span class="product-badge sale">Izpārdošana</span>
                 }

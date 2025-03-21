@@ -43,7 +43,7 @@
                   class="thumbnail"
                   [class.active]="selectedImage() === image.image_url"
                   (click)="selectImage(image.image_url)">
-                  <img [src]="image.image_url" [alt]="product()?.name">
+                  <img [src]="image.image_url || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'" [alt]="product()?.name">
                 </div>
               }
             </div>
@@ -172,7 +172,7 @@
                 <div class="product-image">
                   <a [routerLink]="['/product', relatedProduct.slug]">
                     <img
-                      [src]="relatedProduct.primary_image || '/assets/images/product-placeholder.jpg'"
+                      [src]="relatedProduct.primary_image || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'"
                       [alt]="relatedProduct.name">
                   </a>
                   @if (relatedProduct.is_sale_active) {
