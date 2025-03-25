@@ -8,6 +8,7 @@ import { PublicService } from '../service/public.service';
 import { Product } from '../../admin/products-page/models/products.models';
 import { Image } from '../../admin/shared/services/image.service';
 import { ButtonLoaderDirective } from '../../../shared/directives/button-loader/button-loader.directive';
+import {CartService} from "../service/cart.service";
 
 @Component({
   selector: 'app-product-details',
@@ -27,6 +28,7 @@ export class ProductDetailsComponent implements OnInit {
   private readonly publicService = inject(PublicService);
   private readonly toastr = inject(ToastrService);
   private readonly fb = inject(FormBuilder);
+  private readonly cartService = inject(CartService);
 
   product: WritableSignal<Product | null> = signal(null);
   productImages: WritableSignal<Image[]> = signal([]);
@@ -181,13 +183,20 @@ export class ProductDetailsComponent implements OnInit {
 
     this.isAddingToCart.set(true);
 
-    setTimeout(() => {
-      const productToAdd = this.product()!;
-      const quantity = this.quantity();
-
-      this.toastr.success(`Pievienots ${quantity} ${productToAdd.name} grozam`);
-      this.isAddingToCart.set(false);
-    }, 800);
+    this.cartService.addToCart(this.product()!.id, this.quantity())
+      .pipe(
+        tap(() => {
+          this.toastr.success(`Pievienots ${this.quantity()} ${this.product()!.name} grozam`);
+        }),
+        catchError(() => {
+          this.toastr.error('Neizdevās pievienot produktu grozam');
+          return EMPTY;
+        }),
+        finalize(() => {
+          this.isAddingToCart.set(false);
+        })
+      )
+      .subscribe();
   }
 
   addToWishlist(): void {

@@ -7,6 +7,7 @@ import {ToastrService} from "ngx-toastr";
 import {catchError, EMPTY, tap} from "rxjs";
 import {AuthService} from "../../../components/auth/services/auth.service";
 import {RoleEnum} from "../../../components/auth/models/user.models";
+import {CartService} from "../../../components/main/service/cart.service";
 
 @Component({
   selector: 'app-header',
@@ -24,6 +25,7 @@ export class HeaderComponent implements OnInit {
   private readonly toastr = inject(ToastrService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly cartService = inject(CartService);
 
   protected readonly categories = signal<Category[]>([]);
 
@@ -39,6 +41,16 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.fetchAllCategories();
     this.checkAuthStatus();
+
+    this.cartService.getCart().subscribe({
+      next: (response) => {
+        this.cartItemCount.set(response.data?.total_items || 0);
+      },
+    });
+
+    this.cartService.cartItemCount$.subscribe(count => {
+      this.cartItemCount.set(count);
+    });
   }
 
   fetchAllCategories(): void {

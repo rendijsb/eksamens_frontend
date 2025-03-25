@@ -7,6 +7,7 @@ import {PublicService} from "../service/public.service";
 import {ToastrService} from "ngx-toastr";
 import {catchError, EMPTY, tap} from "rxjs";
 import {Banner} from "../../admin/banners-page/models/banner.models";
+import {CartService} from "../service/cart.service";
 
 @Component({
   selector: 'app-home',
@@ -21,6 +22,7 @@ import {Banner} from "../../admin/banners-page/models/banner.models";
 export class HomeComponent implements OnInit {
   private readonly publicService = inject(PublicService);
   private readonly toastr = inject(ToastrService);
+  private readonly cartService = inject(CartService);
 
   protected readonly featuredProducts: WritableSignal<Product[] | null> = signal<Product[] | null>(null);
   protected readonly categories: WritableSignal<Category[] | null> = signal<Category[] | null>(null);
@@ -92,5 +94,27 @@ export class HomeComponent implements OnInit {
 
   setCurrentSlide(index: number): void {
     this.currentSlideIndex.set(index);
+  }
+
+  addToCart(product: Product, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (product.stock <= 0) {
+      this.toastr.error('Produkts nav pieejams');
+      return;
+    }
+
+    this.cartService.addToCart(product.id)
+      .pipe(
+        tap(() => {
+          this.toastr.success(product.name + ' veiksmīgi pievienots grozam')
+        }),
+        catchError(() => {
+          this.toastr.error('Neizdevās pievienot produktu grozam');
+          return EMPTY;
+        }),
+      )
+      .subscribe();
   }
 }

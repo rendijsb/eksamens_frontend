@@ -7,6 +7,7 @@ import {ButtonLoaderDirective} from "../../../shared/directives/button-loader/bu
 import {ValidationErrorDirective} from "../../../shared/directives/validation-error/validation-error.directive";
 import {ToastrService} from "ngx-toastr";
 import {RouterLink} from "@angular/router";
+import {CartService} from "../../main/service/cart.service";
 
 @Component({
   standalone: true,
@@ -24,6 +25,7 @@ export class LoginComponent {
   private readonly formBuilder: UntypedFormBuilder = inject(UntypedFormBuilder);
   private readonly authService: AuthService = inject(AuthService);
   private readonly toastr: ToastrService = inject(ToastrService);
+  private readonly cartService: CartService = inject(CartService);
 
   protected readonly isLoading: WritableSignal<boolean> = signal<boolean>(false);
   protected readonly isSubmitted: WritableSignal<boolean> = signal<boolean>(false);
@@ -50,6 +52,12 @@ export class LoginComponent {
           const user = response.data;
           this.toastr.success('Jūs esat veiksmīgi ienācis sistēmā');
           this.authService.handleSuccessfulLogin(user);
+
+          this.cartService.migrateCart().pipe(
+            catchError(() => {
+              return EMPTY;
+            })
+          ).subscribe();
         }),
         catchError(error => {
           this.loginError.set(true);

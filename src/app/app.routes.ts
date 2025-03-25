@@ -44,12 +44,23 @@ export const routes: Routes = [
           }
         ]
       },
+      {
+        path: 'cart',
+        component: MainLayoutComponent,
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./components/main/cart/cart.component')
+              .then(m => m.CartComponent)
+          }
+        ]
+      },
+      {
+        path: 'product/:slug',
+        loadComponent: () => import('./components/main/product-details/product-details.component')
+          .then(m => m.ProductDetailsComponent)
+      },
     ]
-  },
-  {
-    path: 'product/:slug',
-    loadComponent: () => import('./components/main/product-details/product-details.component')
-      .then(m => m.ProductDetailsComponent)
   },
   {
     path: 'register',

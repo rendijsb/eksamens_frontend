@@ -1,0 +1,136 @@
+<div class="cart-container">
+  <div class="container">
+    <div class="cart-header">
+      <h1>Iepirkumu grozs</h1>
+
+      <div class="back-to-shop">
+        <a routerLink="/products">
+          <i class="fas fa-arrow-left"></i> Turpināt iepirkties
+        </a>
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Ielādē grozu...</p>
+      </div>
+    } @else if (!cart() || !cart()?.items?.length) {
+      <div class="empty-cart">
+        <i class="fas fa-shopping-cart"></i>
+        <h2>Jūsu grozs ir tukšs</h2>
+        <p>Pievienojiet preces, lai veiktu pasūtījumu</p>
+        <a routerLink="/products" class="btn-primary">Aplūkot preces</a>
+      </div>
+    } @else {
+      <div class="cart-content">
+        <div class="cart-items">
+          <div class="cart-item-header">
+            <div class="col-product">Produkts</div>
+            <div class="col-price">Cena</div>
+            <div class="col-quantity">Daudzums</div>
+            <div class="col-total">Summa</div>
+            <div class="col-action"></div>
+          </div>
+
+          @for (item of cart()?.items; track item.id) {
+            <div class="cart-item">
+              <div class="col-product">
+                <div class="product-info">
+                  <div class="product-image">
+                    @if (item.product.image) {
+                      <img [src]="item.product.image" [alt]="item.product.name">
+                    } @else {
+                      <div class="no-image">
+                        <i class="fas fa-image"></i>
+                      </div>
+                    }
+                  </div>
+                  <div class="product-details">
+                    <h3>
+                      <a [routerLink]="['/product', item.product.slug]">{{ item.product.name }}</a>
+                    </h3>
+                    <p class="product-category">{{ item.product.category }}</p>
+                    @if (item.product.stock <= 5) {
+                      <p class="stock-warning">Atlicis tikai {{ item.product.stock }}</p>
+                    }
+                  </div>
+                </div>
+              </div>
+              <div class="col-price">
+                @if (item.sale_price) {
+                  <span class="price sale">€{{ formatPrice(item.sale_price) }}</span>
+                  <span class="price original">€{{ formatPrice(item.price) }}</span>
+                } @else {
+                  <span class="price">€{{ formatPrice(item.price) }}</span>
+                }
+              </div>
+              <div class="col-quantity">
+                <div class="quantity-controls">
+                  <button
+                    class="quantity-btn decrease"
+                    [disabled]="item.quantity <= 1 || isItemProcessing(item.id)"
+                    (click)="decrementQuantity(item)">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <input
+                    type="number"
+                    [value]="item.quantity"
+                    [disabled]="isItemProcessing(item.id)"
+                    min="1"
+                    [max]="item.product.stock"
+                    (change)="updateItemQuantity(item, $any($event.target).value)">
+                  <button
+                    class="quantity-btn increase"
+                    [disabled]="item.quantity >= item.product.stock || isItemProcessing(item.id)"
+                    (click)="incrementQuantity(item)">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-total">
+                <span class="price">€{{ formatPrice(item.total_price) }}</span>
+              </div>
+              <div class="col-action">
+                <button
+                  class="remove-btn"
+                  [appButtonLoader]="isItemProcessing(item.id)"
+                  (click)="removeItem(item)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="cart-summary">
+          <h2>Pasūtījuma kopsavilkums</h2>
+
+          <div class="summary-row subtotal">
+            <span>Starpsumma:</span>
+            <span>€{{ formatPrice(cart()?.total_price || 0) }}</span>
+          </div>
+
+          <div class="summary-row delivery">
+            <span>Piegāde:</span>
+            <span>Aprēķināta pie apmaksas</span>
+          </div>
+
+          <div class="summary-row total">
+            <span>Kopā:</span>
+            <span>€{{ formatPrice(cart()?.total_price || 0) }}</span>
+          </div>
+
+          <div class="cart-actions">
+            <button type="button" class="btn-secondary" (click)="clearCart()">
+              Iztukšot grozu
+            </button>
+            <a routerLink="/checkout" class="btn-primary">
+              Turpināt ar apmaksu
+            </a>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

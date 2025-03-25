@@ -7,6 +7,7 @@ import { Product } from '../../admin/products-page/models/products.models';
 import { Category } from '../../admin/categories-page/models/categories.models';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, debounceTime, distinctUntilChanged, EMPTY, finalize, Subscription, take, tap } from 'rxjs';
+import {CartService} from "../service/cart.service";
 
 @Component({
   selector: 'app-products',
@@ -25,6 +26,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private readonly cartService = inject(CartService);
 
   private subscriptions: Subscription[] = [];
   private categoriesLoaded = false;
@@ -339,7 +341,22 @@ export class ProductsComponent implements OnInit, OnDestroy {
   addToCart(product: Product, event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    //TODO: pievienot cart funkcionalitati
-    this.toastr.success(`${product.name} pievienots grozam`);
+
+    if (product.stock <= 0) {
+      this.toastr.error('Produkts nav pieejams');
+      return;
+    }
+
+    this.cartService.addToCart(product.id)
+      .pipe(
+        tap(() => {
+          this.toastr.success(product.name + ' veiksmīgi pievienots grozam')
+        }),
+        catchError(() => {
+          this.toastr.error('Neizdevās pievienot produktu grozam');
+          return EMPTY;
+        }),
+      )
+      .subscribe();
   }
 }
