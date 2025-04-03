@@ -61,7 +61,6 @@ export class CartService {
         this.cartItemCountSubject.next(response.data.total_items);
       }),
       catchError(error => {
-        this.toastr.error('Neizdevās atrast grozu');
         return EMPTY;
       }),
       tap(response => response.data)
