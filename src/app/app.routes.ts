@@ -35,25 +35,13 @@ export const routes: Routes = [
       },
       {
         path: 'products',
-        component: MainLayoutComponent,
-        children: [
-          {
-            path: '',
-            loadComponent: () => import('./components/main/products/products.component')
-              .then(m => m.ProductsComponent)
-          }
-        ]
+        loadComponent: () => import('./components/main/products/products.component')
+          .then(m => m.ProductsComponent)
       },
       {
         path: 'cart',
-        component: MainLayoutComponent,
-        children: [
-          {
-            path: '',
-            loadComponent: () => import('./components/main/cart/cart.component')
-              .then(m => m.CartComponent)
-          }
-        ]
+        loadComponent: () => import('./components/main/cart/cart.component')
+          .then(m => m.CartComponent)
       },
       {
         path: 'product/:slug',

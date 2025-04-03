@@ -8,35 +8,13 @@
   height: 80px;
   z-index: 1000;
   transition: all $transition-normal;
+  background-color: rgba($light-color, 0.98);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
   &.scrolled {
-    background-color: $light-color;
-    box-shadow: $box-shadow-md;
     height: 70px;
-
-    .logo-text {
-      color: $primary-color;
-    }
-
-    .nav-list > li > a {
-      color: $dark-color;
-
-      &.active, &:hover {
-        color: $primary-color;
-      }
-    }
-
-    .action-btn {
-      color: $dark-color;
-
-      &:hover {
-        color: $primary-color;
-      }
-    }
-
-    .mobile-menu-toggle {
-      color: $dark-color;
-    }
+    background-color: rgba($light-color, 1);
+    box-shadow: $box-shadow-md;
   }
 }
 
@@ -54,6 +32,7 @@
   display: flex;
   align-items: center;
   text-decoration: none;
+  z-index: 1001;
 
   .logo-text {
     font-size: $h3-font-size;
@@ -91,6 +70,8 @@
   display: flex;
   list-style: none;
   gap: $spacing-md;
+  margin: 0;
+  padding: 0;
 
   @media (max-width: $media-lg) {
     flex-direction: column;
@@ -123,27 +104,6 @@
       opacity: 1;
       visibility: visible;
       transform: translateY(0);
-
-      @media (max-width: $media-lg) {
-        position: static;
-        opacity: 1;
-        visibility: visible;
-        transform: none;
-        background: transparent;
-        box-shadow: none;
-        padding: $spacing-xs 0 $spacing-xs $spacing-lg;
-        margin-top: 0;
-
-        a {
-          color: $dark-medium;
-          padding: $spacing-xs 0;
-
-          &:hover {
-            background: transparent;
-            color: $primary-color;
-          }
-        }
-      }
     }
   }
 }
@@ -165,7 +125,24 @@
   z-index: 10;
 
   @media (max-width: $media-lg) {
-    display: none;
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    background: transparent;
+    box-shadow: none;
+    padding: $spacing-xs 0 $spacing-xs $spacing-lg;
+    margin-top: 0;
+
+    a {
+      color: $dark-medium;
+      padding: $spacing-xs 0;
+
+      &:hover {
+        background: transparent;
+        color: $primary-color;
+      }
+    }
   }
 
   li {
@@ -175,6 +152,7 @@
       color: $dark-color;
       text-decoration: none;
       transition: $transition-fast;
+      margin: 0;
 
       &:hover {
         background-color: rgba($primary-color, 0.1);
@@ -204,6 +182,7 @@
   display: flex;
   align-items: center;
   gap: $spacing-md;
+  z-index: 1001;
 }
 
 .action-btn {
@@ -259,6 +238,7 @@
     display: flex;
     opacity: 0;
     visibility: hidden;
+    z-index: 1005;
 
     @media (max-width: $media-md) {
       position: fixed;
@@ -321,6 +301,7 @@
     visibility: hidden;
     transform: translateY(10px);
     transition: all $transition-fast;
+    z-index: 1005;
 
     @media (max-width: $media-md) {
       width: 100%;
@@ -348,6 +329,8 @@
 
   ul {
     list-style: none;
+    margin: 0;
+    padding: 0;
 
     li {
       a, button {
@@ -362,6 +345,7 @@
         font-size: $base-font-size;
         cursor: pointer;
         transition: $transition-fast;
+        margin: 0;
 
         &:hover {
           color: $primary-color;

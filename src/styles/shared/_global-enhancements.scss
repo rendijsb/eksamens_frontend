@@ -1,10 +1,26 @@
 @import "../abstracts/_variables";
 
-body {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
   font-family: $font-stack;
   color: $dark-color;
   background-color: $secondary-color;
   line-height: $body-line-height;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
 }
 
 a,
@@ -30,4 +46,9 @@ h1, h2, h3, h4, h5, h6 {
   &:hover {
     box-shadow: $box-shadow-md;
   }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }

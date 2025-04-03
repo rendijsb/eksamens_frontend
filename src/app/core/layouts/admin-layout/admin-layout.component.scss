@@ -1,0 +1,11 @@
+.admin-layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.admin-main-content {
+  flex: 1 0 auto;
+  padding-top: 70px;
+  padding-bottom: 2rem;
+}
