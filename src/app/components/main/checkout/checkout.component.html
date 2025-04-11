@@ -1,0 +1,412 @@
+<div class="checkout-container">
+  <div class="checkout-header">
+    <h1>Apmaksa</h1>
+
+    <div class="checkout-steps">
+      <div
+        class="checkout-step"
+        [class.active]="currentStep() === checkoutSteps.DETAILS"
+        [class.completed]="currentStep() === checkoutSteps.PAYMENT || currentStep() === checkoutSteps.CONFIRMATION">
+        <div class="step-number">1</div>
+        <span class="step-label">Informācija</span>
+      </div>
+      <div class="step-connector"></div>
+      <div
+        class="checkout-step"
+        [class.active]="currentStep() === checkoutSteps.PAYMENT"
+        [class.completed]="currentStep() === checkoutSteps.CONFIRMATION">
+        <div class="step-number">2</div>
+        <span class="step-label">Maksājums</span>
+      </div>
+      <div class="step-connector"></div>
+      <div
+        class="checkout-step"
+        [class.active]="currentStep() === checkoutSteps.CONFIRMATION">
+        <div class="step-number">3</div>
+        <span class="step-label">Apstiprinājums</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="checkout-content">
+    @if (isLoading()) {
+      <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Ielādē datus...</p>
+      </div>
+    } @else {
+      <div class="checkout-main">
+        @if (currentStep() === checkoutSteps.DETAILS) {
+          <form [formGroup]="checkoutForm" class="checkout-form">
+            <section class="form-section" formGroupName="customer_details">
+              <h2 class="section-title">Klienta informācija</h2>
+
+              <div class="form-group">
+                <label for="customer-name">Vārds, uzvārds <span class="required">*</span></label>
+                <input
+                  type="text"
+                  id="customer-name"
+                  formControlName="customer_name"
+                  [appValidationError]="checkoutForm.get('customer_details.customer_name')?.touched">
+              </div>
+
+              <div class="form-group">
+                <label for="customer-email">E-pasts <span class="required">*</span></label>
+                <input
+                  type="email"
+                  id="customer-email"
+                  formControlName="customer_email"
+                  [appValidationError]="checkoutForm.get('customer_details.customer_email')?.touched">
+              </div>
+
+              <div class="form-group">
+                <label for="customer-phone">Telefona numurs</label>
+                <input
+                  type="tel"
+                  id="customer-phone"
+                  formControlName="customer_phone">
+              </div>
+            </section>
+
+            <section class="form-section" formGroupName="address_details">
+              <h2 class="section-title">Piegādes adrese</h2>
+
+              @if (addresses().length > 0) {
+                <div class="form-group">
+                  <label for="shipping-address-select">Izvēlieties saglabāto adresi</label>
+                  <select id="shipping-address-select" formControlName="shipping_address_id">
+                    <option [value]="">Ievadīt jaunu adresi</option>
+                    @for (address of addresses(); track address.id) {
+                      <option [value]="address.id">{{ address.name }} - {{ address.full_address }}</option>
+                    }
+                  </select>
+                </div>
+              }
+
+              @if (!useExistingShippingAddress()) {
+                <div formGroupName="shipping_address" class="address-form">
+                  <div class="form-group">
+                    <label for="shipping-name">Vārds, uzvārds <span class="required">*</span></label>
+                    <input
+                      type="text"
+                      id="shipping-name"
+                      formControlName="name"
+                      [appValidationError]="checkoutForm.get('address_details.shipping_address.name')?.touched">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="shipping-phone">Telefona numurs <span class="required">*</span></label>
+                    <input
+                      type="tel"
+                      id="shipping-phone"
+                      formControlName="phone"
+                      [appValidationError]="checkoutForm.get('address_details.shipping_address.phone')?.touched">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="shipping-street">Iela, mājas numurs <span class="required">*</span></label>
+                    <input
+                      type="text"
+                      id="shipping-street"
+                      formControlName="street_address"
+                      [appValidationError]="checkoutForm.get('address_details.shipping_address.street_address')?.touched">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="shipping-apartment">Dzīvoklis, biroja numurs</label>
+                    <input
+                      type="text"
+                      id="shipping-apartment"
+                      formControlName="apartment">
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="shipping-city">Pilsēta <span class="required">*</span></label>
+                      <input
+                        type="text"
+                        id="shipping-city"
+                        formControlName="city"
+                        [appValidationError]="checkoutForm.get('address_details.shipping_address.city')?.touched">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="shipping-postal">Pasta indekss <span class="required">*</span></label>
+                      <input
+                        type="text"
+                        id="shipping-postal"
+                        formControlName="postal_code"
+                        [appValidationError]="checkoutForm.get('address_details.shipping_address.postal_code')?.touched">
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="shipping-state">Novads/rajons</label>
+                      <input
+                        type="text"
+                        id="shipping-state"
+                        formControlName="state">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="shipping-country">Valsts <span class="required">*</span></label>
+                      <input
+                        type="text"
+                        id="shipping-country"
+                        formControlName="country"
+                        [appValidationError]="checkoutForm.get('address_details.shipping_address.country')?.touched">
+                    </div>
+                  </div>
+                </div>
+              }
+
+              <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="same_billing_address">
+                  <span>Norēķinu adrese sakrīt ar piegādes adresi</span>
+                </label>
+              </div>
+
+              @if (!useSameBillingAddress()) {
+                <h2 class="section-title">Norēķinu adrese</h2>
+
+                @if (addresses().length > 0) {
+                  <div class="form-group">
+                    <label for="billing-address-select">Izvēlieties saglabāto adresi</label>
+                    <select id="billing-address-select" formControlName="billing_address_id">
+                      <option [value]="">Ievadīt jaunu adresi</option>
+                      @for (address of addresses(); track address.id) {
+                        <option [value]="address.id">{{ address.name }} - {{ address.full_address }}</option>
+                      }
+                    </select>
+                  </div>
+                }
+
+                @if (!useExistingBillingAddress() && shouldShowBillingForm()) {
+                  <div formGroupName="billing_address" class="address-form">
+                    <div class="form-group">
+                      <label for="billing-name">Vārds, uzvārds <span class="required">*</span></label>
+                      <input
+                        type="text"
+                        id="billing-name"
+                        formControlName="name"
+                        [appValidationError]="checkoutForm.get('address_details.billing_address.name')?.touched">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="billing-phone">Telefona numurs <span class="required">*</span></label>
+                      <input
+                        type="tel"
+                        id="billing-phone"
+                        formControlName="phone"
+                        [appValidationError]="checkoutForm.get('address_details.billing_address.phone')?.touched">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="billing-street">Iela, mājas numurs <span class="required">*</span></label>
+                      <input
+                        type="text"
+                        id="billing-street"
+                        formControlName="street_address"
+                        [appValidationError]="checkoutForm.get('address_details.billing_address.street_address')?.touched">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="billing-apartment">Dzīvoklis, biroja numurs</label>
+                      <input
+                        type="text"
+                        id="billing-apartment"
+                        formControlName="apartment">
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="billing-city">Pilsēta <span class="required">*</span></label>
+                        <input
+                          type="text"
+                          id="billing-city"
+                          formControlName="city"
+                          [appValidationError]="checkoutForm.get('address_details.billing_address.city')?.touched">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="billing-postal">Pasta indekss <span class="required">*</span></label>
+                        <input
+                          type="text"
+                          id="billing-postal"
+                          formControlName="postal_code"
+                          [appValidationError]="checkoutForm.get('address_details.billing_address.postal_code')?.touched">
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="billing-state">Novads/rajons</label>
+                        <input
+                          type="text"
+                          id="billing-state"
+                          formControlName="state">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="billing-country">Valsts <span class="required">*</span></label>
+                        <input
+                          type="text"
+                          id="billing-country"
+                          formControlName="country"
+                          [appValidationError]="checkoutForm.get('address_details.billing_address.country')?.touched">
+                      </div>
+                    </div>
+                  </div>
+                }
+              }
+
+              <div class="form-group">
+                <label for="order-notes">Komentāri par pasūtījumu</label>
+                <textarea
+                  id="order-notes"
+                  formControlName="notes"
+                  rows="3"
+                  placeholder="Papildus informācija, piemēram, piegādes laiks vai īpaši norādījumi"></textarea>
+              </div>
+            </section>
+          </form>
+
+          <div class="checkout-actions">
+            <a routerLink="/cart" class="btn-secondary">Atpakaļ uz grozu</a>
+            <button
+              type="button"
+              class="btn-primary"
+              (click)="goToStep(checkoutSteps.PAYMENT)">
+              Turpināt ar maksājumu
+            </button>
+          </div>
+        }
+
+        @if (currentStep() === checkoutSteps.PAYMENT) {
+          <section class="payment-section">
+            <h2 class="section-title">Maksājuma informācija</h2>
+
+            @if (paymentError()) {
+              <div class="payment-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>{{ paymentError() }}</p>
+              </div>
+            }
+
+            <div class="payment-method">
+              <div id="payment-element" #paymentElement></div>
+            </div>
+
+            <div class="checkout-actions">
+              <button
+                type="button"
+                class="btn-secondary"
+                (click)="goToStep(checkoutSteps.DETAILS)"
+                [disabled]="isProcessingPayment()">
+                Atpakaļ
+              </button>
+              <button
+                type="button"
+                class="btn-primary"
+                [appButtonLoader]="isProcessingPayment()"
+                [disabled]="!stripeReady() || isProcessingPayment()"
+                (click)="processPayment()">
+                Apmaksāt {{ cartData()?.total_price || 0 | currency:'EUR' }}
+              </button>
+            </div>
+          </section>
+        }
+
+        @if (currentStep() === checkoutSteps.CONFIRMATION) {
+          <section class="confirmation-section">
+            <div class="confirmation-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Paldies par pasūtījumu!</h2>
+            <p>Jūsu pasūtījums ir veiksmīgi saņemts un tiek apstrādāts.</p>
+            <p>Pasūtījuma numurs: <strong>{{ orderId() }}</strong></p>
+            <p>Apstiprinājums ir nosūtīts uz jūsu e-pastu.</p>
+
+            <div class="confirmation-actions">
+              <button type="button" class="btn-secondary" (click)="returnToShopping()">
+                Turpināt iepirkties
+              </button>
+              <button type="button" class="btn-primary" (click)="viewOrder()">
+                Apskatīt pasūtījumu
+              </button>
+            </div>
+          </section>
+        }
+      </div>
+
+      <div class="checkout-sidebar">
+        <div class="order-summary">
+          <h2 class="summary-title">Pasūtījuma kopsavilkums</h2>
+
+          @if (cartData() && cartData()?.items) {
+            <div class="summary-products">
+              @for (item of cartData()?.items; track item.id) {
+                <div class="summary-product">
+                  <div class="product-image">
+                    @if (item.product.image) {
+                      <img [src]="item.product.image" [alt]="item.product.name">
+                    } @else {
+                      <div class="no-image">
+                        <i class="fas fa-box"></i>
+                      </div>
+                    }
+                  </div>
+                  <div class="product-details">
+                    <h3 class="product-name">{{ item.product.name }}</h3>
+                    <div class="product-meta">
+                      <span class="quantity">x{{ item.quantity }}</span>
+                      <span class="price">
+                        @if (item.sale_price) {
+                          {{ item.sale_price | currency:'EUR' }}
+                        } @else {
+                          {{ item.price | currency:'EUR' }}
+                        }
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="summary-totals">
+              <div class="summary-row">
+                <span>Preces ({{ cartData()?.total_items || 0 }})</span>
+                <span>{{ cartData()?.total_price | currency:'EUR' }}</span>
+              </div>
+              <div class="summary-row">
+                <span>Piegāde</span>
+                <span>Bezmaksas</span>
+              </div>
+              <div class="summary-row total">
+                <span>Kopā</span>
+                <span>{{ cartData()?.total_price | currency:'EUR' }}</span>
+              </div>
+            </div>
+          } @else {
+            <div class="empty-cart-message">
+              <p>Jūsu grozs ir tukšs</p>
+              <a routerLink="/products" class="btn-link">Turpināt iepirkties</a>
+            </div>
+          }
+
+          <div class="secure-checkout">
+            <div class="secure-badge">
+              <i class="fas fa-lock"></i>
+              <span>Droša Maksājumu Apstrāde</span>
+            </div>
+            <p class="security-note">
+              Visas transakcijas ir šifrētas, un jūsu privātā informācija netiek koplietota ar trešajām personām.
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

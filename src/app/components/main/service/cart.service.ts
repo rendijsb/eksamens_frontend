@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import {BehaviorSubject, Observable, catchError, tap, of, map, switchMap, EMPTY} from 'rxjs';
 import { ApiUrlService } from '../../../shared/services/api.service';
 import { ToastrService } from 'ngx-toastr';
+import {AuthService} from "../../auth/services/auth.service";
 
 export interface CartItem {
   id: number;
@@ -45,6 +46,7 @@ export class CartService {
   private readonly http = inject(HttpClient);
   private readonly apiUrlService = inject(ApiUrlService);
   private readonly toastr = inject(ToastrService);
+  private readonly authService = inject(AuthService);
 
   private cartSubject = new BehaviorSubject<Cart | null>(null);
   private cartItemCountSubject = new BehaviorSubject<number>(0);
@@ -76,6 +78,7 @@ export class CartService {
       tap(response => {
         this.cartSubject.next(response.body?.data || null);
         this.cartItemCountSubject.next(response.body?.data.total_items || 0);
+        console.log('Session ID:', response.body?.data.session_id);
       }),
       map(response => response.body as CartResponse),
       catchError(error => {
@@ -133,25 +136,46 @@ export class CartService {
       catchError(error => {
         this.cartSubject.next(null);
         this.cartItemCountSubject.next(0);
-        return EMPTY;
+        return of({ success: true });
       })
     );
   }
 
   migrateCart(): Observable<CartResponse> {
+    const userId = this.authService.user()?.id;
+    const sessionId = this.getSessionIdFromCookie();
+
+    if (!userId || !sessionId) {
+      return this.getCart();
+    }
+
     return this.http.post<CartResponse>(
       this.apiUrlService.getUrl('api/cart/migrate'),
-      {}
+      {
+        user_id: userId,
+        session_id: sessionId
+      },
+      { withCredentials: true }
     ).pipe(
       tap(response => {
         this.cartSubject.next(response.data);
         this.cartItemCountSubject.next(response.data.total_items);
       }),
       catchError(error => {
-        return EMPTY;
-      }),
-      tap(response => response.data)
+        return this.getCart();
+      })
     );
+  }
+
+  private getSessionIdFromCookie(): string | null {
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'cart_session_id') {
+        return value;
+      }
+    }
+    return null;
   }
 
   private ensureCartExists(): Observable<Cart> {

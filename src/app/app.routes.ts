@@ -148,5 +148,14 @@ export const routes: Routes = [
         ]
       }
     ]
-  }
+  },
+  {
+    path: 'checkout',
+    loadComponent: () => import('./components/main/checkout/checkout.component')
+      .then(m => m.CheckoutComponent)
+  },
+  {
+    path: 'checkout/confirmation',
+    redirectTo: '/checkout',
+  },
 ];

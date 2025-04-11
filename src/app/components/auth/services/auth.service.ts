@@ -115,4 +115,20 @@ export class AuthService {
     this.setUserData(updatedUser);
     this.currentUser.set(updatedUser);
   }
+
+  getCurrentUser(): User | null {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        return JSON.parse(userData);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getCurrentUser() && !!localStorage.getItem('token');
+  }
 }

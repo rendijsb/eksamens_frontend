@@ -52,10 +52,12 @@ export class LoginComponent {
           const user = response.data;
           this.toastr.success('Jūs esat veiksmīgi ienācis sistēmā');
           this.authService.handleSuccessfulLogin(user);
-
           this.cartService.migrateCart().pipe(
             catchError(() => {
               return EMPTY;
+            }),
+            finalize(() => {
+              this.cartService.migrateCart().subscribe();
             })
           ).subscribe();
         }),
