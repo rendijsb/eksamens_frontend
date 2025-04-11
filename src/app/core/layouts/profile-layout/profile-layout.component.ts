@@ -19,11 +19,7 @@ export class ProfileLayoutComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      const currentUser = this.authService.user();
-
-      if (currentUser) {
-        this.user.set(currentUser);
-      }
+      this.user.set(this.authService.user());
     });
   }
 

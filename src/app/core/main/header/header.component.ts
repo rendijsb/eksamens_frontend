@@ -1,4 +1,4 @@
-import {Component, HostListener, inject, OnInit, signal} from '@angular/core';
+import {Component, effect, HostListener, inject, OnInit, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import {Category} from "../../../components/admin/categories-page/models/categories.models";
@@ -37,6 +37,13 @@ export class HeaderComponent implements OnInit {
   searchQuery = signal('');
   isAuthenticated = signal(false);
   currentUser = signal<any>(null);
+
+  constructor() {
+    effect(() => {
+      this.isAuthenticated.set(!!this.authService.user());
+      this.currentUser.set(this.authService.user());
+    });
+  }
 
   ngOnInit(): void {
     this.fetchAllCategories();

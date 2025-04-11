@@ -66,6 +66,7 @@ export class AuthService {
         localStorage.removeItem(this.tokenKey);
         localStorage.removeItem(this.userKey);
         this.currentUser.set(null);
+        this.checkAuthStatus();
         this.router.navigate(['/login']);
       })
     );
@@ -130,5 +131,18 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return !!this.getCurrentUser() && !!localStorage.getItem('token');
+  }
+
+  checkAuthStatus(): void {
+    const token = this.getTokenFromStorage();
+    const userData = this.getUserFromStorage();
+
+    if (token && userData) {
+      this.currentUser.set(userData);
+    } else {
+      localStorage.removeItem(this.tokenKey);
+      localStorage.removeItem(this.userKey);
+      this.currentUser.set(null);
+    }
   }
 }
