@@ -56,9 +56,6 @@ export class LoginComponent {
             catchError(() => {
               return EMPTY;
             }),
-            finalize(() => {
-              this.cartService.migrateCart().subscribe();
-            })
           ).subscribe();
         }),
         catchError(error => {

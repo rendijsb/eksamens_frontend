@@ -73,14 +73,16 @@ export class CartService {
     return this.http.post<CartResponse>(
       this.apiUrlService.getUrl('api/cart/add'),
       { product_id: productId, quantity },
-      { withCredentials: true, observe: 'response' }
+      { withCredentials: true }
     ).pipe(
       tap(response => {
-        this.cartSubject.next(response.body?.data || null);
-        this.cartItemCountSubject.next(response.body?.data.total_items || 0);
-        console.log('Session ID:', response.body?.data.session_id);
+        this.cartSubject.next(response.data);
+        this.cartItemCountSubject.next(response.data.total_items || 0);
+
+        if (response.data.session_id && !this.getSessionIdFromCookie()) {
+          document.cookie = `cart_session_id=${response.data.session_id}; path=/; max-age=${60 * 24 * 30}`;
+        }
       }),
-      map(response => response.body as CartResponse),
       catchError(error => {
         this.toastr.error('Neizdevās pievienot preci grozam');
         return EMPTY;
