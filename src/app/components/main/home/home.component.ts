@@ -1,6 +1,6 @@
 import {Component, inject, OnInit, signal, WritableSignal} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {Product} from "../../admin/products-page/models/products.models";
 import {Category} from "../../admin/categories-page/models/categories.models";
 import {PublicService} from "../service/public.service";
@@ -8,6 +8,7 @@ import {ToastrService} from "ngx-toastr";
 import {catchError, EMPTY, tap} from "rxjs";
 import {Banner} from "../../admin/banners-page/models/banner.models";
 import {CartService} from "../service/cart.service";
+import {AuthService} from "../../auth/services/auth.service";
 
 @Component({
   selector: 'app-home',
@@ -23,6 +24,8 @@ export class HomeComponent implements OnInit {
   private readonly publicService = inject(PublicService);
   private readonly toastr = inject(ToastrService);
   private readonly cartService = inject(CartService);
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
   protected readonly featuredProducts: WritableSignal<Product[] | null> = signal<Product[] | null>(null);
   protected readonly categories: WritableSignal<Category[] | null> = signal<Category[] | null>(null);
@@ -99,6 +102,12 @@ export class HomeComponent implements OnInit {
   addToCart(product: Product, event: Event): void {
     event.preventDefault();
     event.stopPropagation();
+
+    if (!this.authService.isAuthenticated()) {
+      this.toastr.info('Lūdzu, ielogojietes, lai pievienotu preces grozam');
+      this.router.navigate(['/login']);
+      return;
+    }
 
     if (product.stock <= 0) {
       this.toastr.error('Produkts nav pieejams');

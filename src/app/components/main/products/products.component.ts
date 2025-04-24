@@ -8,6 +8,7 @@ import { Category } from '../../admin/categories-page/models/categories.models';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, debounceTime, distinctUntilChanged, EMPTY, finalize, Subscription, take, tap } from 'rxjs';
 import {CartService} from "../service/cart.service";
+import {AuthService} from "../../auth/services/auth.service";
 
 @Component({
   selector: 'app-products',
@@ -27,6 +28,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly cartService = inject(CartService);
+  private readonly authService = inject(AuthService);
 
   private subscriptions: Subscription[] = [];
   private categoriesLoaded = false;
@@ -341,6 +343,12 @@ export class ProductsComponent implements OnInit, OnDestroy {
   addToCart(product: Product, event: Event): void {
     event.preventDefault();
     event.stopPropagation();
+
+    if (!this.authService.isAuthenticated()) {
+      this.toastr.info('Lūdzu, ielogojietes, lai pievienotu preces grozam');
+      this.router.navigate(['/login']);
+      return;
+    }
 
     if (product.stock <= 0) {
       this.toastr.error('Produkts nav pieejams');

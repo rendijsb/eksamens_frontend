@@ -110,6 +110,12 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   readonly checkoutSteps = CheckoutStep;
 
   ngOnInit(): void {
+    if (!this.authService.isAuthenticated()) {
+      this.toastr.info('Lūdzu, ielogojietes, lai veiktu apmaksu');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     this.loadData();
     this.setupFormListeners();
   }
@@ -257,6 +263,12 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   }
 
   initiatePayment(): void {
+    if (!this.authService.isAuthenticated()) {
+      this.toastr.info('Lūdzu, ielogojietes, lai veiktu apmaksu');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     this.isLoading.set(true);
 
     const checkoutDetails: CheckoutDetails = this.createCheckoutPayload();
@@ -297,8 +309,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       customer_phone: customerDetails.customer_phone,
       same_billing_address: addressDetails.same_billing_address,
       payment_method: formValue.payment_method,
-      notes: customerDetails.notes,
-      session_id: this.cartData()?.session_id ?? undefined
+      notes: customerDetails.notes
     };
 
     if (addressDetails.shipping_address_id) {
@@ -412,24 +423,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       this.toastr.error('Radās neparedzēta kļūda');
       this.isProcessingPayment.set(false);
     }
-  }
-
-  migrateCartAfterLogin(): void {
-    if (!this.authService.isAuthenticated()) {
-      return;
-    }
-
-    this.cartService.migrateCart().pipe(
-      tap(response => {
-        this.cartData.set(response.data);
-        this.addressService.getUserAddresses().subscribe(addresses => {
-          this.addresses.set(addresses.data);
-        });
-      }),
-      catchError(error => {
-        return EMPTY;
-      })
-    ).subscribe();
   }
 
   getAddressById(id: number): Address | undefined {

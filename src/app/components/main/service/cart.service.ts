@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {BehaviorSubject, Observable, catchError, tap, of, map, switchMap, EMPTY} from 'rxjs';
+import { BehaviorSubject, Observable, catchError, tap, of, EMPTY } from 'rxjs';
 import { ApiUrlService } from '../../../shared/services/api.service';
 import { ToastrService } from 'ngx-toastr';
-import {AuthService} from "../../auth/services/auth.service";
+import { AuthService } from "../../auth/services/auth.service";
+import { Router } from '@angular/router';
 
 export interface CartItem {
   id: number;
@@ -26,8 +27,7 @@ export interface CartItem {
 
 export interface Cart {
   id: number;
-  user_id: number | null;
-  session_id: string | null;
+  user_id: number;
   items: CartItem[];
   total_price: number;
   total_items: number;
@@ -47,6 +47,7 @@ export class CartService {
   private readonly apiUrlService = inject(ApiUrlService);
   private readonly toastr = inject(ToastrService);
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   private cartSubject = new BehaviorSubject<Cart | null>(null);
   private cartItemCountSubject = new BehaviorSubject<number>(0);
@@ -55,56 +56,43 @@ export class CartService {
 
   getCart(): Observable<CartResponse> {
     return this.http.get<CartResponse>(
-      this.apiUrlService.getUrl('api/cart'),
-      { withCredentials: true }
+      this.apiUrlService.getUrl('api/cart')
     ).pipe(
       tap(response => {
         this.cartSubject.next(response.data);
-        this.cartItemCountSubject.next(response.data.total_items);
+        this.cartItemCountSubject.next(response.data?.total_items || 0);
       }),
       catchError(error => {
         return EMPTY;
-      }),
-      tap(response => response.data)
+      })
     );
   }
 
   addToCart(productId: number, quantity: number = 1): Observable<CartResponse> {
     return this.http.post<CartResponse>(
       this.apiUrlService.getUrl('api/cart/add'),
-      { product_id: productId, quantity },
-      { withCredentials: true }
+      { product_id: productId, quantity }
     ).pipe(
       tap(response => {
         this.cartSubject.next(response.data);
-        this.cartItemCountSubject.next(response.data.total_items || 0);
-
-        if (response.data.session_id && !this.getSessionIdFromCookie()) {
-          document.cookie = `cart_session_id=${response.data.session_id}; path=/; max-age=${60 * 24 * 30}`;
-        }
+        this.cartItemCountSubject.next(response.data?.total_items || 0);
       }),
       catchError(error => {
-        this.toastr.error('Neizdevās pievienot preci grozam');
         return EMPTY;
       })
     );
   }
 
   updateCartItem(itemId: number, quantity: number): Observable<CartResponse> {
-    return this.ensureCartExists().pipe(
-      switchMap(() => {
-        return this.http.patch<CartResponse>(
-          this.apiUrlService.getUrl(`api/cart/update/${itemId}`),
-          { quantity },
-          { withCredentials: true }
-        );
-      }),
+    return this.http.patch<CartResponse>(
+      this.apiUrlService.getUrl(`api/cart/update/${itemId}`),
+      { quantity }
+    ).pipe(
       tap(response => {
         this.cartSubject.next(response.data);
-        this.cartItemCountSubject.next(response.data.total_items);
+        this.cartItemCountSubject.next(response.data?.total_items || 0);
       }),
       catchError(error => {
-        this.toastr.error('Neizdevās atjaunināt grozu');
         return EMPTY;
       })
     );
@@ -112,15 +100,13 @@ export class CartService {
 
   removeFromCart(itemId: number): Observable<CartResponse> {
     return this.http.delete<CartResponse>(
-      this.apiUrlService.getUrl(`api/cart/remove/${itemId}`),
-      { withCredentials: true }
+      this.apiUrlService.getUrl(`api/cart/remove/${itemId}`)
     ).pipe(
       tap(response => {
         this.cartSubject.next(response.data);
         this.cartItemCountSubject.next(response.data?.total_items || 0);
       }),
       catchError(error => {
-        this.toastr.error('Neizdevās noņemt preci no groza');
         return EMPTY;
       })
     );
@@ -128,8 +114,7 @@ export class CartService {
 
   clearCart(): Observable<any> {
     return this.http.delete(
-      this.apiUrlService.getUrl('api/cart/clear'),
-      { withCredentials: true }
+      this.apiUrlService.getUrl('api/cart/clear')
     ).pipe(
       tap(() => {
         this.cartSubject.next(null);
@@ -141,62 +126,6 @@ export class CartService {
         return of({ success: true });
       })
     );
-  }
-
-  migrateCart(): Observable<CartResponse> {
-    const userId = this.authService.user()?.id;
-    const sessionId = this.getSessionIdFromCookie();
-
-    if (!userId || !sessionId) {
-      return this.getCart();
-    }
-
-    return this.http.post<CartResponse>(
-      this.apiUrlService.getUrl('api/cart/migrate'),
-      {
-        user_id: userId,
-        session_id: sessionId
-      },
-      { withCredentials: true }
-    ).pipe(
-      tap(response => {
-        this.cartSubject.next(response.data);
-        this.cartItemCountSubject.next(response.data.total_items);
-      }),
-      catchError(error => {
-        return this.getCart();
-      })
-    );
-  }
-
-  private getSessionIdFromCookie(): string | null {
-    const cookies = document.cookie.split(';');
-    for (const cookie of cookies) {
-      const [name, value] = cookie.trim().split('=');
-      if (name === 'cart_session_id') {
-        return value;
-      }
-    }
-    return null;
-  }
-
-  private ensureCartExists(): Observable<Cart> {
-    const currentCart = this.cartSubject.getValue();
-    if (currentCart) {
-      return of(currentCart);
-    } else {
-      return this.http.post<CartResponse>(
-        this.apiUrlService.getUrl('api/cart/add'),
-        { product_id: null, quantity: 0 },
-        { withCredentials: true }
-      ).pipe(
-        map(response => response.data),
-        tap(cart => {
-          this.cartSubject.next(cart);
-          this.cartItemCountSubject.next(cart.total_items || 0);
-        })
-      );
-    }
   }
 
   getCurrentCart(): Cart | null {

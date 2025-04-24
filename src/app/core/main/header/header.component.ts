@@ -42,6 +42,19 @@ export class HeaderComponent implements OnInit {
     effect(() => {
       this.isAuthenticated.set(!!this.authService.user());
       this.currentUser.set(this.authService.user());
+
+      // if (this.isAuthenticated()) {
+      //   this.cartService.getCart().subscribe({
+      //     next: (response) => {
+      //       this.cartItemCount.set(response.data?.total_items || 0);
+      //     },
+      //     error: () => {
+      //       this.cartItemCount.set(0);
+      //     }
+      //   });
+      // } else {
+      //   this.cartItemCount.set(0);
+      // }
     });
   }
 
@@ -49,15 +62,19 @@ export class HeaderComponent implements OnInit {
     this.fetchAllCategories();
     this.checkAuthStatus();
 
-    this.cartService.getCart().subscribe({
-      next: (response) => {
-        this.cartItemCount.set(response.data?.total_items || 0);
-      },
-    });
+    if (this.isAuthenticated()) {
+      this.cartService.getCart().subscribe({
+        next: (response) => {
+          this.cartItemCount.set(response.data?.total_items || 0);
+        },
+      });
 
-    this.cartService.cartItemCount$.subscribe(count => {
-      this.cartItemCount.set(count);
-    });
+      this.cartService.cartItemCount$.subscribe(count => {
+        this.cartItemCount.set(count);
+      });
+    } else {
+      this.cartItemCount.set(0);
+    }
   }
 
   fetchAllCategories(): void {

@@ -16,7 +16,6 @@ export interface CheckoutDetails {
   same_billing_address: boolean;
   payment_method: string;
   notes?: string;
-  session_id?: string;
 }
 
 export interface PaymentProcessRequest {
@@ -99,8 +98,7 @@ export class CheckoutService {
   initiateCheckout(checkoutDetails: CheckoutDetails): Observable<CheckoutResponse> {
     return this.http.post<CheckoutResponse>(
       this.apiUrlService.getUrl('api/checkout/initiate'),
-      checkoutDetails,
-      { withCredentials: true }
+      checkoutDetails
     );
   }
 

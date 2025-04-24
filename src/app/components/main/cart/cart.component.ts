@@ -1,11 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { Cart, CartItem, CartService } from '../service/cart.service';
 import { EMPTY, catchError, finalize, tap } from 'rxjs';
 import { ButtonLoaderDirective } from '../../../shared/directives/button-loader/button-loader.directive';
 import { FormsModule } from '@angular/forms';
-import {ToastrService} from "ngx-toastr";
+import { ToastrService } from "ngx-toastr";
+import { AuthService } from '../../auth/services/auth.service';
 
 @Component({
   selector: 'app-cart',
@@ -22,13 +23,22 @@ import {ToastrService} from "ngx-toastr";
 export class CartComponent implements OnInit {
   private readonly cartService = inject(CartService);
   private readonly toastr = inject(ToastrService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   protected readonly cart = signal<Cart | null>(null);
   protected readonly isLoading = signal<boolean>(true);
   protected readonly processingItemIds = signal<number[]>([]);
+  protected readonly isAuthenticated = signal<boolean>(false);
 
   ngOnInit(): void {
-    this.loadCart();
+    this.isAuthenticated.set(this.authService.isAuthenticated());
+
+    if (this.isAuthenticated()) {
+      this.loadCart();
+    } else {
+      this.isLoading.set(false);
+    }
   }
 
   loadCart(): void {
@@ -54,6 +64,12 @@ export class CartComponent implements OnInit {
   }
 
   updateItemQuantity(item: CartItem, newQuantityValue: string | number): void {
+    if (!this.isAuthenticated()) {
+      this.toastr.info('Lūdzu, ielogojietes, lai atjauninātu grozu');
+      this.navigateToLogin();
+      return;
+    }
+
     const newQuantity = typeof newQuantityValue === 'string'
       ? parseInt(newQuantityValue, 10)
       : newQuantityValue;
@@ -80,6 +96,12 @@ export class CartComponent implements OnInit {
   }
 
   removeItem(item: CartItem): void {
+    if (!this.isAuthenticated()) {
+      this.toastr.info('Lūdzu, ielogojietes, lai izmantotu grozu');
+      this.navigateToLogin();
+      return;
+    }
+
     this.setProcessingItem(item.id, true);
 
     this.cartService.removeFromCart(item.id)
@@ -98,6 +120,12 @@ export class CartComponent implements OnInit {
   }
 
   clearCart(): void {
+    if (!this.isAuthenticated()) {
+      this.toastr.info('Lūdzu, ielogojietes, lai izmantotu grozu');
+      this.navigateToLogin();
+      return;
+    }
+
     if (!confirm('Vai tiešām vēlies notīrīt grozu?')) {
       return;
     }
@@ -150,5 +178,9 @@ export class CartComponent implements OnInit {
 
   formatPrice(price: number): string {
     return price.toFixed(2);
+  }
+
+  navigateToLogin(): void {
+    this.router.navigate(['/login']);
   }
 }

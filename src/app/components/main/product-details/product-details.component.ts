@@ -9,6 +9,7 @@ import { Product } from '../../admin/products-page/models/products.models';
 import { Image } from '../../admin/shared/services/image.service';
 import { ButtonLoaderDirective } from '../../../shared/directives/button-loader/button-loader.directive';
 import {CartService} from "../service/cart.service";
+import {AuthService} from "../../auth/services/auth.service";
 
 @Component({
   selector: 'app-product-details',
@@ -29,6 +30,7 @@ export class ProductDetailsComponent implements OnInit {
   private readonly toastr = inject(ToastrService);
   private readonly fb = inject(FormBuilder);
   private readonly cartService = inject(CartService);
+  private readonly authService = inject(AuthService);
 
   product: WritableSignal<Product | null> = signal(null);
   productImages: WritableSignal<Image[]> = signal([]);
@@ -177,6 +179,12 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   addToCart(): void {
+    if (!this.authService.isAuthenticated()) {
+      this.toastr.info('Lūdzu, ielogojietes, lai pievienotu preces grozam');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     if (!this.product() || !this.isInStock()) {
       return;
     }

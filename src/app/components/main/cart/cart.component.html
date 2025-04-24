@@ -10,7 +10,21 @@
       </div>
     </div>
 
-    @if (isLoading()) {
+    @if (!isAuthenticated()) {
+      <div class="auth-required-message">
+        <i class="fas fa-lock"></i>
+        <h2>Lūdzu, ielogojietes, lai piekļūtu grozam</h2>
+        <p>Lai pievienotu preces grozam un veiktu pasūtījumu, jums ir jāielogojas savā kontā.</p>
+        <div class="auth-actions">
+          <button type="button" class="btn-primary" (click)="navigateToLogin()">
+            Ielogoties
+          </button>
+          <a routerLink="/register" class="btn-secondary">
+            Reģistrēties
+          </a>
+        </div>
+      </div>
+    } @else if (isLoading()) {
       <div class="loading-container">
         <div class="spinner"></div>
         <p>Ielādē grozu...</p>
