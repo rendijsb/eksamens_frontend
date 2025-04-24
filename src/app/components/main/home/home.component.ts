@@ -5,7 +5,7 @@ import {Product} from "../../admin/products-page/models/products.models";
 import {Category} from "../../admin/categories-page/models/categories.models";
 import {PublicService} from "../service/public.service";
 import {ToastrService} from "ngx-toastr";
-import {catchError, EMPTY, tap} from "rxjs";
+import {catchError, EMPTY, finalize, tap} from "rxjs";
 import {Banner} from "../../admin/banners-page/models/banner.models";
 import {CartService} from "../service/cart.service";
 import {AuthService} from "../../auth/services/auth.service";
@@ -34,6 +34,8 @@ export class HomeComponent implements OnInit {
 
   currentSlideIndex = signal(0);
   emailInput = signal('');
+
+  protected readonly processingProductIds = signal<number[]>([]);
 
   ngOnInit(): void {
     this.fetchAllProducts();
@@ -99,6 +101,23 @@ export class HomeComponent implements OnInit {
     this.currentSlideIndex.set(index);
   }
 
+  isProductProcessing(productId: number): boolean {
+    return this.processingProductIds().includes(productId);
+  }
+
+  private setProcessingProduct(productId: number, isProcessing: boolean): void {
+    this.processingProductIds.update(ids => {
+      if (isProcessing) {
+        if (!ids.includes(productId)) {
+          return [...ids, productId];
+        }
+        return ids;
+      } else {
+        return ids.filter(id => id !== productId);
+      }
+    });
+  }
+
   addToCart(product: Product, event: Event): void {
     event.preventDefault();
     event.stopPropagation();
@@ -110,19 +129,36 @@ export class HomeComponent implements OnInit {
     }
 
     if (product.stock <= 0) {
-      this.toastr.error('Produkts nav pieejams');
+      this.toastr.error('Produkts nav pieejams noliktavā');
       return;
     }
 
+    if (this.isProductProcessing(product.id)) {
+      return;
+    }
+
+    this.setProcessingProduct(product.id, true);
+
     this.cartService.addToCart(product.id)
       .pipe(
-        tap(() => {
-          this.toastr.success(product.name + ' veiksmīgi pievienots grozam')
+        tap((response) => {
+          if (response) {
+            this.toastr.success(product.name + ' veiksmīgi pievienots grozam');
+          } else {
+            this.toastr.error('Nepietiekams daudzums noliktavā');
+          }
         }),
-        catchError(() => {
-          this.toastr.error('Neizdevās pievienot produktu grozam');
+        catchError((error) => {
+          if (error.error?.message) {
+            this.toastr.error(error.error.message);
+          } else {
+            this.toastr.error('Neizdevās pievienot produktu grozam');
+          }
           return EMPTY;
         }),
+        finalize(() => {
+          this.setProcessingProduct(product.id, false);
+        })
       )
       .subscribe();
   }

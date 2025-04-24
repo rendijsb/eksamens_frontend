@@ -402,16 +402,19 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
           if (response.success) {
             this.toastr.success('Maksājums veiksmīgs!');
             this.currentStep.set(CheckoutStep.CONFIRMATION);
-
-            this.cartService.clearCart().subscribe();
           } else {
             this.paymentError.set('Maksājuma apstrāde neizdevās');
             this.toastr.error('Maksājuma apstrāde neizdevās');
           }
         }),
         catchError(error => {
-          this.paymentError.set('Neizdevās apstrādāt maksājumu');
-          this.toastr.error('Neizdevās apstrādāt maksājumu');
+          if (error.status === 401) {
+            this.toastr.error('Sesija ir beigusies. Lūdzu, ielogojieties vēlreiz.');
+            this.router.navigate(['/login'], { queryParams: { returnUrl: '/checkout' } });
+          } else {
+            this.paymentError.set('Neizdevās apstrādāt maksājumu');
+            this.toastr.error('Neizdevās apstrādāt maksājumu');
+          }
           return EMPTY;
         }),
         finalize(() => {

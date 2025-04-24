@@ -48,7 +48,7 @@
           </div>
 
           @for (item of cart()?.items; track item.id) {
-            <div class="cart-item">
+            <div class="cart-item" [class.stock-warning]="hasStockWarning(item.id)">
               <div class="col-product">
                 <div class="product-info">
                   <div class="product-image">
@@ -65,7 +65,11 @@
                       <a [routerLink]="['/product', item.product.slug]">{{ item.product.name }}</a>
                     </h3>
                     <p class="product-category">{{ item.product.category }}</p>
-                    @if (item.product.stock <= 5) {
+                    @if (hasStockWarning(item.id)) {
+                      <p class="stock-error-message">
+                        <i class="fas fa-exclamation-triangle"></i> {{ getStockWarning(item.id) }}
+                      </p>
+                    } @else if (item.product.stock <= 5) {
                       <p class="stock-warning">Atlicis tikai {{ item.product.stock }}</p>
                     }
                   </div>
@@ -83,20 +87,20 @@
                 <div class="quantity-controls">
                   <button
                     class="quantity-btn decrease"
-                    [disabled]="item.quantity <= 1 || isItemProcessing(item.id)"
+                    [disabled]="item.quantity <= 1 || isItemProcessing(item.id) || item.product.stock <= 0"
                     (click)="decrementQuantity(item)">
                     <i class="fas fa-minus"></i>
                   </button>
                   <input
                     type="number"
                     [value]="item.quantity"
-                    [disabled]="isItemProcessing(item.id)"
+                    [disabled]="isItemProcessing(item.id) || item.product.stock <= 0"
                     min="1"
                     [max]="item.product.stock"
                     (change)="updateItemQuantity(item, $any($event.target).value)">
                   <button
                     class="quantity-btn increase"
-                    [disabled]="item.quantity >= item.product.stock || isItemProcessing(item.id)"
+                    [disabled]="item.quantity >= item.product.stock || isItemProcessing(item.id) || item.product.stock <= 0"
                     (click)="incrementQuantity(item)">
                     <i class="fas fa-plus"></i>
                   </button>

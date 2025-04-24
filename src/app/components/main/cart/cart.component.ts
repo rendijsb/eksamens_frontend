@@ -31,6 +31,8 @@ export class CartComponent implements OnInit {
   protected readonly processingItemIds = signal<number[]>([]);
   protected readonly isAuthenticated = signal<boolean>(false);
 
+  protected readonly stockWarnings = signal<Record<number, string>>({});
+
   ngOnInit(): void {
     this.isAuthenticated.set(this.authService.isAuthenticated());
 
@@ -48,6 +50,7 @@ export class CartComponent implements OnInit {
       .pipe(
         tap(response => {
           this.cart.set(response.data);
+          this.checkStockLevels();
         }),
         catchError(error => {
           this.cart.set(null);
@@ -63,7 +66,27 @@ export class CartComponent implements OnInit {
       .subscribe();
   }
 
-  updateItemQuantity(item: CartItem, newQuantityValue: string | number): void {
+  checkStockLevels(): void {
+    if (!this.cart() || !this.cart()?.items) return;
+
+    const warnings: Record<number, string> = {};
+
+    this.cart()!.items.forEach(item => {
+      if (item.quantity > item.product.stock) {
+        warnings[item.id] = `Pieejami tikai ${item.product.stock} gb.`;
+
+        this.updateItemQuantity(item, item.product.stock, true);
+      }
+
+      if (item.product.stock <= 0) {
+        warnings[item.id] = 'Produkts nav pieejams noliktavā.';
+      }
+    });
+
+    this.stockWarnings.set(warnings);
+  }
+
+  updateItemQuantity(item: CartItem, newQuantityValue: string | number, silent: boolean = false): void {
     if (!this.isAuthenticated()) {
       this.toastr.info('Lūdzu, ielogojietes, lai atjauninātu grozu');
       this.navigateToLogin();
@@ -78,12 +101,40 @@ export class CartComponent implements OnInit {
       return;
     }
 
+    if (newQuantity > item.product.stock) {
+      if (!silent) {
+        this.toastr.warning(`Noliktavā pieejami tikai ${item.product.stock} gb.`);
+      }
+      if (newQuantity > item.product.stock) {
+        if (item.quantity !== item.product.stock) {
+          this.setProcessingItem(item.id, true);
+
+          this.cartService.updateCartItem(item.id, item.product.stock)
+            .pipe(
+              tap(response => {
+                this.cart.set(response.data);
+                this.checkStockLevels();
+              }),
+              catchError(() => {
+                return EMPTY;
+              }),
+              finalize(() => {
+                this.setProcessingItem(item.id, false);
+              })
+            )
+            .subscribe();
+        }
+      }
+      return;
+    }
+
     this.setProcessingItem(item.id, true);
 
     this.cartService.updateCartItem(item.id, newQuantity)
       .pipe(
         tap(response => {
           this.cart.set(response.data);
+          this.checkStockLevels();
         }),
         catchError(() => {
           return EMPTY;
@@ -108,6 +159,7 @@ export class CartComponent implements OnInit {
       .pipe(
         tap(response => {
           this.cart.set(response.data);
+          this.checkStockLevels();
         }),
         catchError(() => {
           return EMPTY;
@@ -136,6 +188,7 @@ export class CartComponent implements OnInit {
       .pipe(
         tap(() => {
           this.cart.set(null);
+          this.stockWarnings.set({});
         }),
         catchError(() => {
           return EMPTY;
@@ -150,6 +203,8 @@ export class CartComponent implements OnInit {
   incrementQuantity(item: CartItem): void {
     if (item.quantity < item.product.stock) {
       this.updateItemQuantity(item, item.quantity + 1);
+    } else {
+      this.toastr.warning(`Noliktavā pieejami tikai ${item.product.stock} gb.`);
     }
   }
 
@@ -161,6 +216,14 @@ export class CartComponent implements OnInit {
 
   isItemProcessing(itemId: number): boolean {
     return this.processingItemIds().includes(itemId);
+  }
+
+  hasStockWarning(itemId: number): boolean {
+    return !!this.stockWarnings()[itemId];
+  }
+
+  getStockWarning(itemId: number): string {
+    return this.stockWarnings()[itemId] || '';
   }
 
   private setProcessingItem(itemId: number, isProcessing: boolean): void {
