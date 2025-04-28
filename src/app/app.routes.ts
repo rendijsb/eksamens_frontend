@@ -1,27 +1,27 @@
+// src/app/app.routes.ts
+
 import { Routes } from '@angular/router';
-import {MainLayoutComponent} from "./core/layouts/main-layout/main-layout.component";
-import {AdminLayoutComponent} from "./core/layouts/admin-layout/admin-layout.component";
-import {authGuard} from "./components/auth/guards/auth.guard";
-import {RoleEnum} from "./components/auth/models/user.models";
-import {UsersComponent} from "./components/admin/users-page/users/users.component";
-import {UserFormComponent} from "./components/admin/users-page/user-form/user-form.component";
-import {DashboardComponent} from "./components/admin/dashboard-page/dashboard/dashboard.component";
-import {CategoriesAdminComponent} from "./components/admin/categories-page/categories-admin/categories-admin.component";
-import {
-  CategoriesAdminFormComponent
-} from "./components/admin/categories-page/categories-admin-form/categories-admin-form.component";
-import {ProductsAdminComponent} from "./components/admin/products-page/products-admin/products-admin.component";
-import {
-  ProductsAdminFormComponent
-} from "./components/admin/products-page/products-admin-form/products-admin-form.component";
-import {BannersAdminComponent} from "./components/admin/banners-page/banners-admin/banners-admin.component";
-import {BannerFormComponent} from "./components/admin/banners-page/banner-form/banner-form.component";
-import {ProfileLayoutComponent} from "./core/layouts/profile-layout/profile-layout.component";
-import {ProfileEditComponent} from "./components/profile/profile-edit/profile-edit.component";
-import {ProfileImageComponent} from "./components/profile/profile-image/profile-image.component";
-import {ChangePasswordComponent} from "./components/profile/change-password/change-password.component";
-import {AddressListComponent} from "./components/profile/address-list/address-list.component";
-import {AddressFormComponent} from "./components/profile/address-form/address-form.component";
+import { MainLayoutComponent } from "./core/layouts/main-layout/main-layout.component";
+import { AdminLayoutComponent } from "./core/layouts/admin-layout/admin-layout.component";
+import { authGuard } from "./components/auth/guards/auth.guard";
+import { RoleEnum } from "./components/auth/models/user.models";
+import { UsersComponent } from "./components/admin/users-page/users/users.component";
+import { UserFormComponent } from "./components/admin/users-page/user-form/user-form.component";
+import { DashboardComponent } from "./components/admin/dashboard-page/dashboard/dashboard.component";
+import { CategoriesAdminComponent } from "./components/admin/categories-page/categories-admin/categories-admin.component";
+import { CategoriesAdminFormComponent } from "./components/admin/categories-page/categories-admin-form/categories-admin-form.component";
+import { ProductsAdminComponent } from "./components/admin/products-page/products-admin/products-admin.component";
+import { ProductsAdminFormComponent } from "./components/admin/products-page/products-admin-form/products-admin-form.component";
+import { BannersAdminComponent } from "./components/admin/banners-page/banners-admin/banners-admin.component";
+import { BannerFormComponent } from "./components/admin/banners-page/banner-form/banner-form.component";
+import { ProfileLayoutComponent } from "./core/layouts/profile-layout/profile-layout.component";
+import { ProfileEditComponent } from "./components/profile/profile-edit/profile-edit.component";
+import { ProfileImageComponent } from "./components/profile/profile-image/profile-image.component";
+import { ChangePasswordComponent } from "./components/profile/change-password/change-password.component";
+import { AddressListComponent } from "./components/profile/address-list/address-list.component";
+import { AddressFormComponent } from "./components/profile/address-form/address-form.component";
+import { OrderListComponent } from "./components/profile/order-list/order-list.component";
+import { OrderDetailComponent } from "./components/profile/order-detail/order-detail.component";
 
 export const routes: Routes = [
   {
@@ -144,6 +144,19 @@ export const routes: Routes = [
           {
             path: 'edit/:id',
             component: AddressFormComponent
+          }
+        ]
+      },
+      {
+        path: 'orders',
+        children: [
+          {
+            path: '',
+            component: OrderListComponent
+          },
+          {
+            path: ':id',
+            component: OrderDetailComponent
           }
         ]
       }
