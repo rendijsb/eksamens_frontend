@@ -1,5 +1,3 @@
-// src/app/app.routes.ts
-
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from "./core/layouts/main-layout/main-layout.component";
 import { AdminLayoutComponent } from "./core/layouts/admin-layout/admin-layout.component";
@@ -22,6 +20,7 @@ import { AddressListComponent } from "./components/profile/address-list/address-
 import { AddressFormComponent } from "./components/profile/address-form/address-form.component";
 import { OrderListComponent } from "./components/profile/order-list/order-list.component";
 import { OrderDetailComponent } from "./components/profile/order-detail/order-detail.component";
+import {OrdersAdminComponent} from "./components/admin/orders-page/orders-admin/orders-admin.component";
 
 export const routes: Routes = [
   {
@@ -111,6 +110,15 @@ export const routes: Routes = [
       { path: '', component: BannersAdminComponent },
       { path: 'create', component: BannerFormComponent },
       { path: ':bannerId/edit', component: BannerFormComponent }
+    ]
+  },
+  {
+    path: 'admin/orders',
+    component: AdminLayoutComponent,
+    canActivate: [authGuard],
+    data: { roles: [RoleEnum.ADMIN, RoleEnum.MODERATOR] },
+    children: [
+      { path: '', component: OrdersAdminComponent }
     ]
   },
   {

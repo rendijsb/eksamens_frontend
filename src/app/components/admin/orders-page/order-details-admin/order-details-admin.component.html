@@ -1,0 +1,236 @@
+<div class="order-detail-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Pasūtījuma Informācija</h2>
+      <button class="btn-icon" (click)="close.emit()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Ielādē pasūtījuma informāciju...</p>
+      </div>
+    } @else if (!order()) {
+      <div class="no-order">
+        <i class="fas fa-box-open"></i>
+        <h3>Pasūtījums nav atrasts</h3>
+        <p>Pieprasītais pasūtījums nav pieejams</p>
+      </div>
+    } @else {
+      <div class="order-content">
+        <div class="order-sections">
+          <div class="order-section order-summary">
+            <h3>Pasūtījuma informācija</h3>
+
+            <div class="info-group">
+              <div class="info-row">
+                <span class="info-label">Pasūtījuma numurs:</span>
+                <span class="info-value">{{ order()?.order_number }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Pasūtījuma datums:</span>
+                <span class="info-value">{{ formatDate(order()!.created_at) }}</span>
+              </div>
+              <div class="info-row status-row">
+                <span class="info-label">Pasūtījuma statuss:</span>
+                @if (!isEditingStatus) {
+                  <span class="info-value">
+                    <span class="badge" [class]="getStatusClass(order()!.status)">
+                      {{ getStatusLabel(order()!.status) }}
+                    </span>
+                    @if (order()!.status !== OrderStatus.CANCELLED && order()!.status !== OrderStatus.COMPLETED) {
+                      <button class="btn-edit" (click)="startEditStatus()">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                    }
+                  </span>
+                } @else {
+                  <span class="info-value status-edit">
+                    <select [value]="order()!.status" #statusSelect>
+                      <option [value]="OrderStatus.PENDING">Gaida apstiprinājumu</option>
+                      <option [value]="OrderStatus.PROCESSING">Tiek apstrādāts</option>
+                      <option [value]="OrderStatus.COMPLETED">Pabeigts</option>
+                      <option [value]="OrderStatus.CANCELLED">Atcelts</option>
+                      <option [value]="OrderStatus.FAILED">Neizdevās</option>
+                    </select>
+                    <div class="edit-actions">
+                      <button class="btn btn-save" [appButtonLoader]="isStatusUpdating" (click)="updateStatus(statusSelect.value)">
+                        <i class="fas fa-check"></i>
+                      </button>
+                      <button class="btn btn-cancel" (click)="cancelEditStatus()">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </span>
+                }
+              </div>
+              <div class="info-row">
+                <span class="info-label">Maksājuma statuss:</span>
+                <span class="info-value">
+                  <span class="badge" [class]="getPaymentStatusClass(order()!.payment_status)">
+                    {{ getPaymentStatusLabel(order()!.payment_status) }}
+                  </span>
+                </span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Maksājuma veids:</span>
+                <span class="info-value">{{ order()?.payment_method }}</span>
+              </div>
+              @if (order()?.transaction_id) {
+                <div class="info-row">
+                  <span class="info-label">Transakcijas ID:</span>
+                  <span class="info-value">{{ order()?.transaction_id }}</span>
+                </div>
+              }
+              @if (order()?.notes) {
+                <div class="info-row">
+                  <span class="info-label">Piezīmes:</span>
+                  <span class="info-value notes">{{ order()?.notes }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="order-section customer-info">
+            <h3>Klienta informācija</h3>
+
+            <div class="info-group">
+              <div class="info-row">
+                <span class="info-label">Vārds, uzvārds:</span>
+                <span class="info-value">{{ order()?.customer_name }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">E-pasta adrese:</span>
+                <span class="info-value">{{ order()?.customer_email }}</span>
+              </div>
+              @if (order()?.customer_phone) {
+                <div class="info-row">
+                  <span class="info-label">Tālrunis:</span>
+                  <span class="info-value">{{ order()?.customer_phone }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="address-sections">
+          <div class="address-section">
+            <h3>Piegādes adrese</h3>
+
+            @if (order()?.shipping_address) {
+              <div class="address-details">
+                <p class="address-name">{{ order()?.shipping_address.name }}</p>
+                <p class="address-phone">{{ order()?.shipping_address.phone }}</p>
+                <p class="address-line">
+                  {{ order()?.shipping_address.street_address }}
+                  @if (order()?.shipping_address.apartment) {
+                    , {{ order()?.shipping_address.apartment }}
+                  }
+                </p>
+                <p class="address-line">
+                  {{ order()?.shipping_address.city }}
+                  @if (order()?.shipping_address.state) {
+                    , {{ order()?.shipping_address.state }}
+                  }
+                  , {{ order()?.shipping_address.postal_code }}
+                </p>
+                <p class="address-country">{{ order()?.shipping_address.country }}</p>
+              </div>
+            } @else {
+              <p class="no-address">Nav norādīta piegādes adrese</p>
+            }
+          </div>
+
+          <div class="address-section">
+            <h3>Norēķinu adrese</h3>
+
+            @if (order()?.billing_address) {
+              <div class="address-details">
+                <p class="address-name">{{ order()?.billing_address.name }}</p>
+                <p class="address-phone">{{ order()?.billing_address.phone }}</p>
+                <p class="address-line">
+                  {{ order()?.billing_address.street_address }}
+                  @if (order()?.billing_address.apartment) {
+                    , {{ order()?.billing_address.apartment }}
+                  }
+                </p>
+                <p class="address-line">
+                  {{ order()?.billing_address.city }}
+                  @if (order()?.billing_address.state) {
+                    , {{ order()?.billing_address.state }}
+                  }
+                  , {{ order()?.billing_address.postal_code }}
+                </p>
+                <p class="address-country">{{ order()?.billing_address.country }}</p>
+              </div>
+            } @else {
+              <p class="no-address">Nav norādīta norēķinu adrese</p>
+            }
+          </div>
+        </div>
+
+        <div class="items-section">
+          <h3>Pasūtītās preces</h3>
+
+          <div class="items-table">
+            <div class="items-header">
+              <div class="item-image-col">Attēls</div>
+              <div class="item-name-col">Produkts</div>
+              <div class="item-price-col">Cena</div>
+              <div class="item-quantity-col">Daudzums</div>
+              <div class="item-total-col">Summa</div>
+            </div>
+
+            <div class="items-body">
+              @for (item of order()?.items; track item.id) {
+                <div class="item-row">
+                  <div class="item-image-col">
+                    @if (item.product?.image) {
+                      <img [src]="item.product?.image" [alt]="item.product_name">
+                    } @else {
+                      <div class="no-image" [attr.title]="item.product ? 'Nav attēls' : 'Produkts vairs nav pieejams'">
+                        <i class="fas" [class.fa-box]="item.product" [class.fa-times-circle]="!item.product"></i>
+                        @if (!item.product) {
+                          <span class="deleted-badge">Dzēsts</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                  <div class="item-name-col">
+                    <span class="item-name">{{ item.product_name }}</span>
+                    @if (item.product) {
+                      <a [routerLink]="['/product', item.product.slug]" class="view-product">Skatīt produktu</a>
+                    }
+                  </div>
+                  <div class="item-price-col">
+                    @if (item.product_sale_price) {
+                      <span class="price sale">{{ formatPrice(item.product_sale_price) }} €</span>
+                      <span class="price original">{{ formatPrice(item.product_price) }} €</span>
+                    } @else {
+                      <span class="price">{{ formatPrice(item.product_price) }} €</span>
+                    }
+                  </div>
+                  <div class="item-quantity-col">
+                    {{ item.quantity }}
+                  </div>
+                  <div class="item-total-col">
+                    {{ formatPrice(item.total_price) }} €
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="items-footer">
+              <div class="total-row">
+                <span class="total-label">Kopējā summa:</span>
+                <span class="total-value">{{ formatPrice(order()!.total_amount) }} €</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,176 @@
+<div class="container">
+  <div class="dashboard">
+    <div class="dashboard-header">
+      <h1>Pasūtījumu Pārvaldība</h1>
+      <div class="actions">
+        <div class="search">
+          <input
+            type="search"
+            placeholder="Meklēt pasūtījumu..."
+            [value]="searchTerm()"
+            (input)="onSearch($event)">
+        </div>
+        <div class="filters">
+          <select (change)="onStatusChange($event)">
+            <option value="">Visi statusi</option>
+            <option value="pending">Gaida apstiprinājumu</option>
+            <option value="processing">Tiek apstrādāts</option>
+            <option value="completed">Pabeigts</option>
+            <option value="cancelled">Atcelts</option>
+            <option value="failed">Neizdevās</option>
+          </select>
+          <select (change)="onPaymentStatusChange($event)">
+            <option value="">Visi maksājumu statusi</option>
+            <option value="pending">Gaida maksājumu</option>
+            <option value="paid">Apmaksāts</option>
+            <option value="failed">Maksājums neizdevās</option>
+            <option value="refunded">Atmaksāts</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+        <tr>
+          <th (click)="onSort('id')" class="sortable">
+            ID
+            @if (sortBy() === 'id') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('order_number')" class="sortable">
+            Pasūtījuma Nr.
+            @if (sortBy() === 'order_number') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('customer_name')" class="sortable">
+            Klients
+            @if (sortBy() === 'customer_name') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('total_amount')" class="sortable">
+            Kopējā summa
+            @if (sortBy() === 'total_amount') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('status')" class="sortable">
+            Statuss
+            @if (sortBy() === 'status') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('payment_status')" class="sortable">
+            Maksājuma statuss
+            @if (sortBy() === 'payment_status') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th (click)="onSort('created_at')" class="sortable">
+            Izveidots
+            @if (sortBy() === 'created_at') {
+              <i class="fas" [class.fa-arrow-up]="sortDir() === 'asc'" [class.fa-arrow-down]="sortDir() === 'desc'"></i>
+            }
+          </th>
+          <th>Darbības</th>
+        </tr>
+        </thead>
+        <tbody>
+          @if (isLoading()) {
+            <tr>
+              <td colspan="8" class="loading-row">
+                <div class="spinner"></div>
+                <span>Ielādē pasūtījumus...</span>
+              </td>
+            </tr>
+          } @else if (orders().length === 0) {
+            <tr>
+              <td colspan="8" class="empty-row">
+                <div class="no-data-message">
+                  <i class="fas fa-inbox"></i>
+                  <p>Nav atrasti pasūtījumi</p>
+                </div>
+              </td>
+            </tr>
+          } @else {
+            @for (order of orders(); track order.id) {
+              <tr (click)="viewOrderDetails(order.id)">
+                <td>{{ order.id }}</td>
+                <td>{{ order.order_number }}</td>
+                <td>
+                  <div class="customer-info">
+                    <span class="customer-name">{{ order.customer_name }}</span>
+                    <span class="customer-email">{{ order.customer_email }}</span>
+                  </div>
+                </td>
+                <td>€{{ formatPrice(order.total_amount) }}</td>
+                <td>
+                  <span class="badge" [class]="getStatusClass(order.status)">
+                    {{ getStatusLabel(order.status) }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [class]="getPaymentStatusClass(order.payment_status)">
+                    {{ getPaymentStatusLabel(order.payment_status) }}
+                  </span>
+                </td>
+                <td>{{ formatDate(order.created_at) }}</td>
+                <td>
+                  <div class="actions">
+                    <button class="btn-icon" title="Skatīt" (click)="$event.stopPropagation(); viewOrderDetails(order.id)">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+
+      @if (pagination()) {
+        <div class="pagination-controls">
+          <div class="pagination-info">
+            Rādīts {{ getDisplayRange().start }} līdz {{ getDisplayRange().end }} no {{ getDisplayRange().total }} ierakstiem
+          </div>
+
+          <div class="pagination-buttons">
+            <button
+              [disabled]="currentPage() === 1"
+              (click)="onPageChange(currentPage() - 1)"
+              class="pagination-btn">
+              <i class="fas fa-chevron-left"></i> Iepriekšējā
+            </button>
+
+            @for (page of getPageNumbers(); track page) {
+              <button
+                class="pagination-btn"
+                [class.active]="currentPage() === page"
+                (click)="onPageChange(page)">
+                {{ page }}
+              </button>
+            }
+
+            <button
+              [disabled]="currentPage() === pagination()?.last_page"
+              (click)="onPageChange(currentPage() + 1)"
+              class="pagination-btn">
+              Nākamā <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+@if (showOrderDetails()) {
+  <app-order-details-admin
+    [orderId]="selectedOrderId()!"
+    (close)="closeOrderDetails()"
+  />
+}

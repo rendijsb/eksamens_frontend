@@ -1,3 +1,5 @@
+import {PaginationMeta} from "./pagination.models";
+
 export interface Order {
   id: number;
   order_number: string;
@@ -50,14 +52,7 @@ export enum PaymentStatus {
 
 export interface OrdersResponse {
   data: Order[];
-  meta?: {
-    current_page: number;
-    from: number;
-    last_page: number;
-    per_page: number;
-    to: number;
-    total: number;
-  };
+  meta: PaginationMeta;
 }
 
 export interface OrderResponse {
