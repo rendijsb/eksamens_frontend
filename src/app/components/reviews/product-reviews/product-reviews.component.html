@@ -1,0 +1,134 @@
+<div class="product-reviews">
+  <div class="reviews-header">
+    <h2>Klientu Atsauksmes</h2>
+
+    @if (authError()) {
+      <div class="auth-required-message">
+        <i class="fas fa-lock"></i>
+        <h3>Pierakstieties, lai redzētu atsauksmes</h3>
+        <p>Lai apskatītu vai pievienotu atsauksmes, lūdzu, pieraksties savā kontā.</p>
+        <button class="btn-login" (click)="login()">
+          <i class="fas fa-sign-in-alt"></i> Pierakstīties
+        </button>
+      </div>
+    } @else {
+      <div class="reviews-summary">
+        @if (reviews().length > 0) {
+          <div class="rating-overview">
+            <div class="average-rating">
+              <span class="rating-value">{{ averageRating() }}</span>
+              <app-star-rating [rating]="averageRating()" />
+            </div>
+            <div class="rating-count">
+              Balstīts uz {{ reviews().length }} {{ reviews().length === 1 ? 'atsauksmi' : (reviews().length % 10 === 1 && reviews().length % 100 !== 11 ? 'atsauksmi' : 'atsauksmēm') }}
+            </div>
+          </div>
+        } @else {
+          <div class="no-reviews-yet">
+            Šim produktam vēl nav atsauksmju.
+          </div>
+        }
+        <button class="btn-write-review" (click)="toggleReviewForm()">
+          Rakstīt Atsauksmi
+        </button>
+      </div>
+
+      @if (showReviewForm()) {
+        <div class="review-form">
+          <h3>Rakstīt Atsauksmi</h3>
+          <div class="form-group">
+            <label>Vērtējums</label>
+            <app-star-rating
+              [rating]="newRating()"
+              [interactive]="true"
+              [readonly]="false"
+              size="large"
+              (ratingChange)="onRatingChange($event)" />
+          </div>
+          <div class="form-group">
+            <label>Atsauksme (nav obligāti)</label>
+            <textarea
+              placeholder="Dalieties savā pieredzē ar šo produktu..."
+              [value]="newReviewText()"
+              (input)="onReviewTextChange($event)"
+              rows="4">
+            </textarea>
+          </div>
+          <div class="form-actions">
+            <button
+              class="btn-cancel"
+              (click)="resetForm()">
+              Atcelt
+            </button>
+            <button
+              class="btn-submit"
+              [disabled]="newRating() === 0 || isSubmitting()"
+              (click)="submitReview()">
+              <i class="fas" [class.fa-spinner]="isSubmitting()" [class.fa-check]="!isSubmitting()"></i>
+              Iesniegt Atsauksmi
+            </button>
+          </div>
+        </div>
+      }
+
+      <div class="reviews-content">
+        @if (isLoading()) {
+          <div class="loading-reviews">
+            <div class="spinner"></div>
+            <p>Ielādē atsauksmes...</p>
+          </div>
+        } @else if (reviews().length === 0) {
+
+        } @else {
+          <div class="reviews-list">
+            @for (review of reviews(); track review.id) {
+              <div class="review-card" [class.pending-review]="!review.is_approved">
+                <div class="review-header">
+                  <div class="user-info">
+                    <div class="avatar">
+                      @if (review.user.profile_image) {
+                        <img [src]="review.user.profile_image" [alt]="review.user.name">
+                      } @else {
+                        <div class="avatar-placeholder">
+                          {{ review.user.name.substring(0, 2).toUpperCase() }}
+                        </div>
+                      }
+                    </div>
+                    <div class="user-details">
+                      <h4 class="user-name">{{ review.user.name }}</h4>
+                      <span class="review-date">{{ formatDate(review.created_at) }}</span>
+                    </div>
+                  </div>
+                  <div class="review-rating">
+                    <app-star-rating [rating]="review.rating" size="small" />
+                  </div>
+                </div>
+
+                <div class="review-status-badge" [class.approved]="review.is_approved" [class.pending]="!review.is_approved">
+                  <i class="fas" [class.fa-check-circle]="review.is_approved" [class.fa-clock]="!review.is_approved"></i>
+                  {{ review.is_approved ? 'Apstiprināts' : 'Gaida apstiprinājumu' }}
+                </div>
+
+                @if (review.review_text) {
+                  <div class="review-body">
+                    <p>{{ review.review_text }}</p>
+                  </div>
+                }
+                @if (canDeleteReview(review)) {
+                  <div class="review-actions">
+                    <button
+                      class="btn-delete-review"
+                      (click)="deleteReview(review, $event)"
+                      title="Dzēst atsauksmi">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

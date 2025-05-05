@@ -11,7 +11,9 @@
             </div>
             <div class="banner-image">
               @if (slide.image_link) {
-                <img class="placeholder-image" [src]="slide.image_link || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'" alt="Bannera attēls">
+                <img class="placeholder-image"
+                     [src]="slide.image_link || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'"
+                     alt="Bannera attēls">
               }
               @if (!slide.image_link) {
                 <div class="placeholder-image">{{ slide.title }} Attēls</div>
@@ -54,9 +56,13 @@
         <a [routerLink]="['/category', category.id]" class="category-card">
           <div class="category-image">
             @if (category.image) {
-              <img class="placeholder-image" [src]="category.image || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'" alt="Kategorijas attels">
+              <img class="placeholder-image"
+                   [src]="category.image || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'"
+                   alt="Kategorijas attels">
             } @else {
-              <img class="placeholder-image" [src]="'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'" alt="Kategorijas attels">
+              <img class="placeholder-image"
+                   [src]="'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'"
+                   alt="Kategorijas attels">
             }
           </div>
           <div class="category-info">
@@ -86,7 +92,9 @@
             @if (product.primary_image) {
               <img class="placeholder-image" [src]="product.primary_image" alt="Produkta attels">
             } @else {
-              <img class="placeholder-image" [src]="'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'" alt="Produkta attels">
+              <img class="placeholder-image"
+                   [src]="'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'"
+                   alt="Produkta attels">
             }
             @if (product.sale_price) {
               <span class="sale-badge">Atlaide</span>
@@ -101,6 +109,24 @@
           <div class="product-info">
             <span class="product-category">{{ product.category }}</span>
             <h3 class="product-name">{{ product.name }}</h3>
+            @if (product.average_rating) {
+              <div class="product-rating">
+                <div class="rating-display">
+                  <span class="average-value">{{ getFormattedRating(product.average_rating) }}</span>
+                  <app-star-rating [rating]="product.average_rating" size="small"></app-star-rating>
+                </div>
+                <span class="rating-count" [title]="product.reviews_count + ' reviews'">
+                  ({{ product.reviews_count }})
+                </span>
+              </div>
+            }
+
+            @if (!product.average_rating) {
+              <div class="no-rating">
+                <span class="no-rating-text">No reviews yet</span>
+              </div>
+            }
+
             <div class="product-price">
               @if (product.is_sale_active) {
                 <span class="price sale">€{{ product.sale_price }}</span>
@@ -119,7 +145,8 @@
                       [disabled]="product.stock <= 0 || isProductProcessing(product.id)"
                       [class.processing]="isProductProcessing(product.id)"
                       (click)="addToCart(product, $event)">
-                <i class="fas" [class.fa-shopping-cart]="!isProductProcessing(product.id)" [class.fa-spinner]="isProductProcessing(product.id)"></i>
+                <i class="fas" [class.fa-shopping-cart]="!isProductProcessing(product.id)"
+                   [class.fa-spinner]="isProductProcessing(product.id)"></i>
                 @if (product.stock <= 0) {
                   Nav Noliktavā
                 } @else {

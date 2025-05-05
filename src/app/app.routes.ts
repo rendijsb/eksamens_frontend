@@ -21,6 +21,7 @@ import { AddressFormComponent } from "./components/profile/address-form/address-
 import { OrderListComponent } from "./components/profile/order-list/order-list.component";
 import { OrderDetailComponent } from "./components/profile/order-detail/order-detail.component";
 import {OrdersAdminComponent} from "./components/admin/orders-page/orders-admin/orders-admin.component";
+import {ReviewsAdminComponent} from "./components/admin/reviews-page/reviews-admin/reviews-admin.component";
 
 export const routes: Routes = [
   {
@@ -119,6 +120,15 @@ export const routes: Routes = [
     data: { roles: [RoleEnum.ADMIN, RoleEnum.MODERATOR] },
     children: [
       { path: '', component: OrdersAdminComponent }
+    ]
+  },
+  {
+    path: 'admin/reviews',
+    component: AdminLayoutComponent,
+    canActivate: [authGuard],
+    data: { roles: [RoleEnum.ADMIN, RoleEnum.MODERATOR] },
+    children: [
+      { path: '', component: ReviewsAdminComponent }
     ]
   },
   {

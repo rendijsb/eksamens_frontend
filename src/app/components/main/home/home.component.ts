@@ -9,13 +9,15 @@ import {catchError, EMPTY, finalize, tap} from "rxjs";
 import {Banner} from "../../admin/banners-page/models/banner.models";
 import {CartService} from "../service/cart.service";
 import {AuthService} from "../../auth/services/auth.service";
+import {StarRatingComponent} from "../../reviews/star-rating/star-rating.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink
+    RouterLink,
+    StarRatingComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -161,5 +163,10 @@ export class HomeComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  getFormattedRating(rating: any): string {
+    if (!rating) return '0.0';
+    return Number(rating).toFixed(1);
   }
 }

@@ -1,0 +1,11 @@
+<div class="star-rating" [class.small]="isSmall" [class.large]="isLarge" [class.interactive]="interactive() && !readonly()">
+  @for (star of stars; track star) {
+    <i
+      class="{{ getStarClass(star) }}"
+      [style.color]="color()"
+      (click)="setRating(star)"
+      (mouseenter)="onStarHover(star)"
+      (mouseleave)="onStarLeave()">
+    </i>
+  }
+</div>

@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { catchError, debounceTime, distinctUntilChanged, EMPTY, finalize, Subscription, take, tap } from 'rxjs';
 import {CartService} from "../service/cart.service";
 import {AuthService} from "../../auth/services/auth.service";
+import {StarRatingComponent} from "../../reviews/star-rating/star-rating.component";
 
 @Component({
   selector: 'app-products',
@@ -16,7 +17,8 @@ import {AuthService} from "../../auth/services/auth.service";
   imports: [
     CommonModule,
     RouterLink,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StarRatingComponent
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
@@ -280,7 +282,9 @@ export class ProductsComponent implements OnInit, OnDestroy {
       queryParams.category = this.selectedCategory();
     }
 
-    queryParams.minPrice = this.minPrice() ? this.minPrice() : 0;
+    if (this.minPrice() > 0) {
+      queryParams.minPrice = this.minPrice();
+    }
 
     if (this.maxPrice() && this.maxPrice() < 1000) {
       queryParams.maxPrice = this.maxPrice();
@@ -293,7 +297,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams,
-      queryParamsHandling: 'merge'
+      queryParamsHandling: 'merge',
+      replaceUrl: true
     });
 
     this.loadProducts();
@@ -337,7 +342,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   getFormattedPrice(price: number | string): string {
-    return Number(price).toFixed(2);
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+    return numPrice.toFixed(2);
   }
 
   addToCart(product: Product, event: Event): void {
@@ -366,5 +372,10 @@ export class ProductsComponent implements OnInit, OnDestroy {
         }),
       )
       .subscribe();
+  }
+
+  getFormattedRating(rating: any): string {
+    if (!rating) return '0.0';
+    return Number(rating).toFixed(1);
   }
 }

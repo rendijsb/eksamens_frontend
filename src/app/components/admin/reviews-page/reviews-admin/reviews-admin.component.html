@@ -1,0 +1,129 @@
+<div class="admin-reviews-container">
+  <div class="admin-page-header">
+    <h1><i class="fas fa-star"></i> Atsauksmju Pārvaldība</h1>
+    <p>Pārvaldiet produktu atsauksmes un moderējiet saturu</p>
+  </div>
+
+  <div class="reviews-tabs">
+    <button
+      class="tab-btn"
+      [class.active]="activeTab() === 'all'"
+      (click)="setActiveTab('all')">
+      <i class="fas fa-star"></i> Visas Atsauksmes
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="activeTab() === 'pending'"
+      (click)="setActiveTab('pending')">
+      <i class="fas fa-clock"></i> Gaidošās Atsauksmes
+      @if (pendingReviews().length > 0) {
+        <span class="pending-badge">{{ pendingReviews().length }}</span>
+      }
+    </button>
+  </div>
+
+  <div class="reviews-filters-card">
+    <form [formGroup]="filterForm" class="filter-form">
+      <div class="search-wrapper">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          formControlName="searchTerm"
+          placeholder="Meklēt pēc lietotāja, produkta vai atsauksmes satura...">
+      </div>
+      <div class="status-filter">
+        <label>Statuss</label>
+        <select formControlName="filterStatus">
+          <option value="all">Visi Statusi</option>
+          <option value="approved">Apstiprināti</option>
+          <option value="pending">Gaidoši</option>
+        </select>
+      </div>
+    </form>
+  </div>
+
+  @if ((activeTab() === 'all' && isLoading()) || (activeTab() === 'pending' && isPendingLoading())) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Ielādē atsauksmes...</p>
+    </div>
+  } @else {
+    <div class="reviews-list">
+      @if (getDisplayedReviews().length === 0) {
+        <div class="no-reviews">
+          <i class="fas fa-comment-slash"></i>
+          <h3>Atsauksmes Nav Atrastas</h3>
+          <p>{{ activeTab() === 'pending' ? 'Nav gaidošu atsauksmju, kas jāapstiprina.' : 'Neviena atsauksme neatbilst jūsu pašreizējiem filtriem.' }}</p>
+        </div>
+      } @else {
+        @for (review of getDisplayedReviews(); track review.id) {
+          <div class="review-card" [class.pending]="!review.is_approved">
+            <div class="review-card-header">
+              <div class="review-meta">
+                <span class="review-status" [class.approved]="review.is_approved" [class.pending]="!review.is_approved">
+                  <i class="fas" [class.fa-check-circle]="review.is_approved" [class.fa-clock]="!review.is_approved"></i>
+                  {{ review.is_approved ? 'Apstiprināts' : 'Gaida Apstiprināšanu' }}
+                </span>
+                <span class="review-date">
+                  <i class="fas fa-calendar-alt"></i>
+                  {{ formatDate(review.created_at) }}
+                </span>
+              </div>
+              <div class="review-actions">
+                @if (!review.is_approved) {
+                  <button
+                    class="btn-approve"
+                    [disabled]="processingReviewId() === review.id"
+                    [appButtonLoader]="processingReviewId() === review.id"
+                    (click)="approveReview(review)">
+                    <i class="fas fa-check"></i> Apstiprināt
+                  </button>
+                }
+                <button
+                  class="btn-reject"
+                  [disabled]="processingReviewId() === review.id"
+                  (click)="rejectReview(review)">
+                  <i class="fas fa-trash"></i> {{ review.is_approved ? 'Dzēst' : 'Noraidīt' }}
+                </button>
+              </div>
+            </div>
+
+            <div class="review-details">
+              <div class="detail-group">
+                <i class="fas fa-box"></i>
+                <span>Produkts:</span>
+                <a [routerLink]="['/product', review.product?.slug]" class="product-link">
+                  {{ review.product?.name || 'Nezināms Produkts' }}
+                </a>
+              </div>
+
+              <div class="detail-group">
+                <i class="fas fa-user"></i>
+                <span>Recenzents:</span>
+                <span class="user-name">{{ review.user.name }}</span>
+              </div>
+
+              <div class="detail-group">
+                <i class="fas fa-star"></i>
+                <span>Vērtējums:</span>
+                <app-star-rating [rating]="review.rating" size="small" />
+              </div>
+            </div>
+
+            @if (review.review_text) {
+              <div class="review-content">
+                <h4><i class="fas fa-quote-left"></i> Atsauksmes Saturs</h4>
+                <p>{{ review.review_text }}</p>
+              </div>
+            } @else {
+              <div class="review-content empty">
+                <h4><i class="fas fa-exclamation-circle"></i> Nav Atsauksmes Teksta</h4>
+                <p><i>Šis lietotājs ir sniedzis tikai vērtējumu, bez rakstiskas atsauksmes.</i></p>
+              </div>
+            }
+          </div>
+        }
+      }
+    </div>
+  }
+</div>

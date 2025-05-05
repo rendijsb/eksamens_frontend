@@ -142,9 +142,9 @@
           @for (product of products(); track product.id) {
             <div class="product-card" [class.product-list-item]="viewMode() === 'list'">
               <div class="product-image">
-                @if (product.primary_image) {
-                <img [src]="product.primary_image || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'" [alt]="product.name"/>
-                }
+                <img
+                  [src]="product.primary_image || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'"
+                  [alt]="product.name"/>
                 @if (product.sale_price) {
                   <span class="product-badge sale">Izpārdošana</span>
                 }
@@ -158,6 +158,26 @@
               <div class="product-info">
                 <div class="product-category">{{ product.category }}</div>
                 <h3 class="product-name">{{ product.name }}</h3>
+
+
+                @if (product.average_rating) {
+                  <div class="product-rating">
+                    <div class="rating-display">
+                      <span class="average-value">{{ getFormattedRating(product.average_rating) }}</span>
+                      <app-star-rating [rating]="product.average_rating" size="small"></app-star-rating>
+                    </div>
+                    <span class="rating-count" [title]="product.reviews_count + ' reviews'">
+                      ({{ product.reviews_count }})
+                    </span>
+                  </div>
+                }
+
+                @if (!product.average_rating) {
+                  =
+                  <div class="no-rating">
+                    <span class="no-rating-text">No reviews yet</span>
+                  </div>
+                }
                 @if (viewMode() === 'list') {
                   <div class="product-description">
                     {{ product.description | slice:0:150 }}{{ product.description.length > 150 ? '...' : '' }}

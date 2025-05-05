@@ -16,6 +16,8 @@ export interface Product {
   category: string;
   primary_image: string;
   is_sale_active: boolean;
+  average_rating: number;
+  reviews_count: number;
   category_id: number;
   created_at: string;
 }

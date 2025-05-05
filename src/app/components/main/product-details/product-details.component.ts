@@ -8,8 +8,9 @@ import { PublicService } from '../service/public.service';
 import { Product } from '../../admin/products-page/models/products.models';
 import { Image } from '../../admin/shared/services/image.service';
 import { ButtonLoaderDirective } from '../../../shared/directives/button-loader/button-loader.directive';
-import {CartService} from "../service/cart.service";
-import {AuthService} from "../../auth/services/auth.service";
+import { CartService } from "../service/cart.service";
+import { AuthService } from "../../auth/services/auth.service";
+import { ProductReviewsComponent } from "../../reviews/product-reviews/product-reviews.component";
 
 @Component({
   selector: 'app-product-details',
@@ -18,7 +19,8 @@ import {AuthService} from "../../auth/services/auth.service";
     CommonModule,
     ReactiveFormsModule,
     RouterLink,
-    ButtonLoaderDirective
+    ButtonLoaderDirective,
+    ProductReviewsComponent
   ],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss'
@@ -75,6 +77,13 @@ export class ProductDetailsComponent implements OnInit {
     quantity: [1, [Validators.required, Validators.min(1)]]
   });
 
+  private formEffect = effect(() => {
+    this.optionsForm.get('quantity')?.setValue(this.quantity(), { emitEvent: false });
+    if (this.product()) {
+      this.checkWishlistStatus();
+    }
+  });
+
   ngOnInit(): void {
     const productSlug = this.route.snapshot.paramMap.get('slug');
 
@@ -84,13 +93,6 @@ export class ProductDetailsComponent implements OnInit {
     }
 
     this.loadProduct(productSlug);
-
-    effect(() => {
-      this.optionsForm.get('quantity')?.setValue(this.quantity(), { emitEvent: false });
-      if (this.product()) {
-        this.checkWishlistStatus();
-      }
-    });
 
     this.optionsForm.get('quantity')?.valueChanges.subscribe(value => {
       if (value && !isNaN(value)) {
