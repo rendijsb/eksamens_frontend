@@ -20,8 +20,8 @@ import { AddressListComponent } from "./components/profile/address-list/address-
 import { AddressFormComponent } from "./components/profile/address-form/address-form.component";
 import { OrderListComponent } from "./components/profile/order-list/order-list.component";
 import { OrderDetailComponent } from "./components/profile/order-detail/order-detail.component";
-import {OrdersAdminComponent} from "./components/admin/orders-page/orders-admin/orders-admin.component";
-import {ReviewsAdminComponent} from "./components/admin/reviews-page/reviews-admin/reviews-admin.component";
+import { OrdersAdminComponent } from "./components/admin/orders-page/orders-admin/orders-admin.component";
+import { ReviewsAdminComponent } from "./components/admin/reviews-page/reviews-admin/reviews-admin.component";
 
 export const routes: Routes = [
   {
@@ -37,6 +37,11 @@ export const routes: Routes = [
         path: 'products',
         loadComponent: () => import('./components/main/products/products.component')
           .then(m => m.ProductsComponent)
+      },
+      {
+        path: 'categories',
+        loadComponent: () => import('./components/main/categories/categories.component')
+          .then(m => m.CategoriesComponent)
       },
       {
         path: 'cart',

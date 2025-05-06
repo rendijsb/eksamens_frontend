@@ -1,0 +1,62 @@
+<div class="categories-container">
+  <div class="categories-header">
+    <h1>Kategorijas</h1>
+    <p class="subtitle">Atklājiet mūsu produktu kategorijas</p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Ielādē kategorijas...</p>
+    </div>
+  } @else if (categories().length === 0) {
+    <div class="empty-state">
+      <i class="fas fa-folder-open"></i>
+      <h2>Nav atrasta neviena kategorija</h2>
+      <p>Lūdzu, mēģiniet vēlāk vai apskatiet mūsu produktus.</p>
+      <a routerLink="/products" class="btn-primary">Skatīt visus produktus</a>
+    </div>
+  } @else {
+    <div class="categories-grid">
+      @for (category of categories(); track category.id) {
+        <div class="category-card" (click)="navigateToProducts(category.id)">
+          <div class="category-image">
+            @if (category.image) {
+              <img [src]="category.image" alt="{{ category.name }} attēls">
+            } @else {
+              <div class="placeholder-image">
+                <i class="fas fa-box-open"></i>
+              </div>
+            }
+          </div>
+          <div class="category-content">
+            <h3>{{ category.name }}</h3>
+            <p class="category-description">{{ category.description }}</p>
+            <div class="category-stats">
+              @if (category.active_products_count === 1) {
+                <span>{{ category.active_products_count }} produkts</span>
+              } @else {
+                <span>{{ category.active_products_count }} produkti</span>
+              }
+            </div>
+            <button class="view-products-btn">
+              Skatīt produktus
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="categories-banner">
+    <div class="banner-content">
+      <h2>Izpētiet mūsu jaunākos papildinājumus</h2>
+      <p>Atklājiet jaunākos produktus un specializētos piedāvājumus</p>
+      <div class="banner-buttons">
+        <a routerLink="/products" class="btn-secondary">Visi produkti</a>
+        <a routerLink="/sale" class="btn-primary">Skatīt atlaides</a>
+      </div>
+    </div>
+  </div>
+</div>

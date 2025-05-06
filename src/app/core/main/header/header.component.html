@@ -8,18 +8,7 @@
       <ul class="nav-list">
         <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Sākums</a></li>
         <li><a routerLink="/products" routerLinkActive="active">Visi Produkti</a></li>
-        <li class="has-dropdown">
-          <a routerLink="/products" routerLinkActive="active">Kategorijas</a>
-          <ul class="dropdown-menu">
-            <li><a routerLink="/products">Visas kategorijas</a></li>
-            @for (category of categories(); track category.id) {
-              <li><a [routerLink]="['/products']" [queryParams]="{category: category.id}">{{ category.name }}</a></li>
-            }
-            @if (categories().length === 0) {
-              <li><a>Ielādē kategorijas...</a></li>
-            }
-          </ul>
-        </li>
+        <li><a routerLink="/categories" routerLinkActive="active">Kategorijas</a></li>
         <li><a routerLink="/sale" routerLinkActive="active">Izpārdošana</a></li>
         <li><a routerLink="/about" routerLinkActive="active">Par mums</a></li>
         <li><a routerLink="/contact" routerLinkActive="active">Kontakti</a></li>
