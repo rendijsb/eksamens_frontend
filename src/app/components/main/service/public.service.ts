@@ -115,4 +115,15 @@ export class PublicService {
       { params }
     ) as Observable<ProductsResponse>;
   }
+
+  getSaleProducts(page: number = 1, perPage: number = 12): Observable<ProductsResponse> {
+    let params = new HttpParams()
+      .append('page', page.toString())
+      .append('per_page', perPage.toString());
+
+    return this.http.get(
+      this.apiUrlService.getUrl('api/public/products/getSaleProducts'),
+      { params }
+    ) as Observable<ProductsResponse>;
+  }
 }

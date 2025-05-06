@@ -11,6 +11,7 @@ import { ButtonLoaderDirective } from '../../../shared/directives/button-loader/
 import { CartService } from "../service/cart.service";
 import { AuthService } from "../../auth/services/auth.service";
 import { ProductReviewsComponent } from "../../reviews/product-reviews/product-reviews.component";
+import {StarRatingComponent} from "../../reviews/star-rating/star-rating.component";
 
 @Component({
   selector: 'app-product-details',
@@ -20,7 +21,8 @@ import { ProductReviewsComponent } from "../../reviews/product-reviews/product-r
     ReactiveFormsModule,
     RouterLink,
     ButtonLoaderDirective,
-    ProductReviewsComponent
+    ProductReviewsComponent,
+    StarRatingComponent
   ],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss'
@@ -43,6 +45,7 @@ export class ProductDetailsComponent implements OnInit {
   isAddingToCart: WritableSignal<boolean> = signal(false);
   activeTab: WritableSignal<string> = signal('specifications');
   isInWishlist: WritableSignal<boolean> = signal(false);
+  protected readonly processingProductIds = signal<number[]>([]);
 
   activePrice = computed(() => {
     if (!this.product()) return null;
@@ -85,14 +88,16 @@ export class ProductDetailsComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    const productSlug = this.route.snapshot.paramMap.get('slug');
+    this.route.paramMap.subscribe(params => {
+      const productSlug = params.get('slug');
 
-    if (!productSlug) {
-      this.router.navigate(['/products']);
-      return;
-    }
+      if (!productSlug) {
+        this.router.navigate(['/products']);
+        return;
+      }
 
-    this.loadProduct(productSlug);
+      this.loadProduct(productSlug);
+    });
 
     this.optionsForm.get('quantity')?.valueChanges.subscribe(value => {
       if (value && !isNaN(value)) {
@@ -247,5 +252,64 @@ export class ProductDetailsComponent implements OnInit {
 
   checkWishlistStatus(): void {
     this.isInWishlist.set(false);
+  }
+
+  isProductProcessing(productId: number): boolean {
+    return this.processingProductIds().includes(productId);
+  }
+
+  private setProcessingProduct(productId: number, isProcessing: boolean): void {
+    this.processingProductIds.update(ids => {
+      if (isProcessing) {
+        if (!ids.includes(productId)) {
+          return [...ids, productId];
+        }
+        return ids;
+      } else {
+        return ids.filter(id => id !== productId);
+      }
+    });
+  }
+
+  addRelatedToCart(product: Product, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.authService.isAuthenticated()) {
+      this.toastr.info('Lūdzu, ielogojietes, lai pievienotu preces grozam');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (product.stock <= 0) {
+      this.toastr.error('Produkts nav pieejams noliktavā');
+      return;
+    }
+
+    if (this.isProductProcessing(product.id)) {
+      return;
+    }
+
+    this.setProcessingProduct(product.id, true);
+
+    this.cartService.addToCart(product.id)
+      .pipe(
+        tap(() => {
+          this.toastr.success(`${product.name} veiksmīgi pievienots grozam`);
+        }),
+        catchError(error => {
+          this.toastr.error('Neizdevās pievienot produktu grozam');
+          return EMPTY;
+        }),
+        finalize(() => {
+          this.setProcessingProduct(product.id, false);
+        })
+      )
+      .subscribe();
+  }
+
+  getFormattedRating(rating: any): string {
+    if (!rating) return '0.0';
+    return Number(rating).toFixed(1);
   }
 }

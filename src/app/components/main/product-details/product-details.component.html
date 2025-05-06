@@ -166,9 +166,9 @@
       @if (relatedProducts().length > 0) {
         <div class="related-products">
           <h2 class="section-title">Līdzīgi Produkti</h2>
-          <div class="products-grid">
+          <div class="related-products-grid">
             @for (relatedProduct of relatedProducts(); track relatedProduct.id) {
-              <div class="product-card">
+              <div class="product-card" [class.out-of-stock]="relatedProduct.stock <= 0">
                 <div class="product-image">
                   <a [routerLink]="['/product', relatedProduct.slug]">
                     <img
@@ -178,11 +178,28 @@
                   @if (relatedProduct.is_sale_active) {
                     <span class="sale-badge">Izpārdošana</span>
                   }
+                  @if (relatedProduct.stock <= 0) {
+                    <span class="stock-badge out-of-stock">Nav Noliktavā</span>
+                  } @else if (relatedProduct.stock <= 5) {
+                    <span class="stock-badge low-stock">Atlicis tikai {{ relatedProduct.stock }}</span>
+                  }
                 </div>
                 <div class="product-info">
+                  <span class="product-category">{{ relatedProduct.category }}</span>
                   <h3 class="product-name">
                     <a [routerLink]="['/product', relatedProduct.slug]">{{ relatedProduct.name }}</a>
                   </h3>
+                  @if (relatedProduct.average_rating) {
+                    <div class="product-rating">
+                      <div class="rating-display">
+                        <span class="average-value">{{ getFormattedRating(relatedProduct.average_rating) }}</span>
+                        <app-star-rating [rating]="relatedProduct.average_rating" size="small"></app-star-rating>
+                      </div>
+                      <span class="rating-count" [title]="relatedProduct.reviews_count + ' reviews'">
+                  ({{ relatedProduct.reviews_count }})
+                </span>
+                    </div>
+                  }
                   <div class="product-price">
                     @if (relatedProduct.is_sale_active) {
                       <span class="price sale">€{{ formatPrice(relatedProduct.sale_price) }}</span>
@@ -191,11 +208,25 @@
                       <span class="price">€{{ formatPrice(relatedProduct.price) }}</span>
                     }
                   </div>
-                  <button
-                    class="btn-add-to-cart"
-                    [disabled]="relatedProduct.stock <= 0">
-                    <i class="fas fa-shopping-cart"></i> Pievienot Grozam
-                  </button>
+                  <div class="product-actions">
+                    <button
+                      type="button"
+                      class="btn-add-to-cart"
+                      [disabled]="relatedProduct.stock <= 0 || isProductProcessing(relatedProduct.id)"
+                      [class.processing]="isProductProcessing(relatedProduct.id)"
+                      (click)="addRelatedToCart(relatedProduct, $event)">
+                      <i class="fas" [class.fa-shopping-cart]="!isProductProcessing(relatedProduct.id)"
+                         [class.fa-spinner]="isProductProcessing(relatedProduct.id)"></i>
+                      @if (relatedProduct.stock <= 0) {
+                        Nav Noliktavā
+                      } @else {
+                        Pievienot grozam
+                      }
+                    </button>
+                    <a class="btn-view-details" [routerLink]="['/product', relatedProduct.slug]">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                  </div>
                 </div>
               </div>
             }

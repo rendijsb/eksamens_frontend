@@ -1,0 +1,100 @@
+<div class="sale-container">
+  <div class="container">
+    <header class="page-header">
+      <h1>Izpārdošana</h1>
+      <p class="subtitle">Īpašie piedāvājumi un atlaides</p>
+    </header>
+
+    <div class="sale-banner">
+      <div class="banner-content">
+        <h2>Sezonas izpārdošana</h2>
+        <p>Iegūstiet atlaidēs līdz pat 50% uz daudziem produktiem!</p>
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Ielādē izpārdošanas preces...</p>
+      </div>
+    } @else if (products().length === 0) {
+      <div class="empty-state">
+        <i class="fas fa-tag"></i>
+        <h2>Pašlaik nav aktīvas izpārdošanas</h2>
+        <p>Lūdzu, apmeklējiet vēlāk vai skatieties mūsu parastos produktus.</p>
+        <a routerLink="/products" class="btn-primary">Skatīt visus produktus</a>
+      </div>
+    } @else {
+      <div class="products-grid">
+        @for (product of products(); track product.id) {
+          <div class="product-card">
+            <div class="product-image">
+              <a [routerLink]="['/product', product.slug]">
+                <img
+                  [src]="product.primary_image || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'"
+                  [alt]="product.name">
+              </a>
+              <span class="sale-badge">-{{ getDiscountPercentage(product) }}%</span>
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">
+                <a [routerLink]="['/product', product.slug]">{{ product.name }}</a>
+              </h3>
+              <p class="product-category">{{ product.category }}</p>
+
+              @if (product.average_rating) {
+                <div class="product-rating">
+                  <app-star-rating [rating]="product.average_rating" size="small"></app-star-rating>
+                  <span class="rating-count">({{ product.reviews_count }})</span>
+                </div>
+              }
+
+              <div class="product-price">
+                @if (product.sale_price) {
+                  <span class="price sale">€{{ formatPrice(product.sale_price) }}</span>
+                  <span class="price original">€{{ formatPrice(product.price) }}</span>
+                  <span class="discount-label">Ietaupi {{ getDiscountPercentage(product) }}%</span>
+                } @else {
+                  <span class="price">€{{ formatPrice(product.price) }}</span>
+                }
+              </div>
+
+              <a [routerLink]="['/product', product.slug]" class="view-product-btn">
+                Skatīt produktu
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (totalPages() > 1) {
+        <div class="pagination">
+          <button
+            class="page-btn prev"
+            [disabled]="currentPage() === 1"
+            (click)="changePage(currentPage() - 1)">
+            <i class="fas fa-chevron-left"></i> Iepriekšējā
+          </button>
+
+          <div class="page-numbers">
+            @for (pageNum of getPageNumbers(); track pageNum) {
+              <button
+                class="page-number"
+                [class.active]="pageNum === currentPage()"
+                (click)="changePage(pageNum)">
+                {{ pageNum }}
+              </button>
+            }
+          </div>
+
+          <button
+            class="page-btn next"
+            [disabled]="currentPage() === totalPages()"
+            (click)="changePage(currentPage() + 1)">
+            Nākamā <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      }
+    }
+  </div>
+</div>

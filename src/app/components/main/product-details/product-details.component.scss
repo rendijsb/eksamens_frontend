@@ -541,3 +541,255 @@
     box-shadow: $box-shadow-sm;
   }
 }
+
+.related-products {
+  margin-top: $spacing-xxl;
+  padding-top: $spacing-xl;
+  border-top: 1px solid rgba($dark-color, 0.1);
+
+  .section-title {
+    font-size: $h3-font-size;
+    font-weight: 600;
+    margin-bottom: $spacing-xl;
+    color: $dark-color;
+    position: relative;
+    padding-left: $spacing-md;
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: $primary-color;
+      border-radius: $border-radius-pill;
+    }
+  }
+
+  .related-products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-lg;
+
+    @media (max-width: $media-lg) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: $media-md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: $media-sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .product-card {
+    background: $light-color;
+    border-radius: $border-radius-md;
+    box-shadow: $box-shadow-sm;
+    overflow: hidden;
+    transition: all $transition-normal;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: $box-shadow-md;
+
+      .product-actions {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    &.out-of-stock {
+      opacity: 0.8;
+
+      .product-image:after {
+        content: 'Nav Noliktavā';
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba($dark-color, 0.5);
+        color: $light-color;
+        font-weight: 600;
+        font-size: $h5-font-size;
+      }
+    }
+
+    .product-image {
+      position: relative;
+      height: 200px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform $transition-normal;
+      }
+
+      .sale-badge, .stock-badge {
+        position: absolute;
+        padding: $spacing-xs $spacing-sm;
+        border-radius: $border-radius-pill;
+        font-size: $mini-font-size;
+        font-weight: 600;
+        z-index: 1;
+      }
+
+      .sale-badge {
+        top: $spacing-sm;
+        right: $spacing-sm;
+        background: $accent-color;
+        color: $light-color;
+      }
+
+      .stock-badge {
+        bottom: $spacing-sm;
+        left: $spacing-sm;
+
+        &.low-stock {
+          background: rgba($warning-color, 0.9);
+          color: $dark-color;
+        }
+
+        &.out-of-stock {
+          background: rgba($danger-color, 0.9);
+          color: $light-color;
+        }
+      }
+    }
+
+    .product-info {
+      padding: $spacing-md;
+
+      .product-category {
+        font-size: $mini-font-size;
+        color: $dark-medium;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .product-name {
+        font-size: $base-font-size;
+        font-weight: 600;
+        margin: $spacing-xs 0;
+
+        a {
+          color: $dark-color;
+          text-decoration: none;
+          transition: $transition-fast;
+
+          &:hover {
+            color: $primary-color;
+          }
+        }
+      }
+
+      .product-rating {
+        display: flex;
+        align-items: center;
+        gap: $spacing-xs;
+        margin: $spacing-xs 0;
+
+        .rating-display {
+          display: flex;
+          align-items: center;
+          gap: $spacing-xs;
+        }
+
+        .average-value {
+          font-weight: 600;
+          color: $primary-color;
+          font-size: $small-font-size;
+        }
+
+        .rating-count {
+          color: $dark-medium;
+          font-size: $small-font-size;
+        }
+      }
+
+      .product-price {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        margin-bottom: $spacing-md;
+
+        .price {
+          font-weight: 600;
+
+          &.sale {
+            color: $accent-color;
+          }
+
+          &.original {
+            text-decoration: line-through;
+            color: $dark-medium;
+            font-weight: 400;
+            font-size: $small-font-size;
+          }
+        }
+      }
+
+      .product-actions {
+        display: flex;
+        gap: $spacing-xs;
+        opacity: 0.7;
+        transform: translateY(10px);
+        transition: all $transition-normal;
+
+        .btn-add-to-cart, .btn-view-details {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: $spacing-sm;
+          border-radius: $border-radius-sm;
+          transition: all $transition-fast;
+          border: none;
+          cursor: pointer;
+          font-size: $small-font-size;
+        }
+
+        .btn-add-to-cart {
+          flex: 1;
+          background: $primary-color;
+          color: $light-color;
+          gap: $spacing-xs;
+
+          &:hover:not(:disabled) {
+            background: $primary-dark;
+          }
+
+          &:disabled {
+            background: $dark-light;
+            cursor: not-allowed;
+          }
+
+          &.processing {
+            .fa-spinner {
+              animation: spin 1s linear infinite;
+            }
+          }
+        }
+
+        .btn-view-details {
+          width: 36px;
+          height: 36px;
+          background: $secondary-color;
+          color: $dark-color;
+
+          &:hover {
+            background: darken($secondary-color, 5%);
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

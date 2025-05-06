@@ -48,6 +48,11 @@ export const routes: Routes = [
         loadComponent: () => import('./components/main/product-details/product-details.component')
           .then(m => m.ProductDetailsComponent)
       },
+      {
+        path: 'sale',
+        loadComponent: () => import('./components/main/sale/sale.component')
+          .then(m => m.SaleComponent)
+      }
     ]
   },
   {

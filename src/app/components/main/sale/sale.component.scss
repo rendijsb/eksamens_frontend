@@ -1,0 +1,323 @@
+@import "../../../../styles/abstracts/variables";
+
+.sale-container {
+  padding: 120px 0 60px;
+}
+
+.container {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: $spacing-xl;
+
+  h1 {
+    font-size: $h1-font-size;
+    color: $dark-color;
+    margin-bottom: $spacing-xs;
+  }
+
+  .subtitle {
+    color: $dark-medium;
+    font-size: $h5-font-size;
+  }
+}
+
+.sale-banner {
+  background: linear-gradient(45deg, $primary-color, $accent-color);
+  color: $light-color;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-xl;
+  text-align: center;
+
+  .banner-content {
+    max-width: 700px;
+    margin: 0 auto;
+
+    h2 {
+      font-size: $h2-font-size;
+      margin-bottom: $spacing-md;
+    }
+
+    p {
+      font-size: $h5-font-size;
+      opacity: 0.9;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xxl 0;
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba($primary-color, 0.2);
+    border-radius: 50%;
+    border-top-color: $primary-color;
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: $spacing-md;
+  }
+
+  p {
+    color: $dark-medium;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: $spacing-xxl 0;
+
+  i {
+    font-size: 64px;
+    color: $accent-color;
+    margin-bottom: $spacing-lg;
+  }
+
+  h2 {
+    font-size: $h3-font-size;
+    margin-bottom: $spacing-md;
+  }
+
+  p {
+    color: $dark-medium;
+    max-width: 600px;
+    margin-bottom: $spacing-lg;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: $spacing-md $spacing-lg;
+    background-color: $primary-color;
+    color: $light-color;
+    border-radius: $border-radius-md;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $primary-dark;
+      transform: translateY(-2px);
+      box-shadow: $box-shadow-sm;
+    }
+  }
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+
+  @media (max-width: $media-lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: $media-md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $media-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.product-card {
+  background-color: $light-color;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  box-shadow: $box-shadow-sm;
+  transition: all $transition-normal;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: $box-shadow-md;
+  }
+
+  .product-image {
+    position: relative;
+    height: 200px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .sale-badge {
+      position: absolute;
+      top: $spacing-sm;
+      left: $spacing-sm;
+      background-color: $accent-color;
+      color: $light-color;
+      padding: $spacing-xs $spacing-sm;
+      border-radius: $border-radius-sm;
+      font-size: $small-font-size;
+      font-weight: 600;
+    }
+  }
+
+  .product-info {
+    padding: $spacing-md;
+  }
+
+  .product-name {
+    font-size: $base-font-size;
+    font-weight: 600;
+    margin-bottom: $spacing-xs;
+
+    a {
+      color: $dark-color;
+      text-decoration: none;
+      transition: color $transition-fast;
+
+      &:hover {
+        color: $primary-color;
+      }
+    }
+  }
+
+  .product-category {
+    color: $dark-medium;
+    font-size: $small-font-size;
+    margin-bottom: $spacing-sm;
+  }
+
+  .product-rating {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-sm;
+
+    .rating-count {
+      color: $dark-medium;
+      font-size: $small-font-size;
+    }
+  }
+
+  .product-price {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-md;
+
+    .price {
+      &.sale {
+        font-weight: 600;
+        color: $accent-color;
+      }
+
+      &.original {
+        text-decoration: line-through;
+        color: $dark-medium;
+        font-size: $small-font-size;
+      }
+    }
+
+    .discount-label {
+      margin-left: auto;
+      background-color: rgba($accent-color, 0.1);
+      color: $accent-color;
+      font-size: $mini-font-size;
+      font-weight: 600;
+      padding: 2px $spacing-xs;
+      border-radius: $border-radius-sm;
+    }
+  }
+
+  .view-product-btn {
+    display: block;
+    width: 100%;
+    padding: $spacing-sm;
+    background-color: $primary-color;
+    color: $light-color;
+    text-align: center;
+    text-decoration: none;
+    border-radius: $border-radius-sm;
+    font-weight: 500;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $primary-dark;
+    }
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-md;
+  margin-top: $spacing-xl;
+
+  .page-btn {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-sm $spacing-md;
+    background-color: $light-color;
+    border: 1px solid rgba($dark-color, 0.1);
+    border-radius: $border-radius-md;
+    color: $dark-color;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover:not(:disabled) {
+      background-color: rgba($primary-color, 0.1);
+      color: $primary-color;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .page-numbers {
+    display: flex;
+    gap: $spacing-xs;
+
+    .page-number {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: $border-radius-sm;
+      background-color: $light-color;
+      border: 1px solid rgba($dark-color, 0.1);
+      color: $dark-color;
+      cursor: pointer;
+      transition: all $transition-fast;
+
+      &:hover:not(.active) {
+        background-color: rgba($primary-color, 0.1);
+        color: $primary-color;
+      }
+
+      &.active {
+        background-color: $primary-color;
+        color: $light-color;
+        border-color: $primary-color;
+      }
+    }
+  }
+}

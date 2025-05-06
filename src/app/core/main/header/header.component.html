@@ -9,10 +9,11 @@
         <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Sākums</a></li>
         <li><a routerLink="/products" routerLinkActive="active">Visi Produkti</a></li>
         <li class="has-dropdown">
-          <a routerLink="/categories" routerLinkActive="active">Kategorijas</a>
+          <a routerLink="/products" routerLinkActive="active">Kategorijas</a>
           <ul class="dropdown-menu">
+            <li><a routerLink="/products">Visas kategorijas</a></li>
             @for (category of categories(); track category.id) {
-              <li><a [routerLink]="['/category', category.slug]">{{ category.name }}</a></li>
+              <li><a [routerLink]="['/products']" [queryParams]="{category: category.id}">{{ category.name }}</a></li>
             }
             @if (categories().length === 0) {
               <li><a>Ielādē kategorijas...</a></li>
