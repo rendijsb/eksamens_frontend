@@ -62,11 +62,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
   });
 
   priceRanges = [
-    { label: 'All Prices', min: 0, max: null },
-    { label: 'Under €50', min: 0, max: 50 },
+    { label: 'Visas cenas', min: 0, max: null },
+    { label: 'Zem €50', min: 0, max: 50 },
     { label: '€50 - €100', min: 50, max: 100 },
     { label: '€100 - €200', min: 100, max: 200 },
-    { label: 'Over €200', min: 200, max: null }
+    { label: 'Virs €200', min: 200, max: null }
   ];
 
   sortOptions = [
@@ -81,22 +81,13 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadCategories();
-
     this.isLoading.set(true);
 
-    const routeSubscription = this.route.queryParams
-      .pipe(take(1))
-      .subscribe(params => {
-        this.processQueryParams(params);
-
-        this.setupFormSubscriptions();
-
-        this.loadProducts();
-
-        this.subscribeToQueryParamChanges();
-      });
-
-    this.subscriptions.push(routeSubscription);
+    this.route.queryParams.pipe(take(1)).subscribe(params => {
+      this.processQueryParams(params);
+      this.setupFormSubscriptions();
+      this.loadProducts();
+    });
   }
 
   private processQueryParams(params: any): void {
@@ -160,8 +151,19 @@ export class ProductsComponent implements OnInit, OnDestroy {
     if (searchSubscription) this.subscriptions.push(searchSubscription);
 
     const priceSubscription = this.priceRangeGroup.valueChanges.subscribe(value => {
-      this.minPrice.set(value.min);
-      this.maxPrice.set(value.max);
+      let min = value.min;
+      let max = value.max;
+
+      min = Math.max(0, min);
+
+      max = Math.max(min, max);
+
+      if (min !== value.min || max !== value.max) {
+        this.priceRangeGroup.setValue({ min, max }, { emitEvent: false });
+      }
+
+      this.minPrice.set(min);
+      this.maxPrice.set(max);
       this.currentPage.set(1);
       this.updateQueryParams();
     });
@@ -176,23 +178,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
       }
     });
     if (sortSubscription) this.subscriptions.push(sortSubscription);
-  }
-
-  private subscribeToQueryParamChanges(): void {
-    const ongoingRouteSubscription = this.route.queryParams
-      .subscribe(params => {
-        if (this.isInitialLoad) {
-          this.isInitialLoad = false;
-          return;
-        }
-
-        if (!this.router.navigated) {
-          this.processQueryParams(params);
-          this.loadProducts();
-        }
-      });
-
-    this.subscriptions.push(ongoingRouteSubscription);
   }
 
   ngOnDestroy(): void {
@@ -271,7 +256,16 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(subscription);
   }
 
-  updateQueryParams(): void {
+  private updateQueryParams(): void {
+    let minPrice = this.minPrice();
+    let maxPrice = this.maxPrice();
+
+    if (maxPrice < minPrice) {
+      maxPrice = minPrice;
+      this.maxPrice.set(minPrice);
+      this.priceRangeGroup.get('max')?.setValue(minPrice, { emitEvent: false });
+    }
+
     const queryParams: any = {
       page: this.currentPage(),
       sort: `${this.sortBy()}-${this.sortDirection()}`,
@@ -282,12 +276,12 @@ export class ProductsComponent implements OnInit, OnDestroy {
       queryParams.category = this.selectedCategory();
     }
 
-    if (this.minPrice() > 0) {
-      queryParams.minPrice = this.minPrice();
+    if (minPrice > 0) {
+      queryParams.minPrice = minPrice;
     }
 
-    if (this.maxPrice() && this.maxPrice() < 1000) {
-      queryParams.maxPrice = this.maxPrice();
+    if (maxPrice && maxPrice < 1000) {
+      queryParams.maxPrice = maxPrice;
     }
 
     if (this.filterForm.get('search')?.value) {
@@ -320,7 +314,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   selectPriceRange(min: number, max: number | null): void {
-    this.priceRangeGroup.setValue({ min, max: max || 1000 });
+    const validatedMax = max === null ? 1000 : Math.max(min, max);
+    this.priceRangeGroup.setValue({ min, max: validatedMax });
   }
 
   clearFilters(): void {
