@@ -55,7 +55,7 @@
               @for (product of searchResults(); track product.id) {
                 <div class="suggestion-item" (click)="selectSuggestion(product)">
                   <div class="suggestion-image">
-                    <img [src]="product.primary_image || 'assets/images/placeholder.png'" [alt]="product.name" />
+                    <img [src]="product.primary_image || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'" [alt]="product.name" />
                   </div>
                   <div class="suggestion-details">
                     <div class="suggestion-name">{{ product.name }}</div>
