@@ -16,6 +16,7 @@ export interface CheckoutDetails {
   same_billing_address: boolean;
   payment_method: string;
   notes?: string;
+  coupon_code?: string;
 }
 
 export interface PaymentProcessRequest {

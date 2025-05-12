@@ -743,3 +743,59 @@
   from { transform: scale(0.9); }
   to { transform: scale(1); }
 }
+
+.badge {
+  &.percentage {
+    background-color: rgba(var(--bs-info-rgb), 0.1);
+    color: var(--bs-info);
+  }
+
+  &.fixed {
+    background-color: rgba(var(--bs-success-rgb), 0.1);
+    color: var(--bs-success);
+  }
+
+  &.active {
+    background-color: rgba(var(--bs-success-rgb), 0.1);
+    color: var(--bs-success);
+  }
+
+  &.inactive {
+    background-color: rgba(var(--bs-secondary-rgb), 0.1);
+    color: var(--bs-secondary);
+  }
+
+  &.expired {
+    background-color: rgba(var(--bs-danger-rgb), 0.1);
+    color: var(--bs-danger);
+  }
+
+  &.invalid {
+    background-color: rgba(var(--bs-warning-rgb), 0.1);
+    color: var(--bs-warning);
+  }
+}
+
+.date-range {
+  font-size: 0.875rem;
+
+  div:first-child {
+    font-weight: 500;
+  }
+
+  div:last-child {
+    color: var(--bs-secondary);
+  }
+}
+
+.text-warning {
+  color: var(--bs-warning) !important;
+}
+
+.text-muted {
+  color: var(--bs-secondary) !important;
+}
+
+.actions-col {
+  width: 120px;
+}

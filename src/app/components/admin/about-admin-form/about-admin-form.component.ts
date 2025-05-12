@@ -2,7 +2,7 @@ import {Component, inject, OnInit, signal, ViewEncapsulation, AfterViewInit, Ele
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import {ValidationErrorDirective} from "../../../shared/directives/validation-error/validation-error.directive";
 import {ButtonLoaderDirective} from "../../../shared/directives/button-loader/button-loader.directive";
@@ -17,10 +17,11 @@ import {AngularEditorConfig, AngularEditorModule} from '@kolkov/angular-editor';
     ReactiveFormsModule,
     ValidationErrorDirective,
     ButtonLoaderDirective,
-    AngularEditorModule
+    AngularEditorModule,
+    RouterLink
   ],
   templateUrl: './about-admin-form.component.html',
-  styleUrls: ['../styles/admin-page-styles.scss'],
+  styleUrls: ['./about-admin-form.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class AboutAdminFormComponent implements OnInit, AfterViewInit {
@@ -87,8 +88,36 @@ export class AboutAdminFormComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.checkEditorIcons();
-    }, 500);
+      this.ensureIconsLoaded();
+    }, 1000);
+  }
+
+  private ensureIconsLoaded(): void {
+    const iconsToCheck = [
+      '.fa-save', '.fa-times', '.fa-spinner', '.fa-exclamation-circle'
+    ];
+
+    iconsToCheck.forEach(iconClass => {
+      const elements = document.querySelectorAll(iconClass);
+      elements.forEach(el => {
+        if (!el.textContent && !el.innerHTML.includes('svg')) {
+          switch(iconClass) {
+            case '.fa-save':
+              el.textContent = '💾';
+              break;
+            case '.fa-times':
+              el.textContent = '✕';
+              break;
+            case '.fa-spinner':
+              el.textContent = '⟳';
+              break;
+            case '.fa-exclamation-circle':
+              el.textContent = '⚠';
+              break;
+          }
+        }
+      });
+    });
   }
 
   private checkEditorIcons(): void {

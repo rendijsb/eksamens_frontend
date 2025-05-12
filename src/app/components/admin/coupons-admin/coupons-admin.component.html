@@ -1,0 +1,149 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Kuponu pārvaldība</h1>
+    <div class="actions">
+      <a routerLink="/admin/coupons/create" class="btn-primary">
+        <i class="fas fa-plus"></i> Izveidot jaunu kuponu
+      </a>
+    </div>
+  </div>
+
+  <div class="dashboard-header">
+    <div class="actions">
+      <div class="search">
+        <input
+          type="text"
+          placeholder="Meklēt kuponus..."
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="onSearch()">
+      </div>
+
+      <div class="filters">
+        <select [(ngModel)]="typeFilter" (change)="onSearch()">
+          <option value="">Visi tipi</option>
+          <option value="percentage">Procentuāls</option>
+          <option value="fixed">Fiksēta summa</option>
+        </select>
+
+        <select [(ngModel)]="statusFilter" (change)="onSearch()">
+          <option value="">Visi statusi</option>
+          <option value="true">Aktīvs</option>
+          <option value="false">Neaktīvs</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-indicator">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Ielādē kuponus...</span>
+    </div>
+  } @else if (coupons().length === 0) {
+    <div class="no-data">
+      <p>Kuponi nav atrasti</p>
+      <a routerLink="/admin/coupons/create" class="btn-primary">Izveidot pirmo kuponu</a>
+    </div>
+  } @else {
+    <div class="table-responsive" [class.loading]="isLoading()">
+      <table class="data-table">
+        <thead>
+        <tr>
+          <th
+            class="sortable"
+            (click)="onSort('code')"
+            title="Kupona kods">
+            Kods
+            <i class="fas" [class]="getSortIcon('code')"></i>
+          </th>
+          <th
+            class="sortable"
+            (click)="onSort('type')"
+            title="Kupona tips">
+            Tips
+            <i class="fas" [class]="getSortIcon('type')"></i>
+          </th>
+          <th
+            class="sortable"
+            (click)="onSort('value')"
+            title="Kupona vērtība">
+            Atlaide
+            <i class="fas" [class]="getSortIcon('value')"></i>
+          </th>
+          <th title="Minimālā summa">Min. summa</th>
+          <th title="Maksimālā atlaide">Maks. atlaide</th>
+          <th title="Izmantotas reizes">Izmantots</th>
+          <th title="Derīguma periods">Derīgums</th>
+          <th title="Statuss">Statuss</th>
+          <th title="Darbības" class="actions-col">Darbības</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (coupon of coupons(); track coupon.id) {
+            <tr>
+              <td>
+                <strong>{{ coupon.code }}</strong>
+              </td>
+              <td>
+                <span class="badge" [class]="coupon.type">
+                  {{ coupon.type === 'percentage' ? 'Procentuāls' : 'Fiksēta summa' }}
+                </span>
+              </td>
+              <td>
+                <strong>{{ getDiscountDisplay(coupon) }}</strong>
+              </td>
+              <td>
+                {{ coupon.min_order_amount ? formatCurrency(coupon?.min_order_amount) : '-' }}
+              </td>
+              <td>
+                {{ coupon.max_discount_amount ? formatCurrency(coupon?.max_discount_amount) : '-' }}
+              </td>
+              <td>
+                <span>{{ coupon.used_count }}</span>
+                @if (coupon.total_uses) {
+                  <span class="text-muted"> / {{ coupon.total_uses }}</span>
+                }
+                @if (coupon.remaining_uses !== null && coupon.remaining_uses &&  coupon.remaining_uses <= 5) {
+                  <i class="fas fa-exclamation-triangle text-warning" title="Maz atlikušo izmantošanu"></i>
+                }
+              </td>
+              <td>
+                <div class="date-range">
+                  <div>{{ formatDate(coupon.starts_at) }}</div>
+                  <div>{{ formatDate(coupon.expires_at) }}</div>
+                </div>
+              </td>
+              <td>
+                <span class="badge" [class]="getStatusClass(coupon)">
+                  {{ getStatusLabel(coupon) }}
+                </span>
+              </td>
+              <td>
+                <div class="actions">
+                  <a
+                    [routerLink]="['/admin/coupons', coupon.id, 'edit']"
+                    class="btn-icon"
+                    title="Rediģēt">
+                    <i class="fas fa-pencil-alt"></i>
+                  </a>
+                  <button
+                    class="btn-icon"
+                    title="Dzēst"
+                    [appButtonLoader]="isProcessing(coupon.id)"
+                    [disabled]="coupon.used_count > 0"
+                    (click)="deleteCoupon(coupon)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<style>
+
+</style>

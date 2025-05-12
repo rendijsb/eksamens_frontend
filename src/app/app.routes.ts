@@ -26,6 +26,8 @@ import {WishlistComponent} from "./components/main/wishlist/wishlist.component";
 import {AboutAdminComponent} from "./components/admin/about-admin/about-admin.component";
 import {AboutAdminFormComponent} from "./components/admin/about-admin-form/about-admin-form.component";
 import {ContactAdminFormComponent} from "./components/admin/contact-admin-form/contact-admin-form.component";
+import {CouponsAdminComponent} from "./components/admin/coupons-admin/coupons-admin.component";
+import {CouponFormComponent} from "./components/admin/coupons-form/coupons-form.component";
 
 export const routes: Routes = [
   {
@@ -153,6 +155,17 @@ export const routes: Routes = [
     data: { roles: [RoleEnum.ADMIN, RoleEnum.MODERATOR] },
     children: [
       { path: '', component: ReviewsAdminComponent }
+    ]
+  },
+  {
+    path: 'admin/coupons',
+    component: AdminLayoutComponent,
+    canActivate: [authGuard],
+    data: { roles: [RoleEnum.ADMIN, RoleEnum.MODERATOR] },
+    children: [
+      { path: '', component: CouponsAdminComponent },
+      { path: 'create', component: CouponFormComponent },
+      { path: ':couponId/edit', component: CouponFormComponent }
     ]
   },
   {

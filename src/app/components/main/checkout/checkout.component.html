@@ -386,7 +386,7 @@
               </div>
               <div class="summary-row total">
                 <span>Kopā</span>
-                <span>{{ cartData()?.total_price | currency:'EUR' }}</span>
+                <span>{{ finalTotal() | currency:'EUR' }}</span>
               </div>
             </div>
           } @else {
@@ -405,6 +405,60 @@
               Visas transakcijas ir šifrētas, un jūsu privātā informācija netiek koplietota ar trešajām personām.
             </p>
           </div>
+        </div>
+        <div class="summary-coupon">
+          @if (!appliedCoupon()) {
+            <div class="coupon-form">
+              <h3>Vai jums ir kupona kods?</h3>
+              <div class="coupon-input-group">
+                <input
+                  type="text"
+                  placeholder="Ievadiet kupona kodu"
+                  [(ngModel)]="couponCode"
+                  (keyup.enter)="validateCoupon()"
+                  [disabled]="isValidatingCoupon()"
+                  style="text-transform: uppercase;">
+                <button
+                  type="button"
+                  class="btn-coupon"
+                  (click)="validateCoupon()"
+                  [disabled]="!couponCode().trim() || isValidatingCoupon()">
+                  @if (isValidatingCoupon()) {
+                    <i class="fas fa-spinner fa-spin"></i>
+                  } @else {
+                    <i class="fas fa-check"></i>
+                  }
+                  Pielietot
+                </button>
+              </div>
+              @if (couponError()) {
+                <div class="coupon-error">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  {{ couponError() }}
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="applied-coupon">
+              <div class="coupon-info">
+                <div class="coupon-badge">
+                  <i class="fas fa-tags"></i>
+                  <span>{{ appliedCoupon().code }}</span>
+                </div>
+                <div class="coupon-discount">
+                  <span class="discount-label">Atlaide:</span>
+                  <span class="discount-amount">-€{{ couponDiscount() | number:'1.2-2' }}</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn-remove-coupon"
+                (click)="removeCoupon()"
+                title="Noņemt kuponu">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          }
         </div>
       </div>
     }

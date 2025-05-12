@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { CheckoutService, CheckoutDetails } from '../service/checkout.service';
 import { Cart, CartService } from '../service/cart.service';
@@ -11,6 +11,7 @@ import { ButtonLoaderDirective } from '../../../shared/directives/button-loader/
 import { ValidationErrorDirective } from '../../../shared/directives/validation-error/validation-error.directive';
 import { catchError, finalize, forkJoin, EMPTY, tap } from 'rxjs';
 import { AuthService } from "../../auth/services/auth.service";
+import {CouponsService, CouponValidationResponse} from "../service/coupon.service";
 
 enum CheckoutStep {
   DETAILS = 'details',
@@ -26,7 +27,8 @@ enum CheckoutStep {
     ReactiveFormsModule,
     RouterLink,
     ButtonLoaderDirective,
-    ValidationErrorDirective
+    ValidationErrorDirective,
+    FormsModule
   ],
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.scss']
@@ -39,6 +41,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   private readonly addressService = inject(AddressService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly couponsService = inject(CouponsService);
 
   @ViewChild('paymentElement') paymentElement?: ElementRef;
 
@@ -52,6 +55,17 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   protected readonly cartData = signal<Cart | null>(null);
   protected readonly paymentError = signal<string | null>(null);
   protected readonly stripeReady = signal<boolean>(false);
+  protected readonly couponCode = signal<string>('');
+  protected readonly appliedCoupon = signal<any>(null);
+  protected readonly couponDiscount = signal<number>(0);
+  protected readonly isValidatingCoupon = signal<boolean>(false);
+  protected readonly couponError = signal<string | null>(null);
+
+  readonly finalTotal = computed(() => {
+    const baseTotal = this.cartData()?.total_price || 0;
+    const discount = this.couponDiscount();
+    return Math.max(0, baseTotal - discount);
+  });
 
   checkoutForm: FormGroup = this.fb.group({
     customer_details: this.fb.group({
@@ -309,7 +323,8 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       customer_phone: customerDetails.customer_phone,
       same_billing_address: addressDetails.same_billing_address,
       payment_method: formValue.payment_method,
-      notes: customerDetails.notes
+      notes: customerDetails.notes,
+      coupon_code: formValue.coupon_code
     };
 
     if (addressDetails.shipping_address_id) {
@@ -438,5 +453,60 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
   viewOrder(): void {
     this.router.navigate(['/profile/orders', this.orderId()]);
+  }
+
+  validateCoupon(): void {
+    const code = this.couponCode().trim();
+    if (!code) {
+      this.couponError.set('Lūdzu, ievadiet kupona kodu');
+      return;
+    }
+
+    this.isValidatingCoupon.set(true);
+    this.couponError.set(null);
+
+    const orderAmount = this.cartData()?.total_price || 0;
+
+    this.couponsService.validateCoupon(code, orderAmount)
+      .pipe(
+        tap((response: CouponValidationResponse) => {
+          if (response.valid) {
+            this.appliedCoupon.set(response.coupon);
+            this.couponDiscount.set(response.discount || 0);
+            this.toastr.success(`Kupons ieņemts! Atlaide: €${response.discount?.toFixed(2)}`);
+
+            this.checkoutForm.patchValue({
+              coupon_code: code.toUpperCase()
+            });
+          } else {
+            this.couponError.set(response.message || 'Kupons nav derīgs');
+            this.appliedCoupon.set(null);
+            this.couponDiscount.set(0);
+          }
+        }),
+        catchError((error) => {
+          this.couponError.set(error.error?.message || 'Neizdevās pārbaudīt kuponu');
+          this.appliedCoupon.set(null);
+          this.couponDiscount.set(0);
+          return EMPTY;
+        }),
+        finalize(() => {
+          this.isValidatingCoupon.set(false);
+        })
+      )
+      .subscribe();
+  }
+
+  removeCoupon(): void {
+    this.couponCode.set('');
+    this.appliedCoupon.set(null);
+    this.couponDiscount.set(0);
+    this.couponError.set(null);
+
+    this.checkoutForm.patchValue({
+      coupon_code: null
+    });
+
+    this.toastr.info('Kupons noņemts');
   }
 }

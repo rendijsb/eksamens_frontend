@@ -1,0 +1,324 @@
+@import '../../../../styles/abstracts/variables';
+
+.dashboard {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: calc(100vh - 80px);
+  padding: $spacing-lg;
+
+  @media (max-width: $media-md) {
+    padding: $spacing-md;
+  }
+}
+
+.dashboard-header {
+  background: white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid $primary-color;
+
+  h1 {
+    font-size: $h2-font-size;
+    color: $dark-color;
+    margin-bottom: $spacing-sm;
+    font-weight: 700;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    font-size: $small-font-size;
+    color: $dark-medium;
+
+    .breadcrumb-link {
+      color: $primary-color;
+      text-decoration: none;
+      font-weight: 500;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .breadcrumb-separator {
+      margin: 0 $spacing-xs;
+      color: $dark-light;
+    }
+
+    .breadcrumb-current {
+      font-weight: 500;
+    }
+  }
+}
+
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xxl;
+  background: white;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  .spinner-container {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    margin-bottom: $spacing-md;
+  }
+
+  .spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  }
+
+  span {
+    color: $dark-medium;
+    font-weight: 500;
+  }
+}
+
+.page-form {
+  background: white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xxl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  .form-group {
+    margin-bottom: $spacing-xl;
+
+    label {
+      display: flex;
+      align-items: center;
+      margin-bottom: $spacing-sm;
+
+      .label-text {
+        font-weight: 600;
+        color: $dark-color;
+        font-size: $base-font-size;
+      }
+
+      .required {
+        color: $danger-color;
+        margin-left: 4px;
+        font-weight: 700;
+      }
+    }
+
+    .form-input {
+      width: 100%;
+      padding: $spacing-md;
+      border: 2px solid #e1e8ed;
+      border-radius: $border-radius-md;
+      font-size: $base-font-size;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        background: white;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+      }
+
+      &.ng-invalid.ng-touched {
+        border-color: $danger-color;
+        background: #fef5f5;
+      }
+    }
+
+    .validation-error {
+      display: flex;
+      align-items: center;
+      margin-top: $spacing-xs;
+      padding: $spacing-xs $spacing-sm;
+      background: #fef5f5;
+      border-radius: $border-radius-sm;
+      border: 1px solid #fca5a5;
+
+      .error-icon {
+        margin-right: $spacing-xs;
+        color: $danger-color;
+      }
+
+      .error-text {
+        color: $danger-color;
+        font-size: $small-font-size;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .editor-container {
+    border: 2px solid #e1e8ed;
+    border-radius: $border-radius-md;
+    overflow: hidden;
+    background: white;
+    transition: all 0.3s ease;
+
+    &:focus-within {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+
+    ::ng-deep .angular-editor {
+      .angular-editor-toolbar {
+        background: #f8f9fa;
+        border-bottom: 1px solid #e1e8ed;
+        padding: $spacing-sm;
+
+        .angular-editor-toolbar-set {
+          .angular-editor-button {
+            margin: 2px;
+            border-radius: $border-radius-sm;
+            transition: all 0.2s ease;
+
+            &:hover {
+              background: rgba($primary-color, 0.1);
+              color: $primary-color;
+            }
+
+            &.active {
+              background: $primary-color;
+              color: white;
+            }
+          }
+        }
+      }
+
+      .angular-editor-textarea {
+        padding: $spacing-md;
+        min-height: 300px !important;
+        font-size: $base-font-size;
+        line-height: 1.6;
+      }
+    }
+  }
+
+  .checkbox-group {
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      position: relative;
+      cursor: pointer;
+
+      input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+
+        &:checked + .checkbox-checkmark {
+          background-color: $primary-color;
+          color: white;
+          border-color: $primary-color;
+        }
+      }
+
+      .checkbox-checkmark {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #e1e8ed;
+        border-radius: 4px;
+        margin-right: $spacing-sm;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        color: transparent;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .checkbox-label {
+        font-weight: 500;
+        color: $dark-color;
+      }
+    }
+
+    .checkbox-help {
+      margin-top: $spacing-xs;
+      margin-left: 32px;
+      color: $dark-medium;
+      font-size: $small-font-size;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: $spacing-md;
+    margin-top: $spacing-xxl;
+    padding-top: $spacing-xl;
+    border-top: 1px solid #e1e8ed;
+
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: $spacing-xs;
+      padding: $spacing-md $spacing-lg;
+      border-radius: $border-radius-md;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+      }
+
+      &:hover::before {
+        left: 100%;
+      }
+
+      .btn-icon {
+        font-size: 16px;
+      }
+
+      .btn-text {
+        font-size: $base-font-size;
+      }
+
+      &.btn-primary {
+        background: linear-gradient(135deg, $primary-color, $primary-dark);
+        color: white;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba($primary-color, 0.3);
+        }
+      }
+
+      &.btn-secondary {
+        background: white;
+        border: 2px solid $primary-color;
+        color: $primary-color;
+
+        &:hover {
+          background: $primary-color;
+          color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba($primary-color, 0.3);
+        }
+      }
+    }
+  }
+}

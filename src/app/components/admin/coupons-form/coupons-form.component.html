@@ -1,0 +1,181 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>{{ isEditMode() ? 'Rediģēt kuponu' : 'Izveidot jaunu kuponu' }}</h1>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-indicator">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Ielādē kupona informāciju...</span>
+    </div>
+  } @else {
+    <form [formGroup]="couponForm" (ngSubmit)="onSubmit()" class="page-form">
+      <div class="form-group">
+        <label for="code">Kupona kods <span class="required">*</span></label>
+        <input
+          type="text"
+          id="code"
+          formControlName="code"
+          [class.invalid-input]="couponForm.get('code')?.invalid && couponForm.get('code')?.touched"
+          placeholder="Piemēram: SAVE20"
+          style="text-transform: uppercase;">
+        @if (getValidationError('code')) {
+          <div class="validation-error">{{ getValidationError('code') }}</div>
+        }
+        <small class="form-help">Izmantojiet tikai lielos burtus, ciparus, '_' un '-'</small>
+      </div>
+
+      <div class="form-group">
+        <label for="type">Atlaides tips <span class="required">*</span></label>
+        <select
+          #typeSelect
+          id="type"
+          formControlName="type"
+          (change)="onTypeChange(typeSelect.value)"
+        >
+          <option value="percentage">Procentuāla atlaide (%)</option>
+          <option value="fixed">Fiksēta summa (€)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="value">
+          Atlaides vērtība <span class="required">*</span>
+          <span *ngIf="couponForm.get('type')?.value === 'percentage'">(%)</span>
+          <span *ngIf="couponForm.get('type')?.value === 'fixed'">(€)</span>
+        </label>
+        <input
+          type="number"
+          id="value"
+          formControlName="value"
+          [class.invalid-input]="couponForm.get('value')?.invalid && couponForm.get('value')?.touched"
+          [min]="0"
+          [max]="couponForm.get('type')?.value === 'percentage' ? 100 : null"
+          step="0.01">
+        @if (getValidationError('value')) {
+          <div class="validation-error">{{ getValidationError('value') }}</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="min_order_amount">Minimālā pasūtījuma summa (€)</label>
+        <input
+          type="number"
+          id="min_order_amount"
+          formControlName="min_order_amount"
+          min="0"
+          step="0.01"
+          placeholder="Netiek ierobežots">
+        @if (getValidationError('min_order_amount')) {
+          <div class="validation-error">{{ getValidationError('min_order_amount') }}</div>
+        }
+        <small class="form-help">Minimālā summa, lai kupons būtu derīgs</small>
+      </div>
+
+      <div class="form-group">
+        <label for="max_discount_amount">Maksimālā atlaides summa (€)</label>
+        <input
+          type="number"
+          id="max_discount_amount"
+          formControlName="max_discount_amount"
+          min="0"
+          step="0.01"
+          placeholder="Netiek ierobežots">
+        @if (getValidationError('max_discount_amount')) {
+          <div class="validation-error">{{ getValidationError('max_discount_amount') }}</div>
+        }
+        <small class="form-help">Izmanto tikai procentuālajām atlaidēm</small>
+      </div>
+
+      <div class="form-group">
+        <label for="uses_per_user">Izmantošanas reizes uz lietotāju</label>
+        <input
+          type="number"
+          id="uses_per_user"
+          formControlName="uses_per_user"
+          min="1"
+          placeholder="Bez ierobežojumiem">
+        @if (getValidationError('uses_per_user')) {
+          <div class="validation-error">{{ getValidationError('uses_per_user') }}</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="total_uses">Kopējās izmantošanas reizes</label>
+        <input
+          type="number"
+          id="total_uses"
+          formControlName="total_uses"
+          min="1"
+          placeholder="Bez ierobežojumiem">
+        @if (getValidationError('total_uses')) {
+          <div class="validation-error">{{ getValidationError('total_uses') }}</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="starts_at">Sākuma datums <span class="required">*</span></label>
+        <input
+          type="datetime-local"
+          id="starts_at"
+          formControlName="starts_at"
+          [class.invalid-input]="couponForm.get('starts_at')?.invalid && couponForm.get('starts_at')?.touched">
+        @if (getValidationError('starts_at')) {
+          <div class="validation-error">{{ getValidationError('starts_at') }}</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="expires_at">Beigu datums <span class="required">*</span></label>
+        <input
+          type="datetime-local"
+          id="expires_at"
+          formControlName="expires_at"
+          [class.invalid-input]="couponForm.get('expires_at')?.invalid && couponForm.get('expires_at')?.touched">
+        @if (getValidationError('expires_at')) {
+          <div class="validation-error">{{ getValidationError('expires_at') }}</div>
+        }
+      </div>
+
+      <div class="checkbox-group">
+        <div class="checkbox-container">
+          <input
+            type="checkbox"
+            id="is_active"
+            formControlName="is_active">
+          <label for="is_active" class="checkbox-label">Aktīvs kupons</label>
+        </div>
+        <small class="checkbox-help">Deaktīvs kupons netiks rādīts klientiem</small>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Apraksts</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          rows="3"
+          placeholder="Kupona apraksts (neobligāts)">
+        </textarea>
+        @if (getValidationError('description')) {
+          <div class="validation-error">{{ getValidationError('description') }}</div>
+        }
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="router.navigate(['/admin/coupons'])">
+          <i class="fas fa-times"></i> Atcelt
+        </button>
+        <button
+          type="submit"
+          class="btn-primary"
+          [appButtonLoader]="isSubmitting()"
+          [disabled]="couponForm.invalid || isSubmitting()">
+          <i class="fas fa-save"></i> {{ isEditMode() ? 'Atjaunināt' : 'Izveidot' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>
