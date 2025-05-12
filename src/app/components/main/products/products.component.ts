@@ -10,6 +10,7 @@ import { catchError, debounceTime, distinctUntilChanged, EMPTY, finalize, Subscr
 import {CartService} from "../service/cart.service";
 import {AuthService} from "../../auth/services/auth.service";
 import {StarRatingComponent} from "../../reviews/star-rating/star-rating.component";
+import {WishlistService} from "../service/wishlist.service";
 
 @Component({
   selector: 'app-products',
@@ -31,7 +32,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
-
+  private readonly wishlistService = inject(WishlistService);
   private subscriptions: Subscription[] = [];
   private categoriesLoaded = false;
   private isInitialLoad = true;
@@ -44,12 +45,18 @@ export class ProductsComponent implements OnInit, OnDestroy {
   currentPage: WritableSignal<number> = signal(1);
   itemsPerPage: WritableSignal<number> = signal(12);
   totalPages: WritableSignal<number> = signal(1);
+  wishlistProductIds: WritableSignal<number[]> = signal<number[]>([]);
+  protected readonly processingProductIds = signal<number[]>([]);
 
   selectedCategory: WritableSignal<number | null> = signal(null);
   minPrice: WritableSignal<number> = signal(0);
   maxPrice: WritableSignal<number> = signal(1000);
   sortBy: WritableSignal<string> = signal('created_at');
   sortDirection: WritableSignal<string> = signal('desc');
+
+  searchResults: WritableSignal<Product[]> = signal([]);
+  isSearching: WritableSignal<boolean> = signal(false);
+  showSuggestions: WritableSignal<boolean> = signal(false);
 
   filterForm: FormGroup = this.fb.group({
     category: [null],
@@ -87,6 +94,24 @@ export class ProductsComponent implements OnInit, OnDestroy {
       this.processQueryParams(params);
       this.setupFormSubscriptions();
       this.loadProducts();
+    });
+
+    if (this.authService.isAuthenticated()) {
+      this.setWishlist();
+    }
+  }
+
+  private setWishlist(): void {
+    this.wishlistService.getWishlist()
+      .pipe(
+        tap(response => {
+          this.wishlistProductIds.set(response.data.map(product => product.id));
+        })
+      )
+      .subscribe();
+
+    this.wishlistService.wishlistItems$.subscribe(items => {
+      this.wishlistProductIds.set(items.map(item => item.id));
     });
   }
 
@@ -144,8 +169,29 @@ export class ProductsComponent implements OnInit, OnDestroy {
       .pipe(
         debounceTime(300),
         distinctUntilChanged()
-      ).subscribe(() => {
+      ).subscribe((value) => {
         this.currentPage.set(1);
+
+        if (value && value.length > 2) {
+          this.isSearching.set(true);
+          this.showSuggestions.set(true);
+          this.publicService.getProductSuggestions(value)
+            .pipe(
+              tap((response) => {
+                this.searchResults.set(response.data || []);
+                this.isSearching.set(false);
+              }),
+              catchError(() => {
+                this.isSearching.set(false);
+                return EMPTY;
+              })
+            )
+            .subscribe();
+        } else {
+          this.searchResults.set([]);
+          this.showSuggestions.set(false);
+        }
+
         this.updateQueryParams();
       });
     if (searchSubscription) this.subscriptions.push(searchSubscription);
@@ -336,9 +382,9 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.updateQueryParams();
   }
 
-  getFormattedPrice(price: number | string): string {
+  getFormattedPrice(price: number | string | null): string {
     const numPrice = typeof price === 'string' ? parseFloat(price) : price;
-    return numPrice.toFixed(2);
+    return numPrice?.toFixed(2) || '';
   }
 
   addToCart(product: Product, event: Event): void {
@@ -372,5 +418,92 @@ export class ProductsComponent implements OnInit, OnDestroy {
   getFormattedRating(rating: any): string {
     if (!rating) return '0.0';
     return Number(rating).toFixed(1);
+  }
+
+  isInWishlist(productId: number): boolean {
+    return this.wishlistProductIds().includes(productId);
+  }
+
+  toggleWishlist(product: Product, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.authService.isAuthenticated()) {
+      this.toastr.info('Lūdzu, ielogojietes, lai pievienotu preces vēlmju sarakstam');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (this.isProductProcessing(product.id)) {
+      return;
+    }
+
+    this.setProcessingProduct(product.id, true);
+
+    if (this.isInWishlist(product.id)) {
+      this.wishlistService.removeFromWishlist(product.id)
+        .pipe(
+          tap(() => {
+            this.toastr.info(`${product.name} noņemts no vēlmju saraksta`);
+          }),
+          catchError(() => {
+            this.toastr.error('Neizdevās noņemt no vēlmju saraksta');
+            return EMPTY;
+          }),
+          finalize(() => {
+            this.setProcessingProduct(product.id, false);
+          })
+        )
+        .subscribe();
+    } else {
+      this.wishlistService.addToWishlist(product.id)
+        .pipe(
+          tap(() => {
+            this.toastr.success(`${product.name} pievienots vēlmju sarakstam`);
+          }),
+          catchError(() => {
+            this.toastr.error('Neizdevās pievienot vēlmju sarakstam');
+            return EMPTY;
+          }),
+          finalize(() => {
+            this.setProcessingProduct(product.id, false);
+          })
+        )
+        .subscribe();
+    }
+  }
+
+  isProductProcessing(productId: number): boolean {
+    return this.processingProductIds().includes(productId);
+  }
+
+  private setProcessingProduct(productId: number, isProcessing: boolean): void {
+    this.processingProductIds.update(ids => {
+      if (isProcessing) {
+        if (!ids.includes(productId)) {
+          return [...ids, productId];
+        }
+        return ids;
+      } else {
+        return ids.filter(id => id !== productId);
+      }
+    });
+  }
+
+  selectSuggestion(product: Product): void {
+    this.router.navigate(['/product', product.slug]);
+  }
+
+  clearSearch(): void {
+    this.filterForm.get('search')?.setValue('');
+    this.searchResults.set([]);
+    this.showSuggestions.set(false);
+  }
+
+  documentClick(event: MouseEvent): void {
+    const clickedElement = event.target as HTMLElement;
+    if (!clickedElement.closest('.search-container')) {
+      this.showSuggestions.set(false);
+    }
   }
 }

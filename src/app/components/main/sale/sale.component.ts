@@ -42,7 +42,7 @@ export class SaleComponent implements OnInit {
           this.totalPages.set(response.meta.last_page);
         }),
         catchError(() => {
-          this.toastr.error('Failed to load sale products');
+          this.toastr.error('Neizdevās ieladēt izpārdošanas produktus');
           return EMPTY;
         })
       )

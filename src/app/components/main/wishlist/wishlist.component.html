@@ -1,0 +1,97 @@
+<div class="wishlist-container">
+  <div class="container">
+    <div class="wishlist-header">
+      <h1>Manas Vēlmes</h1>
+      @if (wishlistItems().length > 0) {
+        <button class="btn-clear-wishlist" (click)="clearWishlist()">
+          <i class="fas fa-trash"></i> Notīrīt vēlmju sarakstu
+        </button>
+      }
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Ielādē jūsu vēlmju sarakstu...</p>
+      </div>
+    } @else if (wishlistItems().length === 0) {
+      <div class="empty-wishlist">
+        <i class="fas fa-heart-broken"></i>
+        <h3>Jūsu vēlmju saraksts ir tukšs</h3>
+        <p>Pievienojiet produktus vēlmju sarakstam, lai saglabātu tos vēlākai iegādei.</p>
+        <a routerLink="/products" class="btn-primary">Sākt iepirkties</a>
+      </div>
+    } @else {
+      <div class="wishlist-grid">
+        @for (product of wishlistItems(); track product.id) {
+          <div class="product-card" [class.out-of-stock]="product.stock <= 0">
+            <div class="product-image">
+              <a [routerLink]="['/product', product.slug]">
+                <img
+                  [src]="product.primary_image || 'https://karanzi.websites.co.in/obaju-turquoise/img/product-placeholder.png'"
+                  [alt]="product.name">
+              </a>
+              @if (product.is_sale_active) {
+                <span class="product-badge sale">Atlaide</span>
+              }
+              @if (product.stock <= 0) {
+                <span class="product-badge out-of-stock">Nav noliktavā</span>
+              } @else if (product.stock <= 5) {
+                <span class="product-badge low-stock">Atlicis tikai {{ product.stock }}</span>
+              }
+            </div>
+            <div class="product-info">
+              <span class="product-category">{{ product.category }}</span>
+              <h3 class="product-name">
+                <a [routerLink]="['/product', product.slug]">{{ product.name }}</a>
+              </h3>
+              @if (product.average_rating) {
+                <div class="product-rating">
+                  <div class="rating-display">
+                    <span class="average-value">{{ getFormattedRating(product.average_rating) }}</span>
+                    <app-star-rating [rating]="product.average_rating" size="small"></app-star-rating>
+                  </div>
+                  <span class="rating-count" [title]="product.reviews_count + ' reviews'">
+                    ({{ product.reviews_count }})
+                  </span>
+                </div>
+              }
+              <div class="product-price">
+                @if (product.is_sale_active) {
+                  <span class="price sale">€{{ getFormattedPrice(product.sale_price) }}</span>
+                  <span class="price original">€{{ getFormattedPrice(product.price) }}</span>
+                } @else {
+                  <span class="price">€{{ getFormattedPrice(product.price) }}</span>
+                }
+              </div>
+              <div class="product-actions">
+                <button
+                  class="btn-add-to-cart"
+                  [disabled]="product.stock <= 0 || isProductProcessing(product.id)"
+                  [class.processing]="isProductProcessing(product.id)"
+                  (click)="addToCart(product, $event)">
+                  <i class="fas" [class.fa-shopping-cart]="!isProductProcessing(product.id)"
+                     [class.fa-spinner]="isProductProcessing(product.id)"></i>
+                  @if (product.stock <= 0) {
+                    Nav noliktavā
+                  } @else {
+                    Pievienot grozam
+                  }
+                </button>
+                <button
+                  class="btn-remove-wishlist"
+                  [disabled]="isProductProcessing(product.id)"
+                  (click)="removeFromWishlist(product, $event)">
+                  <i class="fas fa-heart-broken"></i>
+                </button>
+                <a class="btn-view-details" [routerLink]="['/product', product.slug]">
+                  <i class="fas fa-eye"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

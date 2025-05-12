@@ -1,4 +1,4 @@
-import {Component, effect, HostListener, inject, OnInit, signal} from '@angular/core';
+import {Component, effect, HostListener, inject, OnInit, signal, WritableSignal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import {Category} from "../../../components/admin/categories-page/models/categories.models";
@@ -8,6 +8,7 @@ import {catchError, EMPTY, tap} from "rxjs";
 import {AuthService} from "../../../components/auth/services/auth.service";
 import {RoleEnum} from "../../../components/auth/models/user.models";
 import {CartService} from "../../../components/main/service/cart.service";
+import {WishlistService} from "../../../components/main/service/wishlist.service";
 
 @Component({
   selector: 'app-header',
@@ -26,7 +27,9 @@ export class HeaderComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly cartService = inject(CartService);
+  private readonly wishlistService = inject(WishlistService);
 
+  wishlistCount = signal(0);
   protected readonly categories = signal<Category[]>([]);
 
   isScrolled = signal(false);
@@ -37,24 +40,22 @@ export class HeaderComponent implements OnInit {
   searchQuery = signal('');
   isAuthenticated = signal(false);
   currentUser = signal<any>(null);
+  searchResults: WritableSignal<any[]> = signal([]);
+  isSearching: WritableSignal<boolean> = signal(false);
+  showSuggestions: WritableSignal<boolean> = signal(false);
 
   constructor() {
     effect(() => {
       this.isAuthenticated.set(!!this.authService.user());
       this.currentUser.set(this.authService.user());
 
-      // if (this.isAuthenticated()) {
-      //   this.cartService.getCart().subscribe({
-      //     next: (response) => {
-      //       this.cartItemCount.set(response.data?.total_items || 0);
-      //     },
-      //     error: () => {
-      //       this.cartItemCount.set(0);
-      //     }
-      //   });
-      // } else {
-      //   this.cartItemCount.set(0);
-      // }
+      if (this.isAuthenticated()) {
+        this.cartService.getCart().subscribe();
+        this.wishlistService.getWishlist().subscribe();
+      } else {
+        this.cartItemCount.set(0);
+        this.wishlistCount.set(0);
+      }
     });
   }
 
@@ -63,17 +64,18 @@ export class HeaderComponent implements OnInit {
     this.checkAuthStatus();
 
     if (this.isAuthenticated()) {
-      this.cartService.getCart().subscribe({
-        next: (response) => {
-          this.cartItemCount.set(response.data?.total_items || 0);
-        },
-      });
-
+      this.cartService.getCart().subscribe();
       this.cartService.cartItemCount$.subscribe(count => {
         this.cartItemCount.set(count);
       });
+
+      this.wishlistService.getWishlist().subscribe();
+      this.wishlistService.wishlistCount$.subscribe(count => {
+        this.wishlistCount.set(count);
+      });
     } else {
       this.cartItemCount.set(0);
+      this.wishlistCount.set(0);
     }
   }
 
@@ -133,6 +135,33 @@ export class HeaderComponent implements OnInit {
   updateSearchQuery(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchQuery.set(input.value);
+
+    if (input.value && input.value.length > 2) {
+      this.isSearching.set(true);
+      this.showSuggestions.set(true);
+      this.publicService.getProductSuggestions(input.value)
+        .pipe(
+          tap((response) => {
+            this.searchResults.set(response.data || []);
+            this.isSearching.set(false);
+          }),
+          catchError(() => {
+            this.isSearching.set(false);
+            return EMPTY;
+          })
+        )
+        .subscribe();
+    } else {
+      this.searchResults.set([]);
+      this.showSuggestions.set(false);
+    }
+  }
+
+  selectSuggestion(product: any): void {
+    this.router.navigate(['/product', product.slug]);
+    this.searchQuery.set('');
+    this.isSearchOpen.set(false);
+    this.showSuggestions.set(false);
   }
 
   submitSearch(): void {
@@ -140,11 +169,13 @@ export class HeaderComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/search'], {
-      queryParams: { q: this.searchQuery() }
+    this.router.navigate(['/products'], {
+      queryParams: { search: this.searchQuery() }
     });
 
+    this.searchQuery.set('');
     this.isSearchOpen.set(false);
+    this.showSuggestions.set(false);
   }
 
   logout(): void {
@@ -170,5 +201,13 @@ export class HeaderComponent implements OnInit {
 
   isModerator(): boolean {
     return this.currentUser()?.role === RoleEnum.MODERATOR;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const clickedElement = event.target as HTMLElement;
+    if (!clickedElement.closest('.search-container') && this.showSuggestions()) {
+      this.showSuggestions.set(false);
+    }
   }
 }

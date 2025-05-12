@@ -24,15 +24,47 @@
       <form [formGroup]="filterForm" class="filter-form">
         <div class="filter-section">
           <h3>Meklēt</h3>
-          <div class="search-box">
-            <input
-              type="text"
-              formControlName="search"
-              placeholder="Meklēt produktus..."/>
-            @if (filterForm.get('search')?.value) {
-              <button type="button" class="clear-search" (click)="filterForm.get('search')?.setValue('')">
-                <i class="fas fa-times"></i>
-              </button>
+          <div class="search-container">
+            <div class="search-box">
+              <input
+                type="text"
+                formControlName="search"
+                placeholder="Meklēt produktus..."
+                (focus)="showSuggestions.set(true)"
+              />
+              @if (filterForm.get('search')?.value) {
+                <button type="button" class="clear-search" (click)="clearSearch()">
+                  <i class="fas fa-times"></i>
+                </button>
+              }
+              @if (isSearching()) {
+                <div class="search-spinner">
+                  <i class="fas fa-spinner fa-spin"></i>
+                </div>
+              }
+            </div>
+
+            @if (showSuggestions() && searchResults().length > 0) {
+              <div class="search-suggestions">
+                @for (product of searchResults(); track product.id) {
+                  <div class="suggestion-item" (click)="selectSuggestion(product)">
+                    <div class="suggestion-image">
+                      <img [src]="product.primary_image || 'assets/images/placeholder.png'" [alt]="product.name" />
+                    </div>
+                    <div class="suggestion-details">
+                      <div class="suggestion-name">{{ product.name }}</div>
+                      <div class="suggestion-price">
+                        @if (product.is_sale_active) {
+                          <span class="price sale">€{{ getFormattedPrice(product.sale_price) }}</span>
+                          <span class="price original">€{{ getFormattedPrice(product.price) }}</span>
+                        } @else {
+                          <span class="price">€{{ getFormattedPrice(product.price) }}</span>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
             }
           </div>
         </div>
@@ -191,6 +223,14 @@
                   }
                 </div>
                 <div class="product-actions">
+                  <button
+                    class="btn-wishlist"
+                    [class.in-wishlist]="isInWishlist(product.id)"
+                    [disabled]="isProductProcessing(product.id)"
+                    (click)="toggleWishlist(product, $event)"
+                    [title]="isInWishlist(product.id) ? 'Noņemt no vēlmju saraksta' : 'Pievienot vēlmju sarakstam'">
+                    <i [class]="isInWishlist(product.id) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                  </button>
                   <button
                     class="btn-add-to-cart"
                     [disabled]="product.stock === 0"

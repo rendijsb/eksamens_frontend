@@ -1,0 +1,67 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>{{ isEditMode() ? 'Rediģēt "Par mums" lapu' : 'Izveidot jaunu "Par mums" lapu' }}</h1>
+  </div>
+
+  @if (isLoading() && isEditMode()) {
+    <div class="loading-indicator">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Ielādē datus...</span>
+    </div>
+  } @else {
+    <form [formGroup]="aboutForm" class="page-form">
+      <div class="form-group">
+        <label for="title">Virsraksts <span class="required">*</span></label>
+        <input
+          type="text"
+          id="title"
+          formControlName="title"
+          [appValidationError]="isSubmitted()"
+          placeholder="Ievadiet lapas virsrakstu">
+        @if (isSubmitted() && aboutForm.get('title')?.invalid) {
+          <div class="validation-error">
+            <i class="fas fa-exclamation-circle"></i> Lūdzu, ievadiet lapas virsrakstu
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="content">Saturs <span class="required">*</span></label>
+        <div class="editor-container">
+          <angular-editor
+            formControlName="content"
+            [config]="editorConfig"></angular-editor>
+        </div>
+        @if (isSubmitted() && aboutForm.get('content')?.invalid) {
+          <div class="validation-error">
+            <i class="fas fa-exclamation-circle"></i> Lapas saturs ir obligāts
+          </div>
+        }
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label class="checkbox-container">
+          <input type="checkbox" id="is_active" formControlName="is_active">
+          <span class="checkbox-label">Aktīvs</span>
+        </label>
+        <small class="checkbox-help">Ja šī opcija atzīmēta, šī lapa būs redzama lietotājiem</small>
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="cancel()">
+          <i class="fas fa-times"></i> Atcelt
+        </button>
+        <button
+          type="submit"
+          class="btn-primary"
+          [appButtonLoader]="isLoading()"
+          (click)="submitForm()">
+          <i class="fas fa-save"></i> {{ isEditMode() ? 'Saglabāt izmaiņas' : 'Izveidot lapu' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

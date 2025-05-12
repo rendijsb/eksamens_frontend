@@ -1,0 +1,60 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>"Par mums" lapas pārvaldība</h1>
+
+    <div class="actions">
+      <button class="btn-primary" (click)="createNewAboutPage()">
+        <i class="fas fa-plus"></i> Izveidot jaunu "Par mums" lapu
+      </button>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    @if (isLoading()) {
+      <div class="loading-indicator">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Ielādē datus...</span>
+      </div>
+    } @else if (aboutPages().length === 0) {
+      <div class="no-data">
+        <p>Nav atrasta neviena "Par mums" lapa. Izveidojiet jaunu lapu, lai sāktu.</p>
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nosaukums</th>
+          <th>Statuss</th>
+          <th>Izveidots</th>
+          <th>Atjaunināts</th>
+          <th>Darbības</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (page of aboutPages(); track page.id) {
+            <tr>
+              <td>{{ page.id }}</td>
+              <td>{{ page.title }}</td>
+              <td>
+                <span class="badge" [class.active]="page.is_active" [class.inactive]="!page.is_active">
+                  {{ page.is_active ? 'Aktīvs' : 'Neaktīvs' }}
+                </span>
+              </td>
+              <td>{{ page.created_at | date:'yyyy-MM-dd HH:mm' }}</td>
+              <td>{{ page.updated_at | date:'yyyy-MM-dd HH:mm' }}</td>
+              <td class="actions">
+                <button class="btn-icon" title="Rediģēt" (click)="editAboutPage(page.id)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-icon" title="Dzēst" (click)="deleteAboutPage(page.id)" [disabled]="isProcessing()">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

@@ -126,4 +126,15 @@ export class PublicService {
       { params }
     ) as Observable<ProductsResponse>;
   }
+
+  getProductSuggestions(query: string): Observable<any> {
+    let params = new HttpParams()
+      .append('search', query)
+      .append('per_page', '5');
+
+    return this.http.get(
+      this.apiUrlService.getUrl('api/public/products/suggestions'),
+      { params }
+    );
+  }
 }

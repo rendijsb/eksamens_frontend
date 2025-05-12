@@ -22,6 +22,10 @@ import { OrderListComponent } from "./components/profile/order-list/order-list.c
 import { OrderDetailComponent } from "./components/profile/order-detail/order-detail.component";
 import { OrdersAdminComponent } from "./components/admin/orders-page/orders-admin/orders-admin.component";
 import { ReviewsAdminComponent } from "./components/admin/reviews-page/reviews-admin/reviews-admin.component";
+import {WishlistComponent} from "./components/main/wishlist/wishlist.component";
+import {AboutAdminComponent} from "./components/admin/about-admin/about-admin.component";
+import {AboutAdminFormComponent} from "./components/admin/about-admin-form/about-admin-form.component";
+import {ContactAdminFormComponent} from "./components/admin/contact-admin-form/contact-admin-form.component";
 
 export const routes: Routes = [
   {
@@ -57,6 +61,16 @@ export const routes: Routes = [
         path: 'sale',
         loadComponent: () => import('./components/main/sale/sale.component')
           .then(m => m.SaleComponent)
+      },
+      {
+        path: 'about',
+        loadComponent: () => import('./components/main/about/about.component')
+          .then(m => m.AboutComponent)
+      },
+      {
+        path: 'contact',
+        loadComponent: () => import('./components/main/contact/contact.component')
+          .then(m => m.ContactComponent)
       }
     ]
   },
@@ -198,5 +212,40 @@ export const routes: Routes = [
   {
     path: 'checkout/confirmation',
     redirectTo: '/checkout',
+  },
+  {
+    path: 'wishlist',
+    component: MainLayoutComponent,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: WishlistComponent
+      }
+    ]
+  },
+  {
+    path: 'admin/pages',
+    component: AdminLayoutComponent,
+    canActivate: [authGuard],
+    data: { roles: [RoleEnum.ADMIN, RoleEnum.MODERATOR] },
+    children: [
+      {
+        path: 'about',
+        component: AboutAdminComponent
+      },
+      {
+        path: 'about/create',
+        component: AboutAdminFormComponent
+      },
+      {
+        path: 'about/:id/edit',
+        component: AboutAdminFormComponent
+      },
+      {
+        path: 'contact',
+        component: ContactAdminFormComponent
+      }
+    ]
   },
 ];

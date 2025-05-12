@@ -1,0 +1,82 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Kontaktinformācijas pārvaldība</h1>
+  </div>
+
+  @if (isLoading() && !contactInfo()) {
+    <div class="loading-indicator">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Ielādē datus...</span>
+    </div>
+  } @else {
+    <form [formGroup]="contactForm" class="page-form">
+      <div class="form-group">
+        <label for="address">Adrese</label>
+        <input
+          type="text"
+          id="address"
+          formControlName="address"
+          [appValidationError]="isSubmitted()"
+          placeholder="Ievadiet uzņēmuma adresi">
+      </div>
+
+      <div class="form-group">
+        <label for="email">E-pasta adrese</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          [appValidationError]="isSubmitted()"
+          placeholder="Ievadiet kontakta e-pastu">
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Tālrunis</label>
+        <input
+          type="tel"
+          id="phone"
+          formControlName="phone"
+          [appValidationError]="isSubmitted()"
+          placeholder="Ievadiet kontakta tālruni">
+      </div>
+
+      <div class="form-group">
+        <label for="working_hours">Darba laiks</label>
+        <input
+          type="text"
+          id="working_hours"
+          formControlName="working_hours"
+          placeholder="Piem.: Pirmdien-Piektdien: 9:00-18:00, Sestdien: 10:00-15:00">
+      </div>
+
+      <div class="form-group">
+        <label for="additional_info">Papildus informācija</label>
+        <textarea
+          id="additional_info"
+          formControlName="additional_info"
+          placeholder="Ievadiet papildus informāciju, ja nepieciešams"
+          rows="4"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="map_embed_code">Kartes iegulšanas kods</label>
+        <textarea
+          id="map_embed_code"
+          formControlName="map_embed_code"
+          placeholder="Ievadiet Google Maps vai citas kartes iegulšanas kodu"
+          rows="5"></textarea>
+        <small class="form-help">Iekopējiet šeit iframe kodu no Google Maps vai cita kartes pakalpojuma sniedzēja</small>
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn-primary"
+          [appButtonLoader]="isLoading()"
+          (click)="submitForm()">
+          Saglabāt izmaiņas
+        </button>
+      </div>
+    </form>
+  }
+</div>

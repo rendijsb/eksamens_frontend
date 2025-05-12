@@ -1,7 +1,7 @@
 <header class="shop-header" [class.scrolled]="isScrolled()">
   <div class="header-container">
     <a routerLink="/" class="logo">
-      <span class="logo-text">E-Shop</span>
+      <span class="logo-text">NetNest</span>
     </a>
 
     <nav class="main-nav" [class.mobile-open]="isMobileMenuOpen()">
@@ -20,20 +20,61 @@
     </nav>
 
     <div class="header-actions">
+      <a routerLink="/wishlist" class="action-btn wishlist-toggle" title="Vēlmes">
+        <i class="fas fa-heart"></i>
+        @if (wishlistCount() > 0) {
+          <span class="wishlist-count">{{ wishlistCount() }}</span>
+        }
+      </a>
+
       <div class="search-container" [class.open]="isSearchOpen()">
         <button class="action-btn search-toggle" (click)="toggleSearch()" title="Search">
           <i class="fas fa-search"></i>
         </button>
+
         <div class="search-form">
           <input
             type="text"
             placeholder="Meklēt produktus..."
             [value]="searchQuery()"
             (input)="updateSearchQuery($event)"
-            (keyup.enter)="submitSearch()">
+            (keyup.enter)="submitSearch()"
+            (focus)="showSuggestions.set(true)">
           <button class="search-submit" (click)="submitSearch()">
             <i class="fas fa-search"></i>
           </button>
+
+          @if (isSearching()) {
+            <div class="search-spinner">
+              <i class="fas fa-spinner fa-spin"></i>
+            </div>
+          }
+
+          @if (showSuggestions() && searchResults().length > 0) {
+            <div class="search-suggestions">
+              @for (product of searchResults(); track product.id) {
+                <div class="suggestion-item" (click)="selectSuggestion(product)">
+                  <div class="suggestion-image">
+                    <img [src]="product.primary_image || 'assets/images/placeholder.png'" [alt]="product.name" />
+                  </div>
+                  <div class="suggestion-details">
+                    <div class="suggestion-name">{{ product.name }}</div>
+                    <div class="suggestion-price">
+                      @if (product.is_sale_active) {
+                        <span class="price sale">€{{ product.sale_price }}</span>
+                        <span class="price original">€{{ product.price }}</span>
+                      } @else {
+                        <span class="price">€{{ product.price }}</span>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+              <div class="view-all-results" (click)="submitSearch()">
+                <i class="fas fa-search"></i> Skatīt visus rezultātus
+              </div>
+            </div>
+          }
         </div>
       </div>
 

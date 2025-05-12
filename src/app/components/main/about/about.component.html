@@ -1,0 +1,20 @@
+<div class="about-container">
+  <div class="about-header">
+    <h1>{{ aboutPage()?.title || 'Par mums' }}</h1>
+  </div>
+
+  <div class="about-content">
+    @if (isLoading()) {
+      <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Ielādē informāciju...</span>
+      </div>
+    } @else if (aboutPage()) {
+      <div [innerHTML]="getSafeHtml(aboutPage()?.content)"></div>
+    } @else {
+      <div class="no-content">
+        <p>Diemžēl informācija par mums nav pieejama. Lūdzu, sazinieties ar mums, lai uzzinātu vairāk.</p>
+      </div>
+    }
+  </div>
+</div>

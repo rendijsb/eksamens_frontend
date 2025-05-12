@@ -12,6 +12,7 @@ import { CartService } from "../service/cart.service";
 import { AuthService } from "../../auth/services/auth.service";
 import { ProductReviewsComponent } from "../../reviews/product-reviews/product-reviews.component";
 import {StarRatingComponent} from "../../reviews/star-rating/star-rating.component";
+import {WishlistService} from "../service/wishlist.service";
 
 @Component({
   selector: 'app-product-details',
@@ -35,6 +36,7 @@ export class ProductDetailsComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
+  private readonly wishlistService = inject(WishlistService);
 
   product: WritableSignal<Product | null> = signal(null);
   productImages: WritableSignal<Image[]> = signal([]);
@@ -83,7 +85,7 @@ export class ProductDetailsComponent implements OnInit {
   private formEffect = effect(() => {
     this.optionsForm.get('quantity')?.setValue(this.quantity(), { emitEvent: false });
     if (this.product()) {
-      this.checkWishlistStatus();
+      this.checkWishlistStatus(this.product()!.id);
     }
   });
 
@@ -119,6 +121,7 @@ export class ProductDetailsComponent implements OnInit {
           }
 
           this.loadProductImages(response.data.id);
+          this.checkWishlistStatus(response.data.id);
         }),
         catchError(error => {
           this.toastr.error('Product not found');
@@ -215,16 +218,44 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   addToWishlist(): void {
+    if (!this.authService.isAuthenticated()) {
+      this.toastr.info('Lūdzu, ielogojietes, lai pievienotu preces vēlmju sarakstam');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     if (!this.product()) {
       return;
     }
 
-    this.isInWishlist.update(state => !state);
+    const productId = this.product()!.id;
 
     if (this.isInWishlist()) {
-      this.toastr.success(`${this.product()!.name} pievienots jūsu vēlmju sarakstam`);
+      this.wishlistService.removeFromWishlist(productId)
+        .pipe(
+          tap(() => {
+            this.isInWishlist.set(false);
+            this.toastr.info(`${this.product()!.name} noņemts no vēlmju saraksta`);
+          }),
+          catchError(() => {
+            this.toastr.error('Neizdevās noņemt no vēlmju saraksta');
+            return EMPTY;
+          })
+        )
+        .subscribe();
     } else {
-      this.toastr.info(`${this.product()!.name} noņemts no jūsu vēlmju saraksta`);
+      this.wishlistService.addToWishlist(productId)
+        .pipe(
+          tap(() => {
+            this.isInWishlist.set(true);
+            this.toastr.success(`${this.product()!.name} pievienots vēlmju sarakstam`);
+          }),
+          catchError(() => {
+            this.toastr.error('Neizdevās pievienot vēlmju sarakstam');
+            return EMPTY;
+          })
+        )
+        .subscribe();
     }
   }
 
@@ -250,8 +281,23 @@ export class ProductDetailsComponent implements OnInit {
     return this.activeTab() === tabName;
   }
 
-  checkWishlistStatus(): void {
-    this.isInWishlist.set(false);
+  checkWishlistStatus(productId: number): void {
+    if (!this.authService.isAuthenticated()) {
+      this.isInWishlist.set(false);
+      return;
+    }
+
+    this.wishlistService.checkInWishlist(productId)
+      .pipe(
+        tap(response => {
+          this.isInWishlist.set(response.in_wishlist);
+        }),
+        catchError(() => {
+          this.isInWishlist.set(false);
+          return EMPTY;
+        })
+      )
+      .subscribe();
   }
 
   isProductProcessing(productId: number): boolean {
