@@ -313,7 +313,7 @@
                 [appButtonLoader]="isProcessingPayment()"
                 [disabled]="!stripeReady() || isProcessingPayment()"
                 (click)="processPayment()">
-                Apmaksāt {{ cartData()?.total_price || 0 | currency:'EUR' }}
+                Apmaksāt {{ finalTotal() || 0 | currency:'EUR' }}
               </button>
             </div>
           </section>

@@ -557,131 +557,181 @@
 }
 
 .summary-coupon {
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  padding-top: 1rem;
-  margin-top: 1rem;
+  border-top: 1px solid rgba($dark-color, 0.1);
+  padding-top: $spacing-md;
+  margin-top: $spacing-md;
+  background: $light-color;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $box-shadow-sm;
 }
 
 .coupon-form {
   h3 {
-    font-size: 1rem;
-    margin-bottom: 0.75rem;
-    color: var(--bs-body-color);
+    font-size: $h5-font-size;
+    font-weight: 600;
+    margin-bottom: $spacing-md;
+    color: $dark-color;
   }
 }
 
 .coupon-input-group {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
 
   input {
     flex: 1;
-    padding: 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 0.875rem;
+    padding: $spacing-md;
+    border: 1px solid rgba($dark-color, 0.15);
+    border-radius: $border-radius-md;
+    font-size: $base-font-size;
+    font-weight: 500;
+    text-transform: uppercase;
+    background-color: $light-color;
+    transition: all $transition-fast;
 
     &:focus {
       outline: none;
-      border-color: var(--bs-primary);
-      box-shadow: 0 0 0 2px rgba(var(--bs-primary-rgb), 0.2);
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
     }
 
     &:disabled {
-      background-color: #f5f5f5;
+      background-color: rgba($secondary-color, 0.5);
       opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    &::placeholder {
+      text-transform: none;
+      color: $dark-medium;
     }
   }
 }
 
 .btn-coupon {
-  padding: 0.75rem 1.5rem;
-  background-color: var(--bs-primary);
-  color: white;
+  padding: $spacing-md $spacing-lg;
+  background-color: $primary-color;
+  color: $light-color;
   border: none;
-  border-radius: 8px;
-  font-weight: 500;
+  border-radius: $border-radius-md;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: $spacing-xs;
+  transition: all $transition-fast;
+  white-space: nowrap;
 
   &:hover:not(:disabled) {
-    background-color: var(--bs-primary-dark);
+    background-color: $primary-dark;
+    transform: translateY(-2px);
+    box-shadow: $box-shadow-sm;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
+  }
+
+  i {
+    font-size: $base-font-size;
   }
 }
 
 .coupon-error {
-  color: var(--bs-danger);
-  font-size: 0.875rem;
+  color: $danger-color;
+  font-size: $small-font-size;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  gap: $spacing-xs;
+  margin-top: $spacing-sm;
+  padding: $spacing-sm;
+  background-color: rgba($danger-color, 0.1);
+  border-radius: $border-radius-md;
+  border-left: 3px solid $danger-color;
+
+  i {
+    color: $danger-color;
+  }
 }
 
 .applied-coupon {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: rgba(var(--bs-success-rgb), 0.1);
-  border: 1px solid rgba(var(--bs-success-rgb), 0.3);
-  border-radius: 8px;
-  padding: 1rem;
+  background-color: rgba($success-color, 0.1);
+  border: 1px solid rgba($success-color, 0.3);
+  border-radius: $border-radius-md;
+  padding: $spacing-md;
+  border-left: 4px solid $success-color;
 }
 
 .coupon-info {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: $spacing-xs;
 }
 
 .coupon-badge {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: var(--bs-success);
+  gap: $spacing-xs;
+  color: $success-color;
   font-weight: 600;
+  font-size: $base-font-size;
 
   i {
-    font-size: 1.1rem;
+    font-size: $h5-font-size;
   }
 }
 
 .coupon-discount {
-  font-size: 0.875rem;
+  font-size: $small-font-size;
 
   .discount-label {
-    color: var(--bs-body-color);
-    margin-right: 0.5rem;
+    color: $dark-medium;
+    margin-right: $spacing-xs;
   }
 
   .discount-amount {
-    color: var(--bs-success);
+    color: $success-color;
     font-weight: 600;
+    font-size: $base-font-size;
   }
 }
 
 .btn-remove-coupon {
-  background: $primary-color;
-  border: $accent-color;
-  color: var(--bs-muted);
-  padding: 0.5rem;
+  background: transparent;
+  border: 1px solid rgba($danger-color, 0.3);
+  color: $danger-color;
+  padding: $spacing-sm;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: $border-radius-md;
+  transition: all $transition-fast;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    background-color: rgba(var(--bs-danger-rgb), 0.1);
-    color: var(--bs-danger);
+    background-color: rgba($danger-color, 0.1);
+    border-color: $danger-color;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 
   i {
-    font-size: 1.1rem;
+    font-size: $h5-font-size;
   }
 }

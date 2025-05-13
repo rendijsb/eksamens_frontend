@@ -102,7 +102,8 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
         country: ['', [Validators.required]]
       })
     }),
-    payment_method: ['stripe']
+    payment_method: ['stripe'],
+    coupon_code: ['']
   });
 
   readonly useExistingShippingAddress = computed(() =>
@@ -317,6 +318,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     const customerDetails = formValue.customer_details;
     const addressDetails = formValue.address_details;
 
+    console.log(formValue.coupon_code)
     const payload: CheckoutDetails = {
       customer_name: customerDetails.customer_name,
       customer_email: customerDetails.customer_email,
@@ -482,12 +484,18 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
             this.couponError.set(response.message || 'Kupons nav derīgs');
             this.appliedCoupon.set(null);
             this.couponDiscount.set(0);
+            this.checkoutForm.patchValue({
+              coupon_code: ''
+            });
           }
         }),
         catchError((error) => {
           this.couponError.set(error.error?.message || 'Neizdevās pārbaudīt kuponu');
           this.appliedCoupon.set(null);
           this.couponDiscount.set(0);
+          this.checkoutForm.patchValue({
+            coupon_code: ''
+          });
           return EMPTY;
         }),
         finalize(() => {
@@ -504,7 +512,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     this.couponError.set(null);
 
     this.checkoutForm.patchValue({
-      coupon_code: null
+      coupon_code: ''
     });
 
     this.toastr.info('Kupons noņemts');
