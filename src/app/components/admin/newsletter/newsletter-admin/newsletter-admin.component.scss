@@ -1,0 +1,222 @@
+@import '../../../../../styles/abstracts/variables';
+
+.tab-navigation {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-xl;
+  border-bottom: 2px solid rgba($dark-color, 0.1);
+  padding-bottom: 0;
+
+  .tab-btn {
+    padding: $spacing-md $spacing-lg;
+    border: none;
+    background: transparent;
+    color: $dark-medium;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: $border-radius-md $border-radius-md 0 0;
+    transition: all $transition-fast;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    position: relative;
+
+    &:hover {
+      background: rgba($primary-color, 0.05);
+      color: $primary-color;
+    }
+
+    &.active {
+      background: $light-color;
+      color: $primary-color;
+      border-bottom: 3px solid $primary-color;
+      font-weight: 600;
+    }
+
+    i {
+      font-size: 0.9em;
+    }
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+
+  .stat-card {
+    background: $light-color;
+    border-radius: $border-radius-lg;
+    padding: $spacing-lg;
+    box-shadow: $box-shadow-sm;
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    transition: all $transition-fast;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $box-shadow-md;
+    }
+
+    &.stat-success {
+      border-left: 4px solid $success-color;
+
+      .stat-icon {
+        background: rgba($success-color, 0.1);
+        color: $success-color;
+      }
+    }
+
+    &.stat-primary {
+      border-left: 4px solid $primary-color;
+
+      .stat-icon {
+        background: rgba($primary-color, 0.1);
+        color: $primary-color;
+      }
+    }
+
+    &.stat-secondary {
+      border-left: 4px solid $dark-medium;
+
+      .stat-icon {
+        background: rgba($dark-medium, 0.1);
+        color: $dark-medium;
+      }
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: $h4-font-size;
+    }
+
+    .stat-content {
+      flex: 1;
+    }
+
+    .stat-title {
+      font-size: $small-font-size;
+      color: $dark-medium;
+      margin-bottom: $spacing-xs;
+    }
+
+    .stat-value {
+      font-size: $h2-font-size;
+      font-weight: 700;
+      color: $dark-color;
+    }
+  }
+}
+
+.newsletter-form-container {
+  background: $light-color;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow-sm;
+  padding: $spacing-xl;
+
+  .template-buttons {
+    display: flex;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-lg;
+    flex-wrap: wrap;
+
+    @media (max-width: $media-md) {
+      flex-direction: column;
+    }
+
+    button {
+      padding: $spacing-sm $spacing-md;
+      font-size: $small-font-size;
+      border-radius: $border-radius-sm;
+      display: flex;
+      align-items: center;
+      gap: $spacing-xs;
+
+      i {
+        font-size: 0.9em;
+      }
+    }
+  }
+
+  textarea {
+    width: 100%;
+    padding: $spacing-md;
+    border: 1px solid rgba($dark-color, 0.1);
+    border-radius: $border-radius-md;
+    font-family: 'Courier New', monospace;
+    font-size: $small-font-size;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 300px;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+  }
+
+  .form-help {
+    margin-top: $spacing-sm;
+    padding: $spacing-sm;
+    background: rgba($primary-color, 0.05);
+    border-radius: $border-radius-sm;
+    font-size: $mini-font-size;
+    color: $dark-medium;
+
+    code {
+      background: rgba($dark-color, 0.1);
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+    }
+  }
+}
+
+.required {
+  color: $danger-color;
+  font-weight: 600;
+}
+
+.badge {
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-pill;
+  font-size: $mini-font-size;
+  font-weight: 600;
+  display: inline-block;
+
+  &.active {
+    background: rgba($success-color, 0.1);
+    color: $success-color;
+  }
+
+  &.inactive {
+    background: rgba($dark-medium, 0.1);
+    color: $dark-medium;
+  }
+}
+
+.data-table {
+  th:first-child,
+  td:first-child {
+    padding-left: $spacing-lg;
+  }
+
+  th:last-child,
+  td:last-child {
+    text-align: left;
+    padding-right: $spacing-lg;
+  }
+
+  td {
+    vertical-align: middle;
+  }
+}

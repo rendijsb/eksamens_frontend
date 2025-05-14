@@ -10,6 +10,9 @@ import {Banner} from "../../admin/banners-page/models/banner.models";
 import {CartService} from "../service/cart.service";
 import {AuthService} from "../../auth/services/auth.service";
 import {StarRatingComponent} from "../../reviews/star-rating/star-rating.component";
+import {NewsletterService} from "../service/newsletter.service";
+import {ButtonLoaderDirective} from "../../../shared/directives/button-loader/button-loader.directive";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-home',
@@ -17,10 +20,27 @@ import {StarRatingComponent} from "../../reviews/star-rating/star-rating.compone
   imports: [
     CommonModule,
     RouterLink,
-    StarRatingComponent
+    StarRatingComponent,
+    ButtonLoaderDirective
   ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrl: './home.component.scss',
+  animations: [
+    trigger('fadeInUp', [
+      state('in', style({opacity: 1, transform: 'translateY(0)'})),
+      transition('void => *', [
+        style({opacity: 0, transform: 'translateY(30px)'}),
+        animate(800)
+      ])
+    ]),
+    trigger('slideIn', [
+      state('in', style({transform: 'translateX(0)'})),
+      transition('void => *', [
+        style({transform: 'translateX(-100px)'}),
+        animate('1000ms ease-out')
+      ])
+    ])
+  ]
 })
 export class HomeComponent implements OnInit {
   private readonly publicService = inject(PublicService);
@@ -28,9 +48,11 @@ export class HomeComponent implements OnInit {
   private readonly cartService = inject(CartService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly newsletterService = inject(NewsletterService);
 
   protected readonly featuredProducts: WritableSignal<Product[] | null> = signal<Product[] | null>(null);
   protected readonly categories: WritableSignal<Category[] | null> = signal<Category[] | null>(null);
+  protected readonly isNewsletterLoading: WritableSignal<boolean> = signal<boolean>(false);
 
   bannerSlides: WritableSignal<Banner[]> = signal([]);
 
@@ -168,5 +190,43 @@ export class HomeComponent implements OnInit {
   getFormattedRating(rating: any): string {
     if (!rating) return '0.0';
     return Number(rating).toFixed(1);
+  }
+
+  subscribeToNewsletter(): void {
+    const email = this.emailInput();
+
+    if (!email || !this.isValidEmail(email)) {
+      this.toastr.error('Lūdzu, ievadiet derīgu e-pasta adresi');
+      return;
+    }
+
+    this.isNewsletterLoading.set(true);
+
+    this.newsletterService.subscribe(email)
+      .pipe(
+        tap((response) => {
+          this.toastr.success(response.message);
+          this.emailInput.set('');
+        }),
+        catchError((error) => {
+          const errorMessage = 'Neizdevās pierakstīties jaunumiem';
+          this.toastr.error(errorMessage);
+          return EMPTY;
+        }),
+        finalize(() => {
+          this.isNewsletterLoading.set(false);
+        })
+      )
+      .subscribe();
+  }
+
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  onEmailInputChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.emailInput.set(input.value);
   }
 }

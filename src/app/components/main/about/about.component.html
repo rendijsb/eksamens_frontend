@@ -1,49 +1,37 @@
-<div class="about-container" @fadeInUp>
+<div class="about-container">
   <div class="about-hero">
-    <div class="hero-content" @slideIn>
+    <div class="hero-content">
       <h1>{{ aboutPage()?.title || 'Par mums' }}</h1>
       <div class="hero-decoration"></div>
-    </div>
-    <div class="hero-visual">
-      <div class="floating-elements">
-        <div class="element element-1"></div>
-        <div class="element element-2"></div>
-        <div class="element element-3"></div>
-      </div>
     </div>
   </div>
 
   <div class="about-content">
     @if (isLoading()) {
       <div class="loading-spinner">
-        <div class="spinner-ring">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
+        <div class="spinner"></div>
         <span>Ielādē informāciju...</span>
       </div>
     } @else if (aboutPage()) {
-      <div class="content-wrapper" @fadeInUp>
+      <div class="content-wrapper">
         <div class="content-card">
-          <div [innerHTML]="getSafeHtml(aboutPage()?.content)" class="content-text"></div>
+          <div class="content-text" [innerHTML]="getSafeHtml(aboutPage()?.content)"></div>
         </div>
       </div>
     } @else {
-      <div class="no-content" @fadeInUp>
+      <div class="no-content">
         <div class="no-content-icon">📄</div>
         <h3>Informācija nav pieejama</h3>
         <p>Diemžēl informācija par mums nav pieejama. Lūdzu, sazinieties ar mums, lai uzzinātu vairāk.</p>
-        <button class="contact-btn" routerLink="/contact">
+        <a routerLink="/contact" class="contact-btn">
           <span>Sazināties ar mums</span>
           <span class="btn-arrow">→</span>
-        </button>
+        </a>
       </div>
     }
   </div>
 
-  <div class="about-features" @fadeInUp>
+  <div class="about-features">
     <div class="feature-grid">
       <div class="feature-card">
         <div class="feature-icon">🎯</div>

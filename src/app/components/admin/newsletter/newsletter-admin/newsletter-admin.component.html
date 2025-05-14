@@ -1,0 +1,168 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Jaunumu pārvaldība</h1>
+  </div>
+
+  <div class="tab-navigation">
+    <button
+      class="tab-btn"
+      [class.active]="activeTab() === 'stats'"
+      (click)="setActiveTab('stats')">
+      <i class="fas fa-chart-bar"></i> Statistika
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="activeTab() === 'send'"
+      (click)="setActiveTab('send')">
+      <i class="fas fa-paper-plane"></i> Sūtīt jaunumus
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="activeTab() === 'subscribers'"
+      (click)="setActiveTab('subscribers')">
+      <i class="fas fa-users"></i> Abonenti
+    </button>
+  </div>
+
+  @if (activeTab() === 'stats') {
+    <div class="stats-grid">
+      @for (card of statsCards(); track card.title) {
+        <div class="stat-card" [class]="'stat-' + card.color">
+          <div class="stat-icon">
+            <i [class]="card.icon"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-title">{{ card.title }}</div>
+            <div class="stat-value">{{ card.value }}</div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (activeTab() === 'send') {
+    <div class="newsletter-form-container">
+      <form [formGroup]="newsletterForm" (ngSubmit)="onSubmitNewsletter()" class="page-form">
+        <div class="form-group">
+          <label for="subject">E-pasta temats <span class="required">*</span></label>
+          <input
+            type="text"
+            id="subject"
+            formControlName="subject"
+            placeholder="Ievadiet e-pasta tematu"
+            [class.ng-invalid]="newsletterForm.get('subject')?.invalid && newsletterForm.get('subject')?.touched">
+          @if (newsletterForm.get('subject')?.errors && newsletterForm.get('subject')?.touched) {
+            <div class="validation-error">
+              @if (newsletterForm.get('subject')?.errors?.['required']) {
+                <span>Temats ir obligāts</span>
+              }
+              @if (newsletterForm.get('subject')?.errors?.['maxlength']) {
+                <span>Temats nedrīkst būt garāks par 255 rakstzīmēm</span>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="template-buttons">
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="insertTemplate('welcome')">
+            <i class="fas fa-hands"></i> Sveiciena veidne
+          </button>
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="insertTemplate('promotion')">
+            <i class="fas fa-percentage"></i> Akcijas veidne
+          </button>
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="insertTemplate('announcement')">
+            <i class="fas fa-bullhorn"></i> Paziņojuma veidne
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="content">E-pasta saturs (HTML) <span class="required">*</span></label>
+          <textarea
+            id="content"
+            formControlName="content"
+            rows="15"
+            placeholder="Ievadiet e-pasta saturu. Varat izmantot HTML tagus stilizēšanai."
+            [class.ng-invalid]="newsletterForm.get('content')?.invalid && newsletterForm.get('content')?.touched">
+          </textarea>
+          @if (newsletterForm.get('content')?.errors && newsletterForm.get('content')?.touched) {
+            <div class="validation-error">
+              @if (newsletterForm.get('content')?.errors?.['required']) {
+                <span>Saturs ir obligāts</span>
+              }
+            </div>
+          }
+          <div class="form-help">
+            <strong>HTML piemēri:</strong><br>
+            Virsraksts: <code>&lt;h1 style="color: #8B0000;"&gt;Jūsu virsraksts&lt;/h1&gt;</code><br>
+            Saite: <code>&lt;a href="https://example.com" style="color: #8B0000;"&gt;Saites teksts&lt;/a&gt;</code><br>
+            Poga: <code>&lt;a href="#" style="background: #8B0000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;"&gt;Poga&lt;/a&gt;</code>
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <div class="checkbox-container">
+            <input type="checkbox" id="send_to_all" formControlName="send_to_all">
+            <label for="send_to_all" class="checkbox-label">Sūtīt visiem aktīvajiem abonentiem</label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="isSending() || newsletterForm.invalid">
+            @if (isSending()) {
+              <i class="fas fa-spinner fa-spin"></i> Sūta...
+            } @else {
+              <i class="fas fa-paper-plane"></i> Sūtīt jaunumus
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (activeTab() === 'subscribers') {
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+        <tr>
+          <th>E-pasts</th>
+          <th>Statuss</th>
+          <th>Pierakstījās</th>
+          <th>Atrakstījās</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (subscriber of subscribers(); track subscriber.id) {
+            <tr>
+              <td>{{ subscriber.email }}</td>
+              <td>
+                <span [class]="getSubscriberStatusClass(subscriber)">
+                  {{ getSubscriberStatusText(subscriber) }}
+                </span>
+              </td>
+              <td>{{ formatDate(subscriber.subscribed_at) }}</td>
+              <td>
+                @if (subscriber.unsubscribed_at) {
+                  {{ formatDate(subscriber.unsubscribed_at) }}
+                } @else {
+                  -
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,99 @@
+<div class="unsubscribe-container">
+  <div class="unsubscribe-card">
+    <div class="header">
+      <h1>{{ appName }}</h1>
+      <p>Atrakstīšanās no jaunumiem</p>
+    </div>
+
+    <div class="content">
+      @switch (unsubscribeStatus()) {
+        @case ('prompt') {
+          <div class="prompt-section">
+            <h2>Vai tiešām vēlaties atrakstīties?</h2>
+            <p>Atrakstījušies no jaunumiem, jūs vairs nesaņemsiet:</p>
+            <ul class="features-list">
+              <li>Informāciju par jaunajiem produktiem</li>
+              <li>Ekskluzīvas atlaides un piedāvājumus</li>
+              <li>Svarīgus paziņojumus par akcijām</li>
+            </ul>
+
+            <div class="actions">
+              <button
+                class="btn btn-primary"
+                [disabled]="isLoading()"
+                (click)="confirmUnsubscribe()">
+                @if (isLoading()) {
+                  <span class="spinner"></span>
+                  Atrakstās...
+                } @else {
+                  Atrakstīties
+                }
+              </button>
+              <a [routerLink]="['/']" class="btn btn-outline">
+                Atgriezties veikalā
+              </a>
+            </div>
+          </div>
+        }
+
+        @case ('success') {
+          <div class="success-section">
+            <div class="icon">✅</div>
+            <h2>Veiksmīgi atrakstījies!</h2>
+            <p class="message">{{ message() }}</p>
+            <p>Mēs jūs sapratīsim. Jūs vienmēr varat atgriezties un pierakstīties vēlreiz.</p>
+            <a [routerLink]="['/']" class="btn btn-primary">
+              Atgriezties veikalā
+            </a>
+          </div>
+        }
+
+        @case ('already_unsubscribed') {
+          <div class="info-section">
+            <div class="icon">ℹ️</div>
+            <h2>Jau esat atrakstījies</h2>
+            <p class="message">{{ message() }}</p>
+            <a [routerLink]="['/']" class="btn btn-primary">
+              Atgriezties veikalā
+            </a>
+          </div>
+        }
+
+        @case ('invalid_token') {
+          <div class="error-section">
+            <div class="icon">⚠️</div>
+            <h2>Nederīga saite</h2>
+            <p class="message">{{ message() }}</p>
+            <p>Šī saite ir nederīga vai ir novecojusi.</p>
+            <a [routerLink]="['/']" class="btn btn-primary">
+              Atgriezties veikalā
+            </a>
+          </div>
+        }
+
+        @case ('error') {
+          <div class="error-section">
+            <div class="icon">❌</div>
+            <h2>Radās kļūda</h2>
+            <p class="message">{{ message() }}</p>
+            <div class="actions">
+              <button
+                class="btn btn-primary"
+                (click)="confirmUnsubscribe()"
+                [disabled]="isLoading()">
+                Mēģināt vēlreiz
+              </button>
+              <a [routerLink]="['/']" class="btn btn-outline">
+                Atgriezties veikalā
+              </a>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <div class="footer">
+      <p>&copy; {{ getYear() }} {{ appName }}. Visas tiesības aizsargātas.</p>
+    </div>
+  </div>
+</div>

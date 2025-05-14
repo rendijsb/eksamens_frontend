@@ -2,32 +2,16 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import {AboutPage, PagesService} from "../service/page.service";
-import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
-import {animate, state, style, transition, trigger} from "@angular/animations";
+import { AboutPage, PagesService } from "../service/page.service";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './about.component.html',
-  styleUrls: ['./about.component.scss'],
-  animations: [
-    trigger('fadeInUp', [
-      state('in', style({opacity: 1, transform: 'translateY(0)'})),
-      transition('void => *', [
-        style({opacity: 0, transform: 'translateY(30px)'}),
-        animate(800)
-      ])
-    ]),
-    trigger('slideIn', [
-      state('in', style({transform: 'translateX(0)'})),
-      transition('void => *', [
-        style({transform: 'translateX(-100px)'}),
-        animate('1000ms ease-out')
-      ])
-    ])
-  ]
+  styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit {
   private readonly pagesService = inject(PagesService);
@@ -60,7 +44,8 @@ export class AboutComponent implements OnInit {
       .subscribe();
   }
 
-  getSafeHtml(content: string|undefined): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(<string>content) || '';
+  getSafeHtml(content: string | undefined): SafeHtml {
+    if (!content) return '';
+    return this.sanitizer.bypassSecurityTrustHtml(content);
   }
 }

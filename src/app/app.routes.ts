@@ -28,6 +28,7 @@ import {AboutAdminFormComponent} from "./components/admin/about-admin-form/about
 import {ContactAdminFormComponent} from "./components/admin/contact-admin-form/contact-admin-form.component";
 import {CouponsAdminComponent} from "./components/admin/coupons-admin/coupons-admin.component";
 import {CouponFormComponent} from "./components/admin/coupons-form/coupons-form.component";
+import {UnsubscribeComponent} from "./pages/unsubscribe/unsubscribe.component";
 
 export const routes: Routes = [
   {
@@ -169,6 +170,19 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'admin/newsletter',
+    component: AdminLayoutComponent,
+    canActivate: [authGuard],
+    data: { roles: [RoleEnum.ADMIN, RoleEnum.MODERATOR] },
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/admin/newsletter/newsletter-admin/newsletter-admin.component')
+          .then(m => m.NewsletterAdminComponent)
+      }
+    ]
+  },
+  {
     path: 'profile',
     component: ProfileLayoutComponent,
     canActivate: [authGuard],
@@ -261,4 +275,12 @@ export const routes: Routes = [
       }
     ]
   },
+  {
+    path: 'newsletter/unsubscribe/:token',
+    component: UnsubscribeComponent
+  },
+  {
+    path: '**',
+    redirectTo: '/'
+  }
 ];

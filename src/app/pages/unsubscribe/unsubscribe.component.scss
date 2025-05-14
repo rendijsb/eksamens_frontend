@@ -1,0 +1,229 @@
+@import '../../../styles/abstracts/variables';
+
+.unsubscribe-container {
+  min-height: 100vh;
+  background-color: $secondary-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-md;
+  font-family: $font-stack;
+}
+
+.unsubscribe-card {
+  max-width: 500px;
+  width: 100%;
+  background: $light-color;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow-lg;
+  overflow: hidden;
+  animation: slideIn 0.5s ease-out;
+}
+
+.header {
+  background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+  color: $light-color;
+  padding: $spacing-xl;
+  text-align: center;
+
+  h1 {
+    font-size: $h2-font-size;
+    font-weight: 700;
+    margin: 0 0 $spacing-xs 0;
+  }
+
+  p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: $h5-font-size;
+  }
+}
+
+.content {
+  padding: $spacing-xl;
+}
+
+.prompt-section,
+.success-section,
+.info-section,
+.error-section {
+  text-align: center;
+
+  h2 {
+    color: $dark-color;
+    font-size: $h3-font-size;
+    margin-bottom: $spacing-md;
+  }
+
+  p {
+    color: $dark-medium;
+    line-height: 1.6;
+    margin-bottom: $spacing-lg;
+  }
+}
+
+.icon {
+  font-size: 4rem;
+  margin-bottom: $spacing-md;
+}
+
+.features-list {
+  text-align: left;
+  background: rgba($primary-color, 0.05);
+  padding: $spacing-lg;
+  border-radius: $border-radius-md;
+  border-left: 4px solid $primary-color;
+  margin: $spacing-lg 0;
+
+  li {
+    margin-bottom: $spacing-xs;
+    position: relative;
+    padding-left: $spacing-md;
+
+    &:before {
+      content: '•';
+      color: $primary-color;
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: $spacing-lg;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  padding: $spacing-md $spacing-xl;
+  font-weight: 600;
+  border-radius: $border-radius-md;
+  text-decoration: none;
+  transition: all $transition-fast;
+  border: none;
+  cursor: pointer;
+  font-size: $base-font-size;
+  min-width: 140px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $box-shadow-sm;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.btn-primary {
+  background-color: $primary-color;
+  color: $light-color;
+
+  &:hover:not(:disabled) {
+    background-color: $primary-dark;
+    color: $light-color;
+  }
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid $primary-color;
+  color: $primary-color;
+
+  &:hover {
+    background-color: rgba($primary-color, 0.05);
+    color: $primary-color;
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba($light-color, 0.3);
+  border-top: 2px solid $light-color;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.message {
+  background: rgba($info-color, 0.1);
+  border-left: 4px solid $info-color;
+  padding: $spacing-md;
+  border-radius: 0 $border-radius-md $border-radius-md 0;
+  margin: $spacing-md 0;
+  text-align: left;
+  color: $dark-color;
+  font-weight: 500;
+}
+
+.success-section .message {
+  background: rgba($success-color, 0.1);
+  border-left-color: $success-color;
+}
+
+.error-section .message {
+  background: rgba($danger-color, 0.1);
+  border-left-color: $danger-color;
+}
+
+.footer {
+  background: rgba($dark-color, 0.05);
+  padding: $spacing-lg;
+  text-align: center;
+  border-top: 1px solid rgba($dark-color, 0.1);
+
+  p {
+    margin: 0;
+    color: $dark-medium;
+    font-size: $small-font-size;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: $media-sm) {
+  .unsubscribe-container {
+    padding: $spacing-sm;
+  }
+
+  .header,
+  .content {
+    padding: $spacing-lg;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
