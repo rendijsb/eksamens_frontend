@@ -10,9 +10,7 @@
 
   @if (isLoading() && isEditMode()) {
     <div class="loading-indicator">
-      <div class="spinner-container">
-        <div class="spinner"></div>
-      </div>
+      <div class="spinner"></div>
       <span>Ielādē datus...</span>
     </div>
   } @else {
@@ -31,7 +29,6 @@
           class="form-input">
         @if (isSubmitted() && aboutForm.get('title')?.invalid) {
           <div class="validation-error">
-            <span class="error-icon">⚠</span>
             <span class="error-text">Lūdzu, ievadiet lapas virsrakstu</span>
           </div>
         }
@@ -42,15 +39,16 @@
           <span class="label-text">Saturs</span>
           <span class="required">*</span>
         </label>
-        <div class="editor-container">
-          <angular-editor
-            formControlName="content"
-            [config]="editorConfig"
-            placeholder="Ievadiet lapas saturu..."></angular-editor>
-        </div>
+        <textarea
+          id="content"
+          formControlName="content"
+          [appValidationError]="isSubmitted()"
+          placeholder="Ievadiet lapas saturu..."
+          class="form-textarea"
+          rows="10">
+        </textarea>
         @if (isSubmitted() && aboutForm.get('content')?.invalid) {
           <div class="validation-error">
-            <span class="error-icon">⚠</span>
             <span class="error-text">Lapas saturs ir obligāts</span>
           </div>
         }

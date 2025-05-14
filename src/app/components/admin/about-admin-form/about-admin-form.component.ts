@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, signal, ViewEncapsulation, AfterViewInit, ElementRef} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -7,7 +7,6 @@ import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import {ValidationErrorDirective} from "../../../shared/directives/validation-error/validation-error.directive";
 import {ButtonLoaderDirective} from "../../../shared/directives/button-loader/button-loader.directive";
 import {AboutPage, PagesService} from "../../main/service/page.service";
-import {AngularEditorConfig, AngularEditorModule} from '@kolkov/angular-editor';
 
 @Component({
   selector: 'app-about-admin-form',
@@ -17,59 +16,22 @@ import {AngularEditorConfig, AngularEditorModule} from '@kolkov/angular-editor';
     ReactiveFormsModule,
     ValidationErrorDirective,
     ButtonLoaderDirective,
-    AngularEditorModule,
     RouterLink
   ],
   templateUrl: './about-admin-form.component.html',
-  styleUrls: ['./about-admin-form.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./about-admin-form.component.scss']
 })
-export class AboutAdminFormComponent implements OnInit, AfterViewInit {
+export class AboutAdminFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly pagesService = inject(PagesService);
   private readonly toastr = inject(ToastrService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly el = inject(ElementRef);
 
   protected readonly isLoading = signal(false);
   protected readonly isSubmitted = signal(false);
   protected readonly isEditMode = signal(false);
   protected readonly aboutPage = signal<AboutPage | null>(null);
-
-  editorConfig: AngularEditorConfig = {
-    editable: true,
-    spellcheck: true,
-    height: 'auto',
-    minHeight: '250px',
-    maxHeight: 'auto',
-    width: 'auto',
-    minWidth: '0',
-    placeholder: 'Ievadiet lapas saturu...',
-    translate: 'no',
-    enableToolbar: true,
-    showToolbar: true,
-    defaultParagraphSeparator: 'p',
-    defaultFontName: 'Arial',
-    defaultFontSize: '3',
-    toolbarPosition: 'top',
-    toolbarHiddenButtons: [
-      [
-        'subscript',
-        'superscript',
-        'justifyFull',
-        'insertImage',
-        'insertVideo'
-      ],
-      [
-        'fontSize',
-        'textColor',
-        'backgroundColor',
-        'customClasses',
-        'insertHorizontalRule',
-      ]
-    ]
-  };
 
   aboutForm = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],
@@ -84,50 +46,6 @@ export class AboutAdminFormComponent implements OnInit, AfterViewInit {
       this.isEditMode.set(true);
       this.loadAboutPage(+pageId);
     }
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.ensureIconsLoaded();
-    }, 1000);
-  }
-
-  private ensureIconsLoaded(): void {
-    const iconsToCheck = [
-      '.fa-save', '.fa-times', '.fa-spinner', '.fa-exclamation-circle'
-    ];
-
-    iconsToCheck.forEach(iconClass => {
-      const elements = document.querySelectorAll(iconClass);
-      elements.forEach(el => {
-        if (!el.textContent && !el.innerHTML.includes('svg')) {
-          switch(iconClass) {
-            case '.fa-save':
-              el.textContent = '💾';
-              break;
-            case '.fa-times':
-              el.textContent = '✕';
-              break;
-            case '.fa-spinner':
-              el.textContent = '⟳';
-              break;
-            case '.fa-exclamation-circle':
-              el.textContent = '⚠';
-              break;
-          }
-        }
-      });
-    });
-  }
-
-  private checkEditorIcons(): void {
-    const editorButtons = this.el.nativeElement.querySelectorAll('.angular-editor-button');
-    editorButtons.forEach((button: HTMLElement) => {
-      const icon = button.querySelector('i, fa-icon');
-      if (!icon || (icon && !icon.innerHTML.trim())) {
-        button.innerHTML = '';
-      }
-    });
   }
 
   loadAboutPage(id: number): void {
