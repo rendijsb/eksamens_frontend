@@ -5,7 +5,7 @@ builder = "nixpacks"
 startCommand = """
 npm install &&
 npm run build &&
-npx serve -s dist/eksamens_frontend -l $PORT
+npx serve -s dist/eksamens_frontend -l 3000
 """
 
 [env]
