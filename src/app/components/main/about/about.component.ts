@@ -34,7 +34,6 @@ export class AboutComponent implements OnInit {
           this.aboutPage.set(response.data);
         }),
         catchError(() => {
-          this.toastr.error('Neizdevās ielādēt informāciju par mums');
           return EMPTY;
         }),
         finalize(() => {

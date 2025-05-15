@@ -1,7 +1,7 @@
 <div class="home-container">
-  <section class="hero-banner">
-    <div class="banner-slider">
-      @if (bannerSlides()) {
+  @if (bannerSlides()) {
+    <section class="hero-banner">
+      <div class="banner-slider">
         @for (slide of bannerSlides(); track slide.id; let i = $index) {
           <div class="banner-slide" [class.active]="i === currentSlideIndex()">
             <div class="banner-content">
@@ -21,29 +21,29 @@
             </div>
           </div>
         }
-      }
 
-      <div class="banner-controls">
-        <button class="banner-control prev" (click)="prevSlide()">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-        <div class="banner-indicators">
-          @if (bannerSlides()) {
-            @for (slide of bannerSlides(); track slide.id; let i = $index) {
-              <button
-                class="indicator"
-                [class.active]="i === currentSlideIndex()"
-                (click)="setCurrentSlide(i)">
-              </button>
+        <div class="banner-controls">
+          <button class="banner-control prev" (click)="prevSlide()">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div class="banner-indicators">
+            @if (bannerSlides()) {
+              @for (slide of bannerSlides(); track slide.id; let i = $index) {
+                <button
+                  class="indicator"
+                  [class.active]="i === currentSlideIndex()"
+                  (click)="setCurrentSlide(i)">
+                </button>
+              }
             }
-          }
+          </div>
+          <button class="banner-control next" (click)="nextSlide()">
+            <i class="fas fa-chevron-right"></i>
+          </button>
         </div>
-        <button class="banner-control next" (click)="nextSlide()">
-          <i class="fas fa-chevron-right"></i>
-        </button>
       </div>
-    </div>
-  </section>
+    </section>
+  }
 
   <section class="about-preview" @fadeInUp>
     <div class="about-preview-content">
