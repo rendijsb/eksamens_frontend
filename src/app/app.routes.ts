@@ -88,6 +88,16 @@ export const routes: Routes = [
       .then(m => m.LoginComponent)
   },
   {
+    path: 'forgot-password',
+    loadComponent: () => import('./components/auth/forgot-password/forgot-password.component')
+      .then(m => m.ForgotPasswordComponent)
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () => import('./components/auth/reset-password/reset-password.component')
+      .then(m => m.ResetPasswordComponent)
+  },
+  {
     path: 'admin/users',
     component: AdminLayoutComponent,
     canActivate: [authGuard],

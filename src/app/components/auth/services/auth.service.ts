@@ -145,4 +145,25 @@ export class AuthService {
       this.currentUser.set(null);
     }
   }
+
+  forgotPassword(email: string) {
+    const formData = new FormData();
+    formData.append('email', email);
+    return this.http.post<{message: string}>(
+      this.apiUrlService.getUrl('api/auth/forgot-password'),
+      formData
+    );
+  }
+
+  resetPassword(token: string, email: string, password: string, passwordConfirmation: string) {
+    const formData = new FormData();
+    formData.append('token', token);
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('password_confirmation', passwordConfirmation);
+    return this.http.post<{message: string}>(
+      this.apiUrlService.getUrl('api/auth/reset-password'),
+      formData
+    );
+  }
 }

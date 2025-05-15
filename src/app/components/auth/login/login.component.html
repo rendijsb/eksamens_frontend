@@ -23,7 +23,12 @@
         <p class="error-message">E-pasts vai parole ir ievadīti nepareizi!</p>
       </div>
     }
-    <p>Vēl nav konta? <a href="/register">Reģistrēties</a></p>
+
+    <div class="auth-links-container">
+      <p>Vēl nav konta? <a href="/register">Reģistrēties</a></p>
+      <p><a routerLink="/forgot-password">Aizmirsi paroli?</a></p>
+    </div>
+
     <button [appButtonLoader]="isLoading()" (click)="submit()" class="btn">Ielogoties</button>
   </div>
 </div>
