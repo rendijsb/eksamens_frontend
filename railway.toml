@@ -1,0 +1,13 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = """
+npm install &&
+npm run build &&
+npx serve -s dist/eksamens_frontend -l $PORT
+"""
+
+[env]
+NODE_ENV = "production"
+PORT = "3000"
