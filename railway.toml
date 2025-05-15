@@ -2,7 +2,7 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "npx serve -s dist/eksamens_frontend -l 3000"
+startCommand = "npx serve -s dist/eksamens_frontend/browser -l 3000"
 
 [env]
 NODE_ENV = "production"
