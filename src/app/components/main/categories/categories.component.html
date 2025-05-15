@@ -9,12 +9,44 @@
       <div class="spinner"></div>
       <p>Ielādē kategorijas...</p>
     </div>
+  } @else if (hasError()) {
+    <div class="error-state">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h2>Neizdevās ielādēt kategorijas</h2>
+      <p>Radās kļūda ielādējot kategorijas. Lūdzu, mēģiniet vēlreiz.</p>
+      <div class="error-actions">
+        <button class="btn-primary" (click)="retryLoading()">
+          <i class="fas fa-redo"></i> Mēģināt vēlreiz
+        </button>
+        <a routerLink="/products" class="btn-secondary">Skatīt visus produktus</a>
+      </div>
+    </div>
   } @else if (categories().length === 0) {
     <div class="empty-state">
-      <i class="fas fa-folder-open"></i>
-      <h2>Nav atrasta neviena kategorija</h2>
-      <p>Lūdzu, mēģiniet vēlāk vai apskatiet mūsu produktus.</p>
-      <a routerLink="/products" class="btn-primary">Skatīt visus produktus</a>
+      <div class="empty-state-icon">
+        <i class="fas fa-folder-open"></i>
+      </div>
+      <h2>Pašlaik nav aktīvas kategorijas</h2>
+      <p>Mūsu kategorijas tiek atjauninātas. Tikmēr jūs varat aplūkot visus pieejamos produktus.</p>
+      <div class="empty-state-actions">
+        <a routerLink="/products" class="btn-primary">
+          <i class="fas fa-shopping-bag"></i> Skatīt visus produktus
+        </a>
+        <button class="btn-secondary" (click)="retryLoading()">
+          <i class="fas fa-refresh"></i> Atjaunot
+        </button>
+      </div>
+      <div class="empty-state-suggestions">
+        <p class="suggestions-title">Vai meklējat kaut ko īpašu?</p>
+        <div class="suggestion-links">
+          <a routerLink="/sale" class="suggestion-link">
+            <i class="fas fa-tag"></i> Skatīt atlaides
+          </a>
+          <a routerLink="/contact" class="suggestion-link">
+            <i class="fas fa-envelope"></i> Sazināties ar mums
+          </a>
+        </div>
+      </div>
     </div>
   } @else {
     <div class="categories-grid">
@@ -47,16 +79,16 @@
         </div>
       }
     </div>
-  }
 
-  <div class="categories-banner">
-    <div class="banner-content">
-      <h2>Izpētiet mūsu jaunākos papildinājumus</h2>
-      <p>Atklājiet jaunākos produktus un specializētos piedāvājumus</p>
-      <div class="banner-buttons">
-        <a routerLink="/products" class="btn-secondary">Visi produkti</a>
-        <a routerLink="/sale" class="btn-primary">Skatīt atlaides</a>
+    <div class="categories-banner">
+      <div class="banner-content">
+        <h2>Izpētiet mūsu jaunākos papildinājumus</h2>
+        <p>Atklājiet jaunākos produktus un specializētos piedāvājumus</p>
+        <div class="banner-buttons">
+          <a routerLink="/products" class="btn-secondary">Visi produkti</a>
+          <a routerLink="/sale" class="btn-primary">Skatīt atlaides</a>
+        </div>
       </div>
     </div>
-  </div>
+  }
 </div>

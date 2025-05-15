@@ -23,6 +23,7 @@ export class CategoriesComponent implements OnInit {
 
   protected readonly categories: WritableSignal<Category[]> = signal([]);
   protected readonly isLoading: WritableSignal<boolean> = signal(true);
+  protected readonly hasError: WritableSignal<boolean> = signal(false);
 
   ngOnInit(): void {
     this.fetchAllCategories();
@@ -30,12 +31,20 @@ export class CategoriesComponent implements OnInit {
 
   fetchAllCategories(): void {
     this.isLoading.set(true);
+    this.hasError.set(false);
+
     this.publicService.getAllCategories()
       .pipe(
         tap((response) => {
-          this.categories.set(response.data);
+          if (response && response.data) {
+            this.categories.set(response.data);
+          } else {
+            this.categories.set([]);
+          }
         }),
-        catchError(() => {
+        catchError((error) => {
+          this.hasError.set(true);
+          this.categories.set([]);
           this.toastr.error('Neizdevās ielādēt kategorijas');
           return EMPTY;
         }),
@@ -46,9 +55,17 @@ export class CategoriesComponent implements OnInit {
       .subscribe();
   }
 
-  navigateToProducts(categoryId: number): void {
-    this.router.navigate(['/products'], {
-      queryParams: { category: categoryId }
-    });
+  navigateToProducts(categoryId?: number): void {
+    if (categoryId) {
+      this.router.navigate(['/products'], {
+        queryParams: { category: categoryId }
+      });
+    } else {
+      this.router.navigate(['/products']);
+    }
+  }
+
+  retryLoading(): void {
+    this.fetchAllCategories();
   }
 }
