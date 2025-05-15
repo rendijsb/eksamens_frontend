@@ -2,8 +2,8 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "npm install && npm run build && npx serve -s dist/eksamens_frontend -l 4200"
+startCommand = "npx serve -s dist/eksamens_frontend -l 3000"
 
 [env]
 NODE_ENV = "production"
-PORT = "4200"
+PORT = "3000"
