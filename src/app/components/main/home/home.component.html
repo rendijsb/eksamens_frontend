@@ -1,5 +1,5 @@
 <div class="home-container">
-  @if (bannerSlides()) {
+  @if (bannerSlides()?.length) {
     <section class="hero-banner">
       <div class="banner-slider">
         @for (slide of bannerSlides(); track slide.id; let i = $index) {
