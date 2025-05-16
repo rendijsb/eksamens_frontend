@@ -3,36 +3,125 @@
     <nav class="main-nav">
       <div class="logo">
         <a routerLink="/admin/dashboard">
+          <div class="logo-icon">
+            <i class="fas fa-tachometer-alt"></i>
+          </div>
           <span class="logo-text">Admin Panelis</span>
         </a>
       </div>
 
-      <div class="nav-items">
+      <div class="nav-items" [class.mobile-open]="isMobileMenuOpen()">
         <ul class="nav-list">
-          <li><a routerLink="/admin/dashboard" routerLinkActive="active">Dashboards</a></li>
+          <li>
+            <a routerLink="/admin/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              <i class="fas fa-chart-dashboard"></i>
+              <span>Dašboards</span>
+            </a>
+          </li>
           @if (isAdmin()) {
-            <li><a routerLink="/admin/users" routerLinkActive="active">Lietotāji</a></li>
+            <li>
+              <a routerLink="/admin/users" routerLinkActive="active">
+                <i class="fas fa-users"></i>
+                <span>Lietotāji</span>
+              </a>
+            </li>
           }
-          <li><a routerLink="/admin/categories" routerLinkActive="active">Kategorijas</a></li>
-          <li><a routerLink="/admin/products" routerLinkActive="active">Produkti</a></li>
-          <li><a routerLink="/admin/banners" routerLinkActive="active">Baneri</a></li>
-          <li><a routerLink="/admin/orders" routerLinkActive="active">Pasūtījumi</a></li>
-          <li><a routerLink="/admin/reviews" routerLinkActive="active">Atsauksmes</a></li>
-          <li><a routerLink="/admin/newsletter" routerLinkActive="active">Jaunumi</a></li>
-          <li><a routerLink="/admin/pages/about" routerLinkActive="active">Par mums</a></li>
-          <li><a routerLink="/admin/pages/contact" routerLinkActive="active">Kontakti</a></li>
-          <li><a routerLink="/admin/coupons" routerLinkActive="active">Kuponi</a></li>
+          <li>
+            <a routerLink="/admin/categories" routerLinkActive="active">
+              <i class="fas fa-tags"></i>
+              <span>Kategorijas</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/admin/products" routerLinkActive="active">
+              <i class="fas fa-box"></i>
+              <span>Produkti</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/admin/banners" routerLinkActive="active">
+              <i class="fas fa-image"></i>
+              <span>Baneri</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/admin/orders" routerLinkActive="active">
+              <i class="fas fa-receipt"></i>
+              <span>Pasūtījumi</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/admin/reviews" routerLinkActive="active">
+              <i class="fas fa-star"></i>
+              <span>Atsauksmes</span>
+            </a>
+          </li>
+          <li class="dropdown" [class.open]="showMoreMenu()">
+            <button class="nav-dropdown-toggle" (click)="toggleMoreMenu()">
+              <i class="fas fa-ellipsis-h"></i>
+              <span>Vairāk</span>
+              <i class="fas fa-chevron-down dropdown-arrow"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a routerLink="/admin/newsletter" routerLinkActive="active">
+                  <i class="fas fa-envelope"></i>
+                  <span>Jaunumi</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/admin/pages/about" routerLinkActive="active">
+                  <i class="fas fa-info-circle"></i>
+                  <span>Par mums</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/admin/pages/contact" routerLinkActive="active">
+                  <i class="fas fa-address-book"></i>
+                  <span>Kontakti</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/admin/coupons" routerLinkActive="active">
+                  <i class="fas fa-ticket-alt"></i>
+                  <span>Kuponi</span>
+                </a>
+              </li>
+            </ul>
+          </li>
         </ul>
+
+        <button class="mobile-close-btn" (click)="toggleMobileMenu()">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
 
       <div class="nav-actions">
         <a routerLink="/" class="view-site-btn">
-          <i class="fas fa-external-link-alt"></i> Skatīt lapu
+          <i class="fas fa-external-link-alt"></i>
+          <span>Skatīt lapu</span>
         </a>
 
-        <a (click)="logout()" class="auth-btn logout">
-          <i class="fas fa-sign-out-alt"></i> Izlogoties
-        </a>
+        <div class="user-profile-dropdown" [class.open]="showUserMenu()">
+          <button class="user-profile-btn" (click)="toggleUserMenu()">
+            <div class="user-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <span class="user-name">Admin</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+
+          <div class="user-dropdown-menu">
+            <div class="user-info">
+              <div class="user-role">Administrator</div>
+            </div>
+            <hr>
+            <button class="logout-btn" (click)="logout()">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Izlogoties</span>
+            </button>
+          </div>
+        </div>
 
         <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
           <i class="fas fa-bars"></i>
@@ -41,32 +130,5 @@
     </nav>
   </div>
 
-  <div class="mobile-menu" [class.open]="isMobileMenuOpen()">
-    <div class="mobile-menu-header">
-      <span>Admin Panelis</span>
-      <button class="mobile-menu-close" (click)="toggleMobileMenu()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    <ul class="mobile-nav-list">
-      <li><a routerLink="/admin/dashboard" routerLinkActive="active">Dashboards</a></li>
-      @if (isAdmin()) {
-        <li><a routerLink="/admin/users" routerLinkActive="active">Lietotāji</a></li>
-      }
-      <li><a routerLink="/admin/categories" routerLinkActive="active">Kategorijas</a></li>
-      <li><a routerLink="/admin/products" routerLinkActive="active">Produkti</a></li>
-      <li><a routerLink="/admin/banners" routerLinkActive="active">Baneri</a></li>
-      <li><a routerLink="/admin/orders" routerLinkActive="active">Pasūtījumi</a></li>
-      <li><a routerLink="/admin/reviews" routerLinkActive="active">Atsauksmes</a></li>
-      <li><a routerLink="/admin/newsletter" routerLinkActive="active">Jaunumi</a></li>
-      <li><a routerLink="/admin/pages/about" routerLinkActive="active">Par mums</a></li>
-      <li><a routerLink="/admin/pages/contact" routerLinkActive="active">Kontakti</a></li>
-      <li><a routerLink="/admin/coupons" routerLinkActive="active">Kuponi</a></li>
-      <li><a routerLink="/">Skatīt lapu</a></li>
-      <li><a (click)="logout()" class="logout-link">Izlogoties</a></li>
-    </ul>
-  </div>
-
-  <div class="menu-overlay" [class.active]="isMobileMenuOpen()" (click)="toggleMobileMenu()"></div>
+  <div class="mobile-menu-overlay" [class.active]="isMobileMenuOpen() || showMoreMenu() || showUserMenu()" (click)="closeAllMenus()"></div>
 </header>
