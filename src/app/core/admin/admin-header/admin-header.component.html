@@ -57,32 +57,32 @@
             </a>
           </li>
           <li class="dropdown" [class.open]="showMoreMenu()">
-            <button class="nav-dropdown-toggle" (click)="toggleMoreMenu()">
+            <button class="nav-dropdown-toggle" (click)="toggleMoreMenu(); $event.stopPropagation()">
               <i class="fas fa-ellipsis-h"></i>
               <span>Vairāk</span>
               <i class="fas fa-chevron-down dropdown-arrow"></i>
             </button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu" (click)="$event.stopPropagation()">
               <li>
-                <a routerLink="/admin/newsletter" routerLinkActive="active">
+                <a routerLink="/admin/newsletter" routerLinkActive="active" (click)="closeAllMenus()">
                   <i class="fas fa-envelope"></i>
                   <span>Jaunumi</span>
                 </a>
               </li>
               <li>
-                <a routerLink="/admin/pages/about" routerLinkActive="active">
+                <a routerLink="/admin/pages/about" routerLinkActive="active" (click)="closeAllMenus()">
                   <i class="fas fa-info-circle"></i>
                   <span>Par mums</span>
                 </a>
               </li>
               <li>
-                <a routerLink="/admin/pages/contact" routerLinkActive="active">
+                <a routerLink="/admin/pages/contact" routerLinkActive="active" (click)="closeAllMenus()">
                   <i class="fas fa-address-book"></i>
                   <span>Kontakti</span>
                 </a>
               </li>
               <li>
-                <a routerLink="/admin/coupons" routerLinkActive="active">
+                <a routerLink="/admin/coupons" routerLinkActive="active" (click)="closeAllMenus()">
                   <i class="fas fa-ticket-alt"></i>
                   <span>Kuponi</span>
                 </a>
@@ -103,7 +103,7 @@
         </a>
 
         <div class="user-profile-dropdown" [class.open]="showUserMenu()">
-          <button class="user-profile-btn" (click)="toggleUserMenu()">
+          <button class="user-profile-btn" (click)="toggleUserMenu(); $event.stopPropagation()">
             <div class="user-avatar">
               <i class="fas fa-user"></i>
             </div>
@@ -111,7 +111,7 @@
             <i class="fas fa-chevron-down"></i>
           </button>
 
-          <div class="user-dropdown-menu">
+          <div class="user-dropdown-menu" (click)="$event.stopPropagation()">
             <div class="user-info">
               <div class="user-role">Administrator</div>
             </div>

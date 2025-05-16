@@ -245,7 +245,8 @@
       .nav-dropdown-toggle {
         .dropdown-arrow {
           transition: transform $transition-fast;
-          margin-left: auto;
+          margin-left: $spacing-xs;
+          font-size: 10px;
         }
       }
 
