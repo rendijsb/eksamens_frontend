@@ -1,4 +1,4 @@
-import {Component, effect, HostListener, inject, OnInit, signal, WritableSignal} from '@angular/core';
+import {Component, DestroyRef, effect, HostListener, inject, OnInit, signal, WritableSignal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import {Category} from "../../../components/admin/categories-page/models/categories.models";
@@ -9,6 +9,7 @@ import {AuthService} from "../../../components/auth/services/auth.service";
 import {RoleEnum} from "../../../components/auth/models/user.models";
 import {CartService} from "../../../components/main/service/cart.service";
 import {WishlistService} from "../../../components/main/service/wishlist.service";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-header',
@@ -44,6 +45,8 @@ export class HeaderComponent implements OnInit {
   isSearching: WritableSignal<boolean> = signal(false);
   showSuggestions: WritableSignal<boolean> = signal(false);
 
+  private readonly destroyRef = inject(DestroyRef);
+
   constructor() {
     effect(() => {
       this.isAuthenticated.set(!!this.authService.user());
@@ -65,14 +68,19 @@ export class HeaderComponent implements OnInit {
 
     if (this.isAuthenticated()) {
       this.cartService.getCart().subscribe();
-      this.cartService.cartItemCount$.subscribe(count => {
-        this.cartItemCount.set(count);
-      });
+
+      this.cartService.cartItemCount$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(count => {
+          this.cartItemCount.set(count);
+        });
 
       this.wishlistService.getWishlist().subscribe();
-      this.wishlistService.wishlistCount$.subscribe(count => {
-        this.wishlistCount.set(count);
-      });
+      this.wishlistService.wishlistCount$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(count => {
+          this.wishlistCount.set(count);
+        });
     } else {
       this.cartItemCount.set(0);
       this.wishlistCount.set(0);

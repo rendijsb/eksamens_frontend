@@ -13,7 +13,7 @@ import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
   templateUrl: './profile-layout.component.html',
   styleUrl: './profile-layout.component.scss'
 })
-export class ProfileLayoutComponent implements OnInit {
+export class ProfileLayoutComponent {
   private readonly authService = inject(AuthService);
   protected readonly user: WritableSignal<User | null> = signal(null);
 
@@ -21,15 +21,6 @@ export class ProfileLayoutComponent implements OnInit {
     effect(() => {
       this.user.set(this.authService.user());
     });
-  }
-
-  ngOnInit(): void {
-    this.loadUserData();
-  }
-
-  loadUserData(): void {
-    const userData = this.authService.user();
-    this.user.set(userData);
   }
 
   getUserInitials(): string {
