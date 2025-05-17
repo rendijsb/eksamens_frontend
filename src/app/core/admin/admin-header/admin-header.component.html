@@ -1,105 +1,123 @@
 <header class="admin-header">
   <div class="container">
-    <nav class="main-nav">
-      <div class="logo">
+    <div class="header-content">
+      <div class="logo-section">
         <a routerLink="/admin/dashboard">
           <div class="logo-icon">
             <i class="fas fa-tachometer-alt"></i>
           </div>
-          <span class="logo-text">Admin Panelis</span>
+          <span class="logo-text">Administrācija</span>
         </a>
       </div>
 
-      <div class="nav-items" [class.mobile-open]="isMobileMenuOpen()">
-        <ul class="nav-list">
-          <li>
-            <a routerLink="/admin/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-              <i class="fas fa-chart-dashboard"></i>
-              <span>Dašboards</span>
-            </a>
-          </li>
-          @if (isAdmin()) {
-            <li>
-              <a routerLink="/admin/users" routerLinkActive="active">
-                <i class="fas fa-users"></i>
-                <span>Lietotāji</span>
-              </a>
-            </li>
-          }
-          <li>
-            <a routerLink="/admin/categories" routerLinkActive="active">
-              <i class="fas fa-tags"></i>
-              <span>Kategorijas</span>
-            </a>
-          </li>
-          <li>
-            <a routerLink="/admin/products" routerLinkActive="active">
-              <i class="fas fa-box"></i>
-              <span>Produkti</span>
-            </a>
-          </li>
-          <li>
-            <a routerLink="/admin/banners" routerLinkActive="active">
-              <i class="fas fa-image"></i>
-              <span>Baneri</span>
-            </a>
-          </li>
-          <li>
-            <a routerLink="/admin/orders" routerLinkActive="active">
-              <i class="fas fa-receipt"></i>
-              <span>Pasūtījumi</span>
-            </a>
-          </li>
-          <li>
-            <a routerLink="/admin/reviews" routerLinkActive="active">
-              <i class="fas fa-star"></i>
-              <span>Atsauksmes</span>
-            </a>
-          </li>
-          <li class="dropdown" [class.open]="showMoreMenu()">
-            <button class="nav-dropdown-toggle" (click)="toggleMoreMenu(); $event.stopPropagation()">
-              <i class="fas fa-ellipsis-h"></i>
-              <span>Vairāk</span>
-              <i class="fas fa-chevron-down dropdown-arrow"></i>
-            </button>
-            <ul class="dropdown-menu" (click)="$event.stopPropagation()">
+      <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <nav class="main-nav" [class.mobile-open]="isMobileMenuOpen()">
+        <button class="mobile-close-btn" (click)="toggleMobileMenu()">
+          <i class="fas fa-times"></i>
+        </button>
+
+        <div class="nav-sections">
+          <div class="nav-section">
+            <h3 class="nav-section-title">Galvenais</h3>
+            <ul class="nav-list">
               <li>
-                <a routerLink="/admin/newsletter" routerLinkActive="active" (click)="closeAllMenus()">
-                  <i class="fas fa-envelope"></i>
-                  <span>Jaunumi</span>
+                <a routerLink="/admin/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                  <i class="fas fa-chart-bar"></i>
+                  <span>Dašbords</span>
                 </a>
               </li>
               <li>
-                <a routerLink="/admin/pages/about" routerLinkActive="active" (click)="closeAllMenus()">
+                <a routerLink="/admin/products" routerLinkActive="active">
+                  <i class="fas fa-box"></i>
+                  <span>Produkti</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/admin/categories" routerLinkActive="active">
+                  <i class="fas fa-tags"></i>
+                  <span>Kategorijas</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/admin/orders" routerLinkActive="active">
+                  <i class="fas fa-receipt"></i>
+                  <span>Pasūtījumi</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="nav-section">
+            <h3 class="nav-section-title">Saturs</h3>
+            <ul class="nav-list">
+              <li>
+                <a routerLink="/admin/banners" routerLinkActive="active">
+                  <i class="fas fa-image"></i>
+                  <span>Baneri</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/admin/pages/about" routerLinkActive="active">
                   <i class="fas fa-info-circle"></i>
                   <span>Par mums</span>
                 </a>
               </li>
               <li>
-                <a routerLink="/admin/pages/contact" routerLinkActive="active" (click)="closeAllMenus()">
+                <a routerLink="/admin/pages/contact" routerLinkActive="active">
                   <i class="fas fa-address-book"></i>
                   <span>Kontakti</span>
                 </a>
               </li>
+            </ul>
+          </div>
+
+          <div class="nav-section">
+            <h3 class="nav-section-title">Mārketings</h3>
+            <ul class="nav-list">
               <li>
-                <a routerLink="/admin/coupons" routerLinkActive="active" (click)="closeAllMenus()">
+                <a routerLink="/admin/newsletter" routerLinkActive="active">
+                  <i class="fas fa-envelope"></i>
+                  <span>Jaunumi</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/admin/coupons" routerLinkActive="active">
                   <i class="fas fa-ticket-alt"></i>
                   <span>Kuponi</span>
                 </a>
               </li>
+              <li>
+                <a routerLink="/admin/reviews" routerLinkActive="active">
+                  <i class="fas fa-star"></i>
+                  <span>Atsauksmes</span>
+                </a>
+              </li>
             </ul>
-          </li>
-        </ul>
+          </div>
 
-        <button class="mobile-close-btn" (click)="toggleMobileMenu()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
+          @if (isAdmin()) {
+            <div class="nav-section">
+              <h3 class="nav-section-title">Lietotāji</h3>
+              <ul class="nav-list">
+                <li>
+                  <a routerLink="/admin/users" routerLinkActive="active">
+                    <i class="fas fa-users"></i>
+                    <span>Lietotāju pārvaldība</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          }
+        </div>
+      </nav>
 
-      <div class="nav-actions">
+      <div class="user-actions">
         <a routerLink="/" class="view-site-btn">
           <i class="fas fa-external-link-alt"></i>
-          <span>Skatīt lapu</span>
+          <span>Skatīt veikalu</span>
         </a>
 
         <div class="user-profile-dropdown" [class.open]="showUserMenu()">
@@ -113,7 +131,7 @@
 
           <div class="user-dropdown-menu" (click)="$event.stopPropagation()">
             <div class="user-info">
-              <div class="user-role">Administrator</div>
+              <div class="user-role">Administrators</div>
             </div>
             <hr>
             <button class="logout-btn" (click)="logout()">
@@ -122,13 +140,9 @@
             </button>
           </div>
         </div>
-
-        <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
-          <i class="fas fa-bars"></i>
-        </button>
       </div>
-    </nav>
+    </div>
   </div>
 
-  <div class="mobile-menu-overlay" [class.active]="isMobileMenuOpen() || showMoreMenu() || showUserMenu()" (click)="closeAllMenus()"></div>
+  <div class="mobile-menu-overlay" [class.active]="isMobileMenuOpen() || showUserMenu()" (click)="closeAllMenus()"></div>
 </header>

@@ -1,3 +1,9 @@
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .admin-layout-wrapper {
   display: flex;
   flex-direction: column;
@@ -8,4 +14,12 @@
   flex: 1 0 auto;
   padding-top: 70px;
   padding-bottom: 2rem;
+  margin-left: 250px;
+  transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 992px) {
+  .admin-main-content {
+    margin-left: 0;
+  }
 }
