@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { MainLayoutComponent } from "./core/layouts/main-layout/main-layout.component";
 import { AdminLayoutComponent } from "./core/layouts/admin-layout/admin-layout.component";
 import { authGuard } from "./components/auth/guards/auth.guard";
+import { noAuthGuard } from "./components/auth/guards/no-auth.guard";
 import { RoleEnum } from "./components/auth/models/user.models";
 import { UsersComponent } from "./components/admin/users-page/users/users.component";
 import { UserFormComponent } from "./components/admin/users-page/user-form/user-form.component";
@@ -22,13 +23,13 @@ import { OrderListComponent } from "./components/profile/order-list/order-list.c
 import { OrderDetailComponent } from "./components/profile/order-detail/order-detail.component";
 import { OrdersAdminComponent } from "./components/admin/orders-page/orders-admin/orders-admin.component";
 import { ReviewsAdminComponent } from "./components/admin/reviews-page/reviews-admin/reviews-admin.component";
-import {WishlistComponent} from "./components/main/wishlist/wishlist.component";
-import {AboutAdminComponent} from "./components/admin/about-admin/about-admin.component";
-import {AboutAdminFormComponent} from "./components/admin/about-admin-form/about-admin-form.component";
-import {ContactAdminFormComponent} from "./components/admin/contact-admin-form/contact-admin-form.component";
-import {CouponsAdminComponent} from "./components/admin/coupons-admin/coupons-admin.component";
-import {CouponFormComponent} from "./components/admin/coupons-form/coupons-form.component";
-import {UnsubscribeComponent} from "./pages/unsubscribe/unsubscribe.component";
+import { WishlistComponent } from "./components/main/wishlist/wishlist.component";
+import { AboutAdminComponent } from "./components/admin/about-admin/about-admin.component";
+import { AboutAdminFormComponent } from "./components/admin/about-admin-form/about-admin-form.component";
+import { ContactAdminFormComponent } from "./components/admin/contact-admin-form/contact-admin-form.component";
+import { CouponsAdminComponent } from "./components/admin/coupons-admin/coupons-admin.component";
+import { CouponFormComponent } from "./components/admin/coupons-form/coupons-form.component";
+import { UnsubscribeComponent } from "./pages/unsubscribe/unsubscribe.component";
 
 export const routes: Routes = [
   {
@@ -79,16 +80,19 @@ export const routes: Routes = [
   },
   {
     path: 'register',
+    canActivate: [noAuthGuard],
     loadComponent: () => import('./components/auth/register/register.component')
       .then(m => m.RegisterComponent)
   },
   {
     path: 'login',
+    canActivate: [noAuthGuard],
     loadComponent: () => import('./components/auth/login/login.component')
       .then(m => m.LoginComponent)
   },
   {
     path: 'forgot-password',
+    canActivate: [noAuthGuard],
     loadComponent: () => import('./components/auth/forgot-password/forgot-password.component')
       .then(m => m.ForgotPasswordComponent)
   },
