@@ -8,6 +8,7 @@ import { RegexPatterns } from '../../../shared/constants/regex.constants';
 import { passwordMatchValidator } from '../../../shared/validators/password-match.validator';
 import { ButtonLoaderDirective } from '../../../shared/directives/button-loader/button-loader.directive';
 import { ValidationErrorDirective } from '../../../shared/directives/validation-error/validation-error.directive';
+import { PasswordToggleDirective } from '../../../shared/directives/password-toggle/password-toggle.directive';
 
 @Component({
   selector: 'app-reset-password',
@@ -16,7 +17,8 @@ import { ValidationErrorDirective } from '../../../shared/directives/validation-
     ReactiveFormsModule,
     RouterLink,
     ButtonLoaderDirective,
-    ValidationErrorDirective
+    ValidationErrorDirective,
+    PasswordToggleDirective
   ],
   templateUrl: './reset-password.component.html',
   styleUrl: '../styles/auth.scss'

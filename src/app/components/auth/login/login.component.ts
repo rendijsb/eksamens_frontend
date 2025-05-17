@@ -7,6 +7,7 @@ import {ButtonLoaderDirective} from "../../../shared/directives/button-loader/bu
 import {ValidationErrorDirective} from "../../../shared/directives/validation-error/validation-error.directive";
 import {ToastrService} from "ngx-toastr";
 import {RouterLink} from "@angular/router";
+import {PasswordToggleDirective} from "../../../shared/directives/password-toggle/password-toggle.directive";
 
 @Component({
   standalone: true,
@@ -15,7 +16,9 @@ import {RouterLink} from "@angular/router";
     ReactiveFormsModule,
     ButtonLoaderDirective,
     ValidationErrorDirective,
-    RouterLink
+    RouterLink,
+    PasswordToggleDirective,
+    PasswordToggleDirective
   ],
   templateUrl: './login.component.html',
   styleUrl: '../styles/auth.scss'

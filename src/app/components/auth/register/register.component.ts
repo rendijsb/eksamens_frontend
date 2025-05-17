@@ -8,6 +8,7 @@ import {RegexPatterns} from "../../../shared/constants/regex.constants";
 import {passwordMatchValidator} from "../../../shared/validators/password-match.validator";
 import {Router, RouterLink} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
+import {PasswordToggleDirective} from "../../../shared/directives/password-toggle/password-toggle.directive";
 
 @Component({
   selector: 'app-register',
@@ -17,6 +18,7 @@ import {ToastrService} from "ngx-toastr";
     ButtonLoaderDirective,
     ValidationErrorDirective,
     RouterLink,
+    PasswordToggleDirective
   ],
   templateUrl: './register.component.html',
   styleUrl: '../styles/auth.scss'

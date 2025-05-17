@@ -1,6 +1,5 @@
 <div class="auth-container">
   <div class="auth-form">
-
     <div class="back-link">
       <a routerLink="/">
         <i class="fas fa-arrow-left"></i> Atgriezties uz sākumlapu
@@ -10,14 +9,27 @@
     <h1>Ielogoties</h1>
     <form [formGroup]="loginForm">
       <div class="form-group">
-        <label>E-pasts</label>
-        <input type="email" formControlName="email" [appValidationError]="isSubmitted()">
+        <label for="email">E-pasts</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          [appValidationError]="isSubmitted()"
+          placeholder="Ievadiet e-pasta adresi">
       </div>
+
       <div class="form-group">
-        <label>Parole</label>
-        <input type="password" formControlName="password">
+        <label for="password">Parole</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          [appValidationError]="isSubmitted()"
+          appPasswordToggle
+          placeholder="Ievadiet paroli">
       </div>
     </form>
+
     @if (loginError()) {
       <div class="validation-error">
         <p class="error-message">E-pasts vai parole ir ievadīti nepareizi!</p>
@@ -25,7 +37,7 @@
     }
 
     <div class="auth-links-container">
-      <p>Vēl nav konta? <a href="/register">Reģistrēties</a></p>
+      <p>Vēl nav konta? <a routerLink="/register">Reģistrēties</a></p>
       <p><a routerLink="/forgot-password">Aizmirsi paroli?</a></p>
     </div>
 
