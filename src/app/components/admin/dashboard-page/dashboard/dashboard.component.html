@@ -1,12 +1,45 @@
 <div class="dashboard">
   <div class="dashboard-header">
-    <h1>Dashboard</h1>
+    <h1>Daudzfunkcionāls Admina Kontrolpanelis</h1>
     <div class="actions">
       <button class="btn-primary" (click)="refreshDashboard()">
         <i class="fas fa-refresh"></i>
         Atjaunot
       </button>
     </div>
+  </div>
+
+  <div class="tab-navigation">
+    <button
+      class="tab-button"
+      [class.active]="activeTab() === 'overview'"
+      (click)="setActiveTab('overview')">
+      <i class="fas fa-chart-line"></i> Pārskats
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab() === 'sales'"
+      (click)="setActiveTab('sales')">
+      <i class="fas fa-shopping-cart"></i> Pārdošana
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab() === 'customers'"
+      (click)="setActiveTab('customers')">
+      <i class="fas fa-users"></i> Klienti
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab() === 'products'"
+      (click)="setActiveTab('products')">
+      <i class="fas fa-box"></i> Produkti
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab() === 'marketing'"
+      (click)="setActiveTab('marketing')">
+      <i class="fas fa-megaphone"></i> Mārketings
+    </button>
   </div>
 
   @if (isLoading()) {
@@ -17,195 +50,327 @@
   }
 
   @if (dashboardData()) {
-    <div class="overview-grid">
-      <div class="card overview-card revenue">
-        <div class="card-icon">
-          <i class="fas fa-euro-sign"></i>
-        </div>
-        <div class="card-content">
-          <h3>Kopējie ieņēmumi</h3>
-          <p class="amount">{{ formatCurrency(dashboardData()!.overview.totalRevenue) }}</p>
-          <p class="sub-info">
-            <span class="period">Šomēnes: {{ formatCurrency(dashboardData()!.overview.monthlyRevenue) }}</span>
-          </p>
-        </div>
-      </div>
-
-      <div class="card overview-card orders">
-        <div class="card-icon">
-          <i class="fas fa-shopping-cart"></i>
-        </div>
-        <div class="card-content">
-          <h3>Kopējie pasūtījumi</h3>
-          <p class="amount">{{ dashboardData()!.overview.totalOrders | number }}</p>
-          <p class="sub-info">
-            <span class="period">Šomēnes: {{ dashboardData()!.overview.monthlyOrders }}</span>
-          </p>
-        </div>
-      </div>
-
-      <div class="card overview-card users">
-        <div class="card-icon">
-          <i class="fas fa-users"></i>
-        </div>
-        <div class="card-content">
-          <h3>Kopējie lietotāji</h3>
-          <p class="amount">{{ dashboardData()!.overview.totalUsers | number }}</p>
-          <p class="sub-info">
-            <span class="period">Jauni: {{ dashboardData()!.overview.newUsers }}</span>
-          </p>
-        </div>
-      </div>
-
-      <div class="card overview-card products">
-        <div class="card-icon">
-          <i class="fas fa-box"></i>
-        </div>
-        <div class="card-content">
-          <h3>Produkti</h3>
-          <p class="amount">{{ dashboardData()!.overview.totalProducts | number }}</p>
-          <p class="sub-info" [class.warning]="dashboardData()!.overview.lowStockProducts > 0">
-            @if (dashboardData()!.overview.lowStockProducts > 0) {
-              <span class="alert">⚠️ {{ dashboardData()!.overview.lowStockProducts }} zems noliktavā</span>
-            } @else {
-              <span>Visi produkti noliktavā</span>
-            }
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="quick-stats">
-      <div class="stat-item">
-        <div class="stat-icon pending">
-          <i class="fas fa-clock"></i>
-        </div>
-        <div class="stat-content">
-          <h4>Gaida apstrādi</h4>
-          <p>{{ dashboardData()!.overview.pendingOrders }} pasūtījumi</p>
-        </div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon completed">
-          <i class="fas fa-check-circle"></i>
-        </div>
-        <div class="stat-content">
-          <h4>Pabeigti</h4>
-          <p>{{ dashboardData()!.overview.completedOrders }} pasūtījumi</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="charts-grid">
-      <div class="card chart-card">
-        <div class="chart-header">
-          <h3>Pārdošanas pēdējās 30 dienās</h3>
-          <div class="chart-info">
-            <span class="total-sales">
-              Kopā: {{ formatCurrency(dashboardData()!.salesData.totalSales) }}
-            </span>
+    @if (activeTab() === 'overview') {
+      <div class="overview-grid">
+        <div class="card overview-card revenue">
+          <div class="card-icon">
+            <i class="fas fa-euro-sign"></i>
+          </div>
+          <div class="card-content">
+            <h3>Kopējie ieņēmumi</h3>
+            <p class="amount">{{ formatCurrency(dashboardData()!.overview.totalRevenue) }}</p>
+            <p class="sub-info">
+              <span class="growth" [class.positive]="dashboardData()!.overview.revenueGrowth > 0">
+                <i class="fas" [class.fa-arrow-up]="dashboardData()!.overview.revenueGrowth > 0" [class.fa-arrow-down]="dashboardData()!.overview.revenueGrowth < 0"></i>
+                {{ dashboardData()!.overview.revenueGrowth }}%
+              </span>
+              Šomēnes: {{ formatCurrency(dashboardData()!.overview.monthlyRevenue) }}
+            </p>
           </div>
         </div>
-        <div class="chart-container">
-          <canvas #salesChart></canvas>
+
+        <div class="card overview-card orders">
+          <div class="card-icon">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+          <div class="card-content">
+            <h3>Pasūtījumi</h3>
+            <p class="amount">{{ dashboardData()!.overview.totalOrders | number }}</p>
+            <p class="sub-info">
+              <span class="growth" [class.positive]="dashboardData()!.overview.ordersGrowth > 0">
+                <i class="fas" [class.fa-arrow-up]="dashboardData()!.overview.ordersGrowth > 0" [class.fa-arrow-down]="dashboardData()!.overview.ordersGrowth < 0"></i>
+                {{ dashboardData()!.overview.ordersGrowth }}%
+              </span>
+              Šomēnes: {{ dashboardData()!.overview.monthlyOrders }}
+            </p>
+          </div>
+        </div>
+
+        <div class="card overview-card users">
+          <div class="card-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="card-content">
+            <h3>Lietotāji</h3>
+            <p class="amount">{{ dashboardData()!.overview.totalUsers | number }}</p>
+            <p class="sub-info">
+              <span class="period">Jauni: {{ dashboardData()!.overview.newUsers }}</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="card overview-card products">
+          <div class="card-icon">
+            <i class="fas fa-box"></i>
+          </div>
+          <div class="card-content">
+            <h3>Produkti</h3>
+            <p class="amount">{{ dashboardData()!.overview.totalProducts | number }}</p>
+            <p class="sub-info" [class.warning]="dashboardData()!.overview.lowStockProducts > 0">
+              @if (dashboardData()!.overview.lowStockProducts > 0) {
+                <span class="alert">⚠️ {{ dashboardData()!.overview.lowStockProducts }} zems noliktavā</span>
+              } @else {
+                <span>{{ dashboardData()!.overview.activeProducts }} aktīvi</span>
+              }
+            </p>
+          </div>
         </div>
       </div>
 
-      <div class="card chart-card">
-        <div class="chart-header">
-          <h3>Lietotāju pieaugums</h3>
+      <div class="quick-stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon pending">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-content">
+            <h4>Gaida apstrādi</h4>
+            <p>{{ dashboardData()!.overview.pendingOrders }} pasūtījumi</p>
+          </div>
         </div>
-        <div class="chart-container">
-          <canvas #userGrowthChart></canvas>
+        <div class="stat-card">
+          <div class="stat-icon completed">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-content">
+            <h4>Pabeigti</h4>
+            <p>{{ dashboardData()!.overview.completedOrders }} pasūtījumi</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="stat-content">
+            <h4>Atsauksmes</h4>
+            <p>{{ dashboardData()!.overview.totalReviews }} kopā ({{ dashboardData()!.overview.pendingReviews }} gaida)</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-newspaper"></i>
+          </div>
+          <div class="stat-content">
+            <h4>Jaunumu abonenti</h4>
+            <p>{{ dashboardData()!.overview.newsletterSubscribers }}</p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="data-section">
+      <div class="charts-grid">
+        <div class="card chart-card">
+          <div class="chart-header">
+            <h3>Pārdošanas un pasūtījumi</h3>
+            <div class="chart-info">
+              <span class="total-sales">
+                Kopā: {{ formatCurrency(dashboardData()!.salesData.totalSales) }}
+              </span>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas #salesChart></canvas>
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <div class="chart-header">
+            <h3>Lietotāju pieaugums</h3>
+          </div>
+          <div class="chart-container">
+            <canvas #userGrowthChart></canvas>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'sales') {
+      <div class="charts-grid">
+        <div class="card chart-card">
+          <div class="chart-header">
+            <h3>Maksājumu metodes</h3>
+          </div>
+          <div class="chart-container">
+            <canvas #paymentMethodChart></canvas>
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <div class="chart-header">
+            <h3>Stundu trafiks</h3>
+          </div>
+          <div class="chart-container">
+            <canvas #hourlyTrafficChart></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <h4>Vidējā pasūtījuma vērtība</h4>
+          <p class="metric-value">{{ formatCurrency(dashboardData()!.overview.averageOrderValue) }}</p>
+        </div>
+        <div class="metric-card">
+          <h4>Vidējie dienas ieņēmumi</h4>
+          <p class="metric-value">{{ formatCurrency(dashboardData()!.salesData.averageDaily) }}</p>
+        </div>
+      </div>
+
+      <div class="data-section">
+        <div class="card">
+          <div class="card-header">
+            <h3>Populārākie produkti</h3>
+            <a routerLink="/admin/products" class="view-all-link">
+              Skatīt visus produktus <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+          <div class="table-responsive">
+            @if (dashboardData()!.topProducts.length === 0) {
+              <div class="no-data">
+                <p>Nav datu par populārākajiem produktiem</p>
+              </div>
+            } @else {
+              <table class="data-table">
+                <thead>
+                <tr>
+                  <th>Produkts</th>
+                  <th>Pārdots</th>
+                  <th>Ieņēmumi</th>
+                  <th>Vērtējums</th>
+                  <th>Noliktava</th>
+                </tr>
+                </thead>
+                <tbody>
+                  @for (product of dashboardData()!.topProducts; track product.slug) {
+                    <tr>
+                      <td>
+                        <a [routerLink]="['/admin/products']" class="product-link">
+                          {{ product.name }}
+                        </a>
+                      </td>
+                      <td>
+                        <span class="quantity">{{ product.total_sold }}</span>
+                      </td>
+                      <td>
+                        <span class="amount">{{ formatCurrency(product.revenue) }}</span>
+                      </td>
+                      <td>
+                        <span class="rating">
+                          {{ getRatingStars(product.avg_rating || 0) }}
+                          ({{ product.review_count || 0 }})
+                        </span>
+                      </td>
+                      <td>
+                        <span class="stock" [class.low]="product.stock <= 5">
+                          {{ product.stock }}
+                        </span>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Jaunākie pasūtījumi</h3>
+            <a routerLink="/admin/orders" class="view-all-link">
+              Skatīt visus pasūtījumus <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+          <div class="table-responsive">
+            @if (dashboardData()!.recentOrders.length === 0) {
+              <div class="no-data">
+                <p>Nav jaunāko pasūtījumu</p>
+              </div>
+            } @else {
+              <table class="data-table">
+                <thead>
+                <tr>
+                  <th>Pasūtījums</th>
+                  <th>Klients</th>
+                  <th>Statuss</th>
+                  <th>Summa</th>
+                  <th>Datums</th>
+                </tr>
+                </thead>
+                <tbody>
+                  @for (order of dashboardData()!.recentOrders; track order.id) {
+                    <tr>
+                      <td>
+                        <a [routerLink]="['/admin/orders']" class="order-link">
+                          {{ order.order_number }}
+                        </a>
+                      </td>
+                      <td>{{ order.customer_name }}</td>
+                      <td>
+                        <span class="badge" [class]="getStatusClass(order.status)">
+                          {{ getStatusLabel(order.status) }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="amount">{{ formatCurrency(order.total_amount) }}</span>
+                      </td>
+                      <td>{{ formatDate(order.created_at) }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'customers') {
+      <div class="customer-metrics">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <h4>Kopējie klienti</h4>
+            <p class="metric-value">{{ dashboardData()!.customerAnalytics.totalCustomers | number }}</p>
+            <p class="metric-detail">{{ dashboardData()!.customerAnalytics.customerConversionRate }}% ir veikuši pasūtījumus</p>
+          </div>
+          <div class="metric-card">
+            <h4>Atgriezenieši</h4>
+            <p class="metric-value">{{ dashboardData()!.customerAnalytics.repeatCustomers | number }}</p>
+            <p class="metric-detail">{{ dashboardData()!.customerAnalytics.repeatCustomerRate }}% no visiem</p>
+          </div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-header">
-          <h3>Populārākie produkti</h3>
-          <a routerLink="/admin/products" class="view-all-link">
-            Skatīt visus produktus <i class="fas fa-arrow-right"></i>
+          <h3>VIP Klienti</h3>
+          <a routerLink="/admin/users" class="view-all-link">
+            Skatīt visus klientus <i class="fas fa-arrow-right"></i>
           </a>
         </div>
         <div class="table-responsive">
-          @if (dashboardData()!.topProducts.length === 0) {
+          @if (dashboardData()!.customerAnalytics.topCustomers.length === 0) {
             <div class="no-data">
-              <p>Nav datu par populārākajiem produktiem</p>
+              <p>Nav datu par VIP klientiem</p>
             </div>
           } @else {
             <table class="data-table">
               <thead>
               <tr>
-                <th>Produkts</th>
-                <th>Pārdots</th>
-                <th>Ieņēmumi</th>
-              </tr>
-              </thead>
-              <tbody>
-                @for (product of dashboardData()!.topProducts; track product.slug) {
-                  <tr>
-                    <td>
-                      <a [routerLink]="['/admin/products']" class="product-link">
-                        {{ product.name }}
-                      </a>
-                    </td>
-                    <td>
-                      <span class="quantity">{{ product.total_sold }}</span>
-                    </td>
-                    <td>
-                      <span class="amount">{{ formatCurrency(product.revenue) }}</span>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          }
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h3>Jaunākie pasūtījumi</h3>
-          <a routerLink="/admin/orders" class="view-all-link">
-            Skatīt visus pasūtījumus <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
-        <div class="table-responsive">
-          @if (dashboardData()!.recentOrders.length === 0) {
-            <div class="no-data">
-              <p>Nav jaunāko pasūtījumu</p>
-            </div>
-          } @else {
-            <table class="data-table">
-              <thead>
-              <tr>
-                <th>Pasūtījums</th>
                 <th>Klients</th>
-                <th>Statuss</th>
-                <th>Summa</th>
-                <th>Datums</th>
+                <th>E-pasts</th>
+                <th>Kopā tērēts</th>
+                <th>Pasūtījumi</th>
+                <th>Vidējā vērtība</th>
               </tr>
               </thead>
               <tbody>
-                @for (order of dashboardData()!.recentOrders; track order.id) {
+                @for (customer of dashboardData()!.customerAnalytics.topCustomers.slice(0, 10); track customer.id) {
                   <tr>
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.email }}</td>
                     <td>
-                      <a [routerLink]="['/admin/orders']" class="order-link">
-                        {{ order.order_number }}
-                      </a>
+                      <span class="amount">{{ formatCurrency(customer.total_spent) }}</span>
                     </td>
-                    <td>{{ order.customer_name }}</td>
-                    <td>
-                      <span class="badge" [class]="getStatusClass(order.status)">
-                        {{ getStatusLabel(order.status) }}
-                      </span>
-                    </td>
-                    <td>
-                      <span class="amount">{{ formatCurrency(order.total_amount) }}</span>
-                    </td>
-                    <td>{{ formatDate(order.created_at) }}</td>
+                    <td>{{ customer.order_count }}</td>
+                    <td>{{ formatCurrency(customer.avg_order_value) }}</td>
                   </tr>
                 }
               </tbody>
@@ -213,38 +378,241 @@
           }
         </div>
       </div>
-    </div>
+    }
 
-    <div class="card category-performance-card">
-      <div class="card-header">
-        <h3>Kategoriju veiktspēja</h3>
-        <a routerLink="/admin/categories" class="view-all-link">
-          Skatīt visas kategorijas <i class="fas fa-arrow-right"></i>
-        </a>
-      </div>
-      @if (dashboardData()!.categoryPerformance.length === 0) {
-        <div class="no-data">
-          <p>Nav datu par kategoriju veiktspēju</p>
+    @if (activeTab() === 'products') {
+      <div class="charts-grid">
+        <div class="card chart-card">
+          <div class="chart-header">
+            <h3>Vērtējumu sadalījums</h3>
+          </div>
+          <div class="chart-container">
+            <canvas #ratingDistributionChart></canvas>
+          </div>
         </div>
-      } @else {
-        <div class="category-grid">
-          @for (category of dashboardData()!.categoryPerformance; track category.name) {
-            <div class="category-item">
-              <h4>{{ category.name }}</h4>
-              <div class="category-stats">
-                <div class="stat">
-                  <span class="label">Ieņēmumi:</span>
-                  <span class="value">{{ formatCurrency(category.revenue) }}</span>
-                </div>
-                <div class="stat">
-                  <span class="label">Pārdots:</span>
-                  <span class="value">{{ category.items_sold }} vienības</span>
-                </div>
+
+        <div class="card chart-card">
+          <div class="chart-header">
+            <h3>Populārākie vēlmju sarakstā</h3>
+          </div>
+          <div class="chart-container">
+            <canvas #wishlistConversionChart></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <h4>Vēlmju sarakstā kopā</h4>
+          <p class="metric-value">{{ dashboardData()!.productAnalytics.totalWishlistItems | number }}</p>
+        </div>
+        <div class="metric-card">
+          <h4>Vēlmju konversija</h4>
+          <p class="metric-value">{{ dashboardData()!.productAnalytics.wishlistConversionRate }}%</p>
+        </div>
+        <div class="metric-card">
+          <h4>Produkti izpārdošanā</h4>
+          <p class="metric-value">{{ dashboardData()!.productAnalytics.productsWithSales | number }}</p>
+          <p class="metric-detail">{{ dashboardData()!.productAnalytics.saleRevenuePercentage }}% no ieņēmumiem</p>
+        </div>
+      </div>
+
+      <div class="inventory-section">
+        <div class="card">
+          <div class="card-header">
+            <h3>Noliktavas stāvoklis</h3>
+          </div>
+          <div class="inventory-grid">
+            <div class="inventory-item">
+              <h4>Nepieciešama uzpilde</h4>
+              <div class="inventory-list">
+                @for (product of dashboardData()!.inventoryAnalytics.needRestock.slice(0, 5); track product.name) {
+                  <div class="inventory-product">
+                    <span class="product-name">{{ product.name }}</span>
+                    <span class="stock-level critical">{{ product.stock }} vienības</span>
+                  </div>
+                }
               </div>
             </div>
-          }
+            <div class="inventory-item">
+              <h4>Ātri pārdošies</h4>
+              <div class="inventory-list">
+                @for (product of dashboardData()!.inventoryAnalytics.fastMovingProducts.slice(0, 5); track product.name) {
+                  <div class="inventory-product">
+                    <span class="product-name">{{ product.name }}</span>
+                    <span class="stock-level">{{ product.sold }} pārdots</span>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="inventory-item">
+              <h4>Lēni pārdošies</h4>
+              <div class="inventory-list">
+                @for (product of dashboardData()!.inventoryAnalytics.slowMovingProducts.slice(0, 5); track product.name) {
+                  <div class="inventory-product">
+                    <span class="product-name">{{ product.name }}</span>
+                    <span class="stock-level">{{ product.sold || 0 }} pārdots</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
         </div>
-      }
-    </div>
+      </div>
+
+      <div class="card category-performance-card">
+        <div class="card-header">
+          <h3>Kategoriju veiktspēja</h3>
+          <a routerLink="/admin/categories" class="view-all-link">
+            Skatīt visas kategorijas <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+        @if (dashboardData()!.categoryPerformance.length === 0) {
+          <div class="no-data">
+            <p>Nav datu par kategoriju veiktspēju</p>
+          </div>
+        } @else {
+          <div class="category-grid">
+            @for (category of dashboardData()!.categoryPerformance; track category.name) {
+              <div class="category-item">
+                <h4>{{ category.name }}</h4>
+                <div class="category-stats">
+                  <div class="stat">
+                    <span class="label">Ieņēmumi:</span>
+                    <span class="value">{{ formatCurrency(category.revenue) }}</span>
+                  </div>
+                  <div class="stat">
+                    <span class="label">Pārdots:</span>
+                    <span class="value">{{ category.items_sold }} vienības</span>
+                  </div>
+                  <div class="stat">
+                    <span class="label">Produkti:</span>
+                    <span class="value">{{ category.total_products }}</span>
+                  </div>
+                  <div class="stat">
+                    <span class="label">Vērtējums:</span>
+                    <span class="value">{{ getRatingStars(category.avg_rating || 0) }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    @if (activeTab() === 'marketing') {
+      <div class="charts-grid">
+        <div class="card chart-card">
+          <div class="chart-header">
+            <h3>Kuponu izmantošana</h3>
+          </div>
+          <div class="chart-container">
+            <canvas #couponUsageChart></canvas>
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <div class="chart-header">
+            <h3>Grozu analītika</h3>
+          </div>
+          <div class="chart-container">
+            <canvas #cartAnalyticsChart></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <h4>Kuponu konversija</h4>
+          <p class="metric-value">{{ dashboardData()!.couponAnalytics.couponConversionRate }}%</p>
+          <p class="metric-detail">{{ dashboardData()!.couponAnalytics.usedCoupons }} no {{ dashboardData()!.couponAnalytics.totalCoupons }} izmantoti</p>
+        </div>
+        <div class="metric-card">
+          <h4>Kopējā atlaide</h4>
+          <p class="metric-value">{{ formatCurrency(dashboardData()!.couponAnalytics.totalDiscountGiven) }}</p>
+        </div>
+        <div class="metric-card">
+          <h4>Jaunumu abonenti</h4>
+          <p class="metric-value">{{ dashboardData()!.newsletterAnalytics.activeSubscribers | number }}</p>
+          <p class="metric-detail">{{ dashboardData()!.newsletterAnalytics.subscriptionRate }}% aktīvi</p>
+        </div>
+        <div class="metric-card">
+          <h4>Grozu pamešana</h4>
+          <p class="metric-value">{{ dashboardData()!.cartAnalytics.abandonmentRate }}%</p>
+          <p class="metric-detail">Konversija: {{ dashboardData()!.cartAnalytics.conversionRate }}%</p>
+        </div>
+      </div>
+
+      <div class="data-section">
+        <div class="card">
+          <div class="card-header">
+            <h3>Populārākie kuponi</h3>
+            <a routerLink="/admin/coupons" class="view-all-link">
+              Skatīt visus kuponus <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+          <div class="table-responsive">
+            @if (dashboardData()!.couponAnalytics.popularCoupons.length === 0) {
+              <div class="no-data">
+                <p>Nav datu par kuponiem</p>
+              </div>
+            } @else {
+              <table class="data-table">
+                <thead>
+                <tr>
+                  <th>Kods</th>
+                  <th>Tips</th>
+                  <th>Vērtība</th>
+                  <th>Izmantots</th>
+                </tr>
+                </thead>
+                <tbody>
+                  @for (coupon of dashboardData()!.couponAnalytics.popularCoupons; track coupon.code) {
+                    <tr>
+                      <td><code>{{ coupon.code }}</code></td>
+                      <td>
+                        <span class="badge">{{ coupon.type === 'percentage' ? 'Procenti' : 'Summa' }}</span>
+                      </td>
+                      <td>
+                        @if (coupon.type === 'percentage') {
+                          {{ coupon.value }}%
+                        } @else {
+                          {{ formatCurrency(coupon.value) }}
+                        }
+                      </td>
+                      <td>{{ coupon.used_count }} reizes</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Atsauksmju analītika</h3>
+            <a routerLink="/admin/reviews" class="view-all-link">
+              Skatīt visas atsauksmes <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+          <div class="review-analytics">
+            <div class="review-stats">
+              <div class="review-stat">
+                <h4>Kopējais vērtējums</h4>
+                <p class="metric-value">{{ dashboardData()!.reviewAnalytics.averageRating }}/5</p>
+                <p class="metric-detail">{{ getRatingStars(dashboardData()!.reviewAnalytics.averageRating) }}</p>
+              </div>
+              <div class="review-stat">
+                <h4>Apstiprinājuma līmenis</h4>
+                <p class="metric-value">{{ dashboardData()!.reviewAnalytics.approvalRate }}%</p>
+                <p class="metric-detail">{{ dashboardData()!.reviewAnalytics.pendingReviews }} gaida apstiprinājumu</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
   }
 </div>
