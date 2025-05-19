@@ -95,7 +95,7 @@
 
       <div class="categories-grid">
         @for (category of categories(); track category.id) {
-          <a [routerLink]="['/category', category.id]" class="category-card">
+          <a [routerLink]="['/products']" [queryParams]="{category: category.id}" class="category-card">
             <div class="category-image">
               @if (category.image) {
                 <img class="placeholder-image"
