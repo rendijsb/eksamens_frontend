@@ -112,14 +112,14 @@
                 </div>
             </div>
 
-            <div class="form-section">
-                <h2>
-                    <i class="fas fa-bell"></i>
-                    Produktu brīdinājumi
-                </h2>
-                <p class="section-description">Paziņojumi par produktu izmaiņām</p>
+            @if (isAdminOrModerator()) {
+                <div class="form-section">
+                    <h2>
+                        <i class="fas fa-bell"></i>
+                        Produktu brīdinājumi
+                    </h2>
+                    <p class="section-description">Paziņojumi par produktu izmaiņām</p>
 
-                @if (isAdminOrModerator()) {
                     <div class="toggle-group">
                         <div class="toggle-item">
                             <label class="toggle-label">
@@ -135,8 +135,8 @@
                             </label>
                         </div>
                     </div>
-                }
-            </div>
+                </div>
+            }
 
             <div class="form-section">
                 <h2>
