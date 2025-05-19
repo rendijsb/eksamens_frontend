@@ -33,13 +33,9 @@ export class NotificationSettingsComponent implements OnInit {
     order_status_updates: [true],
     promotional_emails: [true],
     newsletter_emails: [true],
-    security_alerts: [true],
-    product_recommendations: [true],
     inventory_alerts: [false],
-    price_drop_alerts: [false],
     review_reminders: [true],
     email_notifications: [true],
-    sms_notifications: [false]
   });
 
   ngOnInit(): void {
@@ -71,13 +67,9 @@ export class NotificationSettingsComponent implements OnInit {
       order_status_updates: preferences.order_status_updates,
       promotional_emails: preferences.promotional_emails,
       newsletter_emails: preferences.newsletter_emails,
-      security_alerts: preferences.security_alerts,
-      product_recommendations: preferences.product_recommendations,
       inventory_alerts: preferences.inventory_alerts,
-      price_drop_alerts: preferences.price_drop_alerts,
       review_reminders: preferences.review_reminders,
       email_notifications: preferences.email_notifications,
-      sms_notifications: preferences.sms_notifications
     });
   }
 
@@ -94,7 +86,10 @@ export class NotificationSettingsComponent implements OnInit {
 
     this.isSaving.set(true);
 
-    const formData = this.preferencesForm.value;
+    const formData = {
+      ...this.preferencesForm.value,
+      security_alerts: true
+    };
 
     this.notificationService.updateNotificationPreferences(formData)
       .pipe(
