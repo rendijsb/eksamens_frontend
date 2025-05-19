@@ -37,6 +37,9 @@ export class ProfileImageComponent implements OnInit {
       if (user.profile_image) {
         this.currentUserImage.set(user.profile_image);
         this.imagePreview.set(user.profile_image);
+      } else {
+        this.currentUserImage.set(null);
+        this.imagePreview.set(null);
       }
     }
   }
@@ -170,7 +173,7 @@ export class ProfileImageComponent implements OnInit {
           this.currentUserImage.set(null);
           this.imagePreview.set(null);
           this.authService.updateUserData({
-            profile_image: ''
+            profile_image: null
           });
         }),
         catchError(error => {
