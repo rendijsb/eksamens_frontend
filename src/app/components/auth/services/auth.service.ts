@@ -25,7 +25,7 @@ export class AuthService {
   readonly isAdmin = computed(() => this.currentUser()?.role === RoleEnum.ADMIN);
   readonly isModerator = computed(() => this.currentUser()?.role === RoleEnum.MODERATOR);
   readonly isClient = computed(() => this.currentUser()?.role === RoleEnum.CLIENT);
-  readonly isAuthenticated = computed(() => !!this.getToken());
+  readonly isAuthenticated = computed(() => !!this.token() && !!this.currentUser());
 
   private getUserFromStorage(): User | null {
     const userData = localStorage.getItem(this.userKey);
@@ -66,6 +66,7 @@ export class AuthService {
         localStorage.removeItem(this.tokenKey);
         localStorage.removeItem(this.userKey);
         this.currentUser.set(null);
+        this.token.set(null);
         this.checkAuthStatus();
         this.router.navigate(['/login']);
       })
@@ -75,6 +76,7 @@ export class AuthService {
   private setUserData(user: User) {
     localStorage.setItem(this.tokenKey, <string>user.token);
     localStorage.setItem(this.userKey, JSON.stringify(user));
+    this.token.set(user.token || null);
   }
 
   getToken(): string | null {
@@ -139,10 +141,12 @@ export class AuthService {
 
     if (token && userData) {
       this.currentUser.set(userData);
+      this.token.set(token);
     } else {
       localStorage.removeItem(this.tokenKey);
       localStorage.removeItem(this.userKey);
       this.currentUser.set(null);
+      this.token.set(null);
     }
   }
 
