@@ -94,7 +94,7 @@
       </div>
 
       <div class="categories-grid">
-        @for (category of categories()?.slice(0, 6); track category.id) {
+        @for (category of categories(); track category.id) {
           <a [routerLink]="['/products']" [queryParams]="{category: category.id}" class="category-card">
             <div class="category-image">
               @if (category.image) {
@@ -130,7 +130,7 @@
       </div>
 
       <div class="products-grid">
-        @for (product of featuredProducts()?.slice(0, 10); track product.id) {
+        @for (product of featuredProducts(); track product.id) {
           <div class="product-card" [class.out-of-stock]="product.stock <= 0">
             <div class="product-image">
               @if (product.primary_image) {
