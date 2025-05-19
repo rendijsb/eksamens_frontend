@@ -1,0 +1,234 @@
+<div class="notification-settings">
+  <div class="section-header">
+    <h1>Paziņojumu Iestatījumi</h1>
+    <p>Kontrolējiet, kādu veidu paziņojumus vēlaties saņemt</p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Ielādē iestatījumus...</p>
+    </div>
+  } @else if (preferences()) {
+    <form [formGroup]="preferencesForm" class="preferences-form" (ngSubmit)="savePreferences()">
+
+      <div class="form-section">
+        <h2>
+          <i class="fas fa-paper-plane"></i>
+          Piegādes veids
+        </h2>
+        <p class="section-description">Izvēlieties, kā vēlaties saņemt paziņojumus</p>
+
+        <div class="toggle-group">
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <input
+                type="checkbox"
+                formControlName="email_notifications"
+                class="toggle-checkbox">
+              <span class="toggle-slider"></span>
+              <div class="toggle-content">
+                <span class="toggle-title">E-pasta paziņojumi</span>
+                <span class="toggle-description">Saņemiet paziņojumus uz e-pastu</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <input
+                type="checkbox"
+                formControlName="sms_notifications"
+                class="toggle-checkbox">
+              <span class="toggle-slider"></span>
+              <div class="toggle-content">
+                <span class="toggle-title">SMS paziņojumi</span>
+                <span class="toggle-description">Saņemiet paziņojumus uz telefonu</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>
+          <i class="fas fa-box"></i>
+          Pasūtījumu paziņojumi
+        </h2>
+        <p class="section-description">Informācija par jūsu pasūtījumu statusu</p>
+
+        <div class="toggle-group">
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <input
+                type="checkbox"
+                formControlName="order_status_updates"
+                class="toggle-checkbox">
+              <span class="toggle-slider"></span>
+              <div class="toggle-content">
+                <span class="toggle-title">Pasūtījuma statusa izmaiņas</span>
+                <span class="toggle-description">Paziņojumi par pasūtījuma apstrādi, piegādi utt.</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <input
+                type="checkbox"
+                formControlName="review_reminders"
+                class="toggle-checkbox">
+              <span class="toggle-slider"></span>
+              <div class="toggle-content">
+                <span class="toggle-title">Atsauksmju atgādinājumi</span>
+                <span class="toggle-description">Aicinājumi novērtēt iegādātos produktus</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>
+          <i class="fas fa-bullhorn"></i>
+          Mārketinga paziņojumi
+        </h2>
+        <p class="section-description">Piedāvājumi, atlaides un jaunumi</p>
+
+        <div class="toggle-group">
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <input
+                type="checkbox"
+                formControlName="promotional_emails"
+                class="toggle-checkbox">
+              <span class="toggle-slider"></span>
+              <div class="toggle-content">
+                <span class="toggle-title">Reklāmas e-pasti</span>
+                <span class="toggle-description">Īpaši piedāvājumi, atlaides un sezonālie pārdevumi</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <input
+                type="checkbox"
+                formControlName="newsletter_emails"
+                class="toggle-checkbox">
+              <span class="toggle-slider"></span>
+              <div class="toggle-content">
+                <span class="toggle-title">Jaunumu biļetens</span>
+                <span class="toggle-description">Regulāra informācija par jaunumiem un tendencēm</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <input
+                type="checkbox"
+                formControlName="product_recommendations"
+                class="toggle-checkbox">
+              <span class="toggle-slider"></span>
+              <div class="toggle-content">
+                <span class="toggle-title">Produktu ieteikumi</span>
+                <span class="toggle-description">Personalizēti ieteikumi balstoties uz jūsu vēlmēm</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>
+          <i class="fas fa-bell"></i>
+          Produktu brīdinājumi
+        </h2>
+        <p class="section-description">Paziņojumi par produktu izmaiņām</p>
+
+        <div class="toggle-group">
+          @if (isAdminOrModerator()) {
+            <div class="toggle-item">
+              <label class="toggle-label">
+                <input
+                  type="checkbox"
+                  formControlName="inventory_alerts"
+                  class="toggle-checkbox">
+                <span class="toggle-slider"></span>
+                <div class="toggle-content">
+                  <span class="toggle-title">Krājumu brīdinājumi</span>
+                  <span class="toggle-description">Kad produktu krājumi kļūst zemi (tikai administratoriem)</span>
+                </div>
+              </label>
+            </div>
+          }
+
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <input
+                type="checkbox"
+                formControlName="price_drop_alerts"
+                class="toggle-checkbox">
+              <span class="toggle-slider"></span>
+              <div class="toggle-content">
+                <span class="toggle-title">Cenu krituma brīdinājumi</span>
+                <span class="toggle-description">Kad produkta cena samazinās</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>
+          <i class="fas fa-shield-alt"></i>
+          Drošības paziņojumi
+        </h2>
+        <p class="section-description">Svarīga informācija par jūsu kontu</p>
+
+        <div class="toggle-group">
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <input
+                type="checkbox"
+                formControlName="security_alerts"
+                class="toggle-checkbox"
+                [disabled]="true">
+              <span class="toggle-slider disabled"></span>
+              <div class="toggle-content">
+                <span class="toggle-title">Drošības brīdinājumi</span>
+                <span class="toggle-description">Paroles maiņa, ielogošanās no jauna ierīces utt. (vienmēr iespējoti)</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="resetForm()"
+          [disabled]="isSaving()">
+          Atcelt izmaiņas
+        </button>
+        <button
+          type="submit"
+          class="btn"
+          [appButtonLoader]="isSaving()">
+          Saglabāt iestatījumus
+        </button>
+      </div>
+    </form>
+  } @else {
+    <div class="error-container">
+      <div class="error-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <h3>Kļūda ielādējot iestatījumus</h3>
+      <p>Neizdevās ielādēt jūsu paziņojumu iestatījumus. Lūdzu, mēģiniet vēlāk.</p>
+      <button class="btn" (click)="loadPreferences()">Mēģināt vēlreiz</button>
+    </div>
+  }
+</div>
