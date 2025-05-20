@@ -9,6 +9,15 @@ export class PasswordToggleDirective {
   private toggleIcon: HTMLElement;
 
   constructor(private el: ElementRef, private renderer: Renderer2) {
+    const wrapper = this.renderer.createElement('div');
+    this.renderer.addClass(wrapper, 'input-wrapper');
+    this.renderer.setStyle(wrapper, 'position', 'relative');
+
+    const parent = this.el.nativeElement.parentElement;
+    this.renderer.insertBefore(parent, wrapper, this.el.nativeElement);
+
+    this.renderer.appendChild(wrapper, this.el.nativeElement);
+
     this.toggleIcon = this.renderer.createElement('span');
     this.renderer.addClass(this.toggleIcon, 'password-toggle-icon');
 
@@ -17,9 +26,7 @@ export class PasswordToggleDirective {
     this.renderer.addClass(iconElement, 'fa-eye-slash');
     this.renderer.appendChild(this.toggleIcon, iconElement);
 
-    const parentElement = this.el.nativeElement.parentElement;
-    this.renderer.setStyle(parentElement, 'position', 'relative');
-    this.renderer.appendChild(parentElement, this.toggleIcon);
+    this.renderer.appendChild(wrapper, this.toggleIcon);
 
     this.toggleIcon.addEventListener('click', () => this.toggleVisibility());
   }
