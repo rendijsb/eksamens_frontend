@@ -30,6 +30,9 @@ import { ContactAdminFormComponent } from "./components/admin/contact-admin-form
 import { CouponsAdminComponent } from "./components/admin/coupons-admin/coupons-admin.component";
 import { CouponFormComponent } from "./components/admin/coupons-form/coupons-form.component";
 import { UnsubscribeComponent } from "./pages/unsubscribe/unsubscribe.component";
+import {
+  NotificationSettingsComponent
+} from "./components/profile/notification-settings/notification-settings.component";
 
 export const routes: Routes = [
   {
@@ -212,6 +215,10 @@ export const routes: Routes = [
       {
         path: 'change-password',
         component: ChangePasswordComponent
+      },
+      {
+        path: 'notifications',
+        component: NotificationSettingsComponent
       },
       {
         path: 'addresses',
