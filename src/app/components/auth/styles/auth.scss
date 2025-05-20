@@ -268,8 +268,8 @@
 .password-toggle-icon {
   position: absolute;
   right: 15px;
-  top: 65%;
-  transform: translateY(-50%);
+  top: calc(.5rem + 8px);
+  transform: translateY(0);
   color: $dark-medium;
   cursor: pointer;
   transition: color $transition-fast;
@@ -279,6 +279,8 @@
   justify-content: center;
   width: 24px;
   height: 24px;
+  margin-top: 0;
+  pointer-events: auto;
 
   i {
     display: flex;

@@ -13,6 +13,7 @@ import {StarRatingComponent} from "../../reviews/star-rating/star-rating.compone
 import {NewsletterService} from "../service/newsletter.service";
 import {ButtonLoaderDirective} from "../../../shared/directives/button-loader/button-loader.directive";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {LoaderComponent} from "../../../shared/components/loader/loader.component";
 
 @Component({
   selector: 'app-home',
@@ -21,7 +22,8 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
     CommonModule,
     RouterLink,
     StarRatingComponent,
-    ButtonLoaderDirective
+    ButtonLoaderDirective,
+    LoaderComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -61,6 +63,10 @@ export class HomeComponent implements OnInit {
 
   protected readonly processingProductIds = signal<number[]>([]);
 
+  protected readonly isLoadingProducts = signal<boolean>(true);
+  protected readonly isLoadingCategories = signal<boolean>(true);
+  protected readonly isLoadingBanners = signal<boolean>(true);
+
   ngOnInit(): void {
     this.fetchAllProducts();
     this.fetchAllCategories();
@@ -68,6 +74,8 @@ export class HomeComponent implements OnInit {
   }
 
   fetchAllCategories(): void {
+    this.isLoadingCategories.set(true);
+
     this.publicService.getAllCategories()
       .pipe(
         tap((response) => {
@@ -76,12 +84,17 @@ export class HomeComponent implements OnInit {
         catchError(() => {
           this.toastr.error('Neizdevās atrast kategorijas')
           return EMPTY;
+        }),
+        finalize(() => {
+          this.isLoadingCategories.set(false);
         })
       )
       .subscribe();
   }
 
   fetchAllProducts(): void {
+    this.isLoadingProducts.set(true);
+
     this.publicService.getProducts()
       .pipe(
         tap((response) => {
@@ -90,12 +103,17 @@ export class HomeComponent implements OnInit {
         catchError(() => {
           this.toastr.error('Neizdevās atrast produktus')
           return EMPTY;
+        }),
+        finalize(() => {
+          this.isLoadingProducts.set(false);
         })
       )
       .subscribe();
   }
 
   fetchAllBanners(): void {
+    this.isLoadingBanners.set(true);
+
     this.publicService.getBanners()
       .pipe(
         tap((response) => {
@@ -104,6 +122,9 @@ export class HomeComponent implements OnInit {
         catchError(() => {
           this.toastr.error('Neizdevās atrast bannerus')
           return EMPTY;
+        }),
+        finalize(() => {
+          this.isLoadingBanners.set(false);
         })
       )
       .subscribe();

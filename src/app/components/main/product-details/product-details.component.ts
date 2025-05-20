@@ -13,6 +13,7 @@ import { AuthService } from "../../auth/services/auth.service";
 import { ProductReviewsComponent } from "../../reviews/product-reviews/product-reviews.component";
 import {StarRatingComponent} from "../../reviews/star-rating/star-rating.component";
 import {WishlistService} from "../service/wishlist.service";
+import {LoaderComponent} from "../../../shared/components/loader/loader.component";
 
 @Component({
   selector: 'app-product-details',
@@ -23,7 +24,8 @@ import {WishlistService} from "../service/wishlist.service";
     RouterLink,
     ButtonLoaderDirective,
     ProductReviewsComponent,
-    StarRatingComponent
+    StarRatingComponent,
+    LoaderComponent
   ],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss'
