@@ -409,7 +409,7 @@
         <div class="summary-coupon">
           @if (!appliedCoupon()) {
             <div class="coupon-form">
-              <h3>Vai jums ir kupona kods?</h3>
+              <h3>Kupona kods</h3>
               <div class="coupon-input-group">
                 <input
                   type="text"
@@ -426,9 +426,9 @@
                   @if (isValidatingCoupon()) {
                     <i class="fas fa-spinner fa-spin"></i>
                   } @else {
-                    <i class="fas fa-check"></i>
+                    <i class="fas fa-tag"></i>
                   }
-                  Pielietot
+                  <span>Pielietot</span>
                 </button>
               </div>
               @if (couponError()) {

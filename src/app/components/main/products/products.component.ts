@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject, signal, WritableSignal } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal, WritableSignal, AfterViewInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -7,10 +7,10 @@ import { Product } from '../../admin/products-page/models/products.models';
 import { Category } from '../../admin/categories-page/models/categories.models';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, debounceTime, distinctUntilChanged, EMPTY, finalize, Subscription, take, tap } from 'rxjs';
-import {CartService} from "../service/cart.service";
-import {AuthService} from "../../auth/services/auth.service";
-import {StarRatingComponent} from "../../reviews/star-rating/star-rating.component";
-import {WishlistService} from "../service/wishlist.service";
+import { CartService } from "../service/cart.service";
+import { AuthService } from "../../auth/services/auth.service";
+import { StarRatingComponent } from "../../reviews/star-rating/star-rating.component";
+import { WishlistService } from "../service/wishlist.service";
 
 @Component({
   selector: 'app-products',
@@ -24,7 +24,9 @@ import {WishlistService} from "../service/wishlist.service";
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
 })
-export class ProductsComponent implements OnInit, OnDestroy {
+export class ProductsComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('productsSidebar') sidebarRef: ElementRef | undefined;
+
   private readonly publicService = inject(PublicService);
   private readonly toastr = inject(ToastrService);
   private readonly route = inject(ActivatedRoute);
@@ -36,6 +38,10 @@ export class ProductsComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private categoriesLoaded = false;
   private isInitialLoad = true;
+
+  private sidebarOriginalTop: number = 0;
+  private sidebarWidth: number = 0;
+  private headerHeight: number = 90;
 
   products: WritableSignal<Product[]> = signal([]);
   categories: WritableSignal<Category[]> = signal([]);
@@ -98,6 +104,73 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
     if (this.authService.isAuthenticated()) {
       this.setWishlist();
+    }
+  }
+
+  ngAfterViewInit() {
+    if (window.innerWidth > 992) {
+      this.initializeSidebar();
+    }
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 992) {
+        this.initializeSidebar();
+      } else {
+        this.resetSidebar();
+      }
+    });
+  }
+
+  private initializeSidebar() {
+    if (this.sidebarRef && this.sidebarRef.nativeElement) {
+      const sidebarElement = this.sidebarRef.nativeElement;
+      const sidebarRect = sidebarElement.getBoundingClientRect();
+
+      this.sidebarOriginalTop = window.pageYOffset + sidebarRect.top;
+      this.sidebarWidth = sidebarRect.width;
+    }
+  }
+
+  private resetSidebar() {
+    if (this.sidebarRef && this.sidebarRef.nativeElement) {
+      const sidebarElement = this.sidebarRef.nativeElement;
+      sidebarElement.style.position = '';
+      sidebarElement.style.top = '';
+      sidebarElement.style.width = '';
+    }
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    if (window.innerWidth <= 992) return;
+
+    if (this.sidebarRef && this.sidebarRef.nativeElement) {
+      const sidebarElement = this.sidebarRef.nativeElement;
+      const scrollPosition = window.pageYOffset;
+
+      const productsContainer = document.querySelector('.products-layout');
+      const containerBottom = productsContainer ?
+        productsContainer.getBoundingClientRect().bottom + window.pageYOffset :
+        Number.MAX_SAFE_INTEGER;
+
+      const sidebarHeight = sidebarElement.offsetHeight;
+
+      if (scrollPosition > this.sidebarOriginalTop - this.headerHeight) {
+        if (scrollPosition + this.headerHeight + sidebarHeight < containerBottom) {
+          sidebarElement.classList.add('sidebar-fixed');
+          sidebarElement.style.width = `${this.sidebarWidth}px`;
+        } else {
+          const topPosition = containerBottom - sidebarHeight - scrollPosition;
+          sidebarElement.style.position = 'absolute';
+          sidebarElement.style.top = `${topPosition}px`;
+          sidebarElement.style.width = `${this.sidebarWidth}px`;
+        }
+      } else {
+        sidebarElement.classList.remove('sidebar-fixed');
+        sidebarElement.style.position = '';
+        sidebarElement.style.top = '';
+        sidebarElement.style.width = '';
+      }
     }
   }
 
@@ -500,6 +573,12 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.showSuggestions.set(false);
   }
 
+  submitSearch(): void {
+    this.updateQueryParams();
+    this.showSuggestions.set(false);
+  }
+
+  @HostListener('document:click', ['$event'])
   documentClick(event: MouseEvent): void {
     const clickedElement = event.target as HTMLElement;
     if (!clickedElement.closest('.search-container')) {

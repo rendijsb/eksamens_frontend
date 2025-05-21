@@ -557,13 +557,24 @@
 }
 
 .summary-coupon {
-  border-top: 1px solid rgba($dark-color, 0.1);
-  padding-top: $spacing-md;
-  margin-top: $spacing-md;
   background: $light-color;
   border-radius: $border-radius-lg;
   padding: $spacing-lg;
   box-shadow: $box-shadow-sm;
+  margin-bottom: $spacing-lg;
+  border: 1px solid rgba($primary-color, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient($primary-color, $accent-color);
+  }
 }
 
 .coupon-form {
@@ -584,10 +595,9 @@
     flex: 1;
     padding: $spacing-md;
     border: 1px solid rgba($dark-color, 0.15);
-    border-radius: $border-radius-md;
+    border-radius: $border-radius-md 0 0 $border-radius-md;
     font-size: $base-font-size;
     font-weight: 500;
-    text-transform: uppercase;
     background-color: $light-color;
     transition: all $transition-fast;
 
@@ -611,11 +621,11 @@
 }
 
 .btn-coupon {
-  padding: $spacing-md $spacing-lg;
+  padding: $spacing-md;
   background-color: $primary-color;
   color: $light-color;
   border: none;
-  border-radius: $border-radius-md;
+  border-radius: 0 $border-radius-md $border-radius-md 0;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -671,6 +681,7 @@
   border-radius: $border-radius-md;
   padding: $spacing-md;
   border-left: 4px solid $success-color;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 .coupon-info {
@@ -733,5 +744,16 @@
 
   i {
     font-size: $h5-font-size;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -20,7 +20,7 @@
   </div>
 
   <div class="products-layout">
-    <aside class="products-sidebar">
+    <aside class="products-sidebar" #productsSidebar>
       <form [formGroup]="filterForm" class="filter-form">
         <div class="filter-section">
           <h3>Meklēt</h3>
@@ -64,6 +64,9 @@
                     </div>
                   </div>
                 }
+                <div class="view-all-results" (click)="submitSearch()">
+                  <i class="fas fa-search"></i> Skatīt visus rezultātus
+                </div>
               </div>
             }
           </div>
