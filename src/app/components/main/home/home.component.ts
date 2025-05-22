@@ -63,8 +63,7 @@ export class HomeComponent implements OnInit {
 
   protected readonly processingProductIds = signal<number[]>([]);
 
-  protected readonly isLoadingProducts = signal<boolean>(true);
-  protected readonly isLoadingCategories = signal<boolean>(true);
+  protected readonly isLoadingCategoriesAndProducts = signal<boolean>(true);
   protected readonly isLoadingBanners = signal<boolean>(true);
 
   ngOnInit(): void {
@@ -74,8 +73,6 @@ export class HomeComponent implements OnInit {
   }
 
   fetchAllCategories(): void {
-    this.isLoadingCategories.set(true);
-
     this.publicService.getAllCategories()
       .pipe(
         tap((response) => {
@@ -86,14 +83,14 @@ export class HomeComponent implements OnInit {
           return EMPTY;
         }),
         finalize(() => {
-          this.isLoadingCategories.set(false);
+          this.isLoadingCategoriesAndProducts.set(false);
         })
       )
       .subscribe();
   }
 
   fetchAllProducts(): void {
-    this.isLoadingProducts.set(true);
+    this.isLoadingCategoriesAndProducts.set(true);
 
     this.publicService.getProducts()
       .pipe(
@@ -103,9 +100,6 @@ export class HomeComponent implements OnInit {
         catchError(() => {
           this.toastr.error('Neizdevās atrast produktus')
           return EMPTY;
-        }),
-        finalize(() => {
-          this.isLoadingProducts.set(false);
         })
       )
       .subscribe();

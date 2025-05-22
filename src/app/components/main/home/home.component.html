@@ -94,7 +94,7 @@
     </div>
   </section>
 
-  @if (isLoadingCategories()) {
+  @if (isLoadingCategoriesAndProducts()) {
     <section class="categories-showcase">
       <app-loader/>
     </section>
@@ -135,13 +135,6 @@
         </div>
       </section>
     }
-  }
-
-  @if (isLoadingProducts()) {
-    <section class="featured-products">
-      <app-loader/>
-    </section>
-  } @else {
 
     @if (featuredProducts()?.length) {
       <section class="featured-products">
