@@ -2,7 +2,7 @@
 
 .profile-container {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: minmax(240px, 280px) 1fr;
   gap: $spacing-xl;
   max-width: $max-width;
   margin: 120px auto 60px;
@@ -27,7 +27,9 @@
 
 .profile-user-info {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
   gap: $spacing-md;
   padding: $spacing-lg;
   background: linear-gradient(to right, $primary-color, $primary-light);
@@ -35,8 +37,8 @@
 }
 
 .profile-avatar {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: rgba($light-color, 0.2);
   display: flex;

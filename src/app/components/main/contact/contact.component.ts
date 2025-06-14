@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { RegexPatterns } from '../../../shared/constants/regex.constants';
 import { ButtonLoaderDirective } from '../../../shared/directives/button-loader/button-loader.directive';
 import { ValidationErrorDirective } from '../../../shared/directives/validation-error/validation-error.directive';
@@ -24,11 +25,13 @@ export class ContactComponent implements OnInit {
   private readonly pagesService = inject(PagesService);
   private readonly toastr = inject(ToastrService);
   private readonly fb = inject(FormBuilder);
+  private readonly sanitizer = inject(DomSanitizer);
 
   protected readonly contactInfo = signal<Contact | null>(null);
   protected readonly isLoading = signal(true);
   protected readonly isSending = signal(false);
   protected readonly isSubmitted = signal(false);
+  protected readonly safeMapEmbedCode = signal<SafeHtml | null>(null);
 
   contactForm = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(RegexPatterns.NAME_PATTERN)]],
@@ -48,6 +51,12 @@ export class ContactComponent implements OnInit {
       .pipe(
         tap((response) => {
           this.contactInfo.set(response.data);
+          if (response.data.map_embed_code) {
+            const trustedHtml = this.sanitizer.bypassSecurityTrustHtml(response.data.map_embed_code);
+            this.safeMapEmbedCode.set(trustedHtml);
+          } else {
+            this.safeMapEmbedCode.set(null);
+          }
         }),
         catchError(() => {
           return EMPTY;

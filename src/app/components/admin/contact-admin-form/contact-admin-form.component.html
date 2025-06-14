@@ -63,9 +63,19 @@
         <textarea
           id="map_embed_code"
           formControlName="map_embed_code"
-          placeholder="Ievadiet Google Maps vai citas kartes iegulšanas kodu"
-          rows="5"></textarea>
-        <small class="form-help">Iekopējiet šeit iframe kodu no Google Maps vai cita kartes pakalpojuma sniedzēja</small>
+          placeholder='<iframe src="https://www.google.com/maps/embed?pb=..." width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'
+          rows="6"></textarea>
+        <small class="form-help">
+          <strong>Instrukcijas Google Maps iframe iegūšanai:</strong><br>
+          1. Atveriet <a href="https://maps.google.com" target="_blank">Google Maps</a><br>
+          2. Meklējiet savu adresi<br>
+          3. Noklikšķiniet uz "Kopīgot" (Share)<br>
+          4. Izvēlieties "Iegult karti" (Embed a map)<br>
+          5. Nokopējiet visu iframe kodu un ielīmējiet šeit<br>
+          <br>
+          <strong>Iframe piemērs:</strong><br>
+          <code>&lt;iframe src="https://www.google.com/maps/embed?pb=..." width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"&gt;&lt;/iframe&gt;</code>
+        </small>
       </div>
 
       <div class="form-actions">

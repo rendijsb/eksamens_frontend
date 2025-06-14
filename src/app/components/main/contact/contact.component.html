@@ -122,10 +122,10 @@
         </div>
       </div>
 
-      @if (contactInfo()?.map_embed_code) {
+      @if (safeMapEmbedCode()) {
         <div class="map-container">
           <h2>Mūsu atrašanās vieta</h2>
-          <div class="map" [innerHTML]="contactInfo()?.map_embed_code"></div>
+          <div class="map" [innerHTML]="safeMapEmbedCode()"></div>
         </div>
       }
     }

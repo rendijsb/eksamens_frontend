@@ -50,6 +50,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   protected readonly addresses = signal<Address[]>([]);
   protected readonly currentStep = signal<CheckoutStep>(CheckoutStep.DETAILS);
   protected readonly orderId = signal<number | null>(null);
+  protected readonly orderNumber = signal<string | null>(null);
   protected readonly paymentIntentId = signal<string | null>(null);
   protected readonly clientSecret = signal<string | null>(null);
   protected readonly cartData = signal<Cart | null>(null);
@@ -292,6 +293,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       tap(response => {
         if (response.success) {
           this.orderId.set(response.order.id);
+          this.orderNumber.set(response.order.order_number);
           this.paymentIntentId.set(response.payment.payment_intent_id);
           this.clientSecret.set(response.payment.client_secret);
           this.currentStep.set(CheckoutStep.PAYMENT);

@@ -627,3 +627,33 @@
     }
   }
 }
+
+.form-help {
+  margin-top: $spacing-xs;
+  font-size: $small-font-size;
+  color: $dark-medium;
+  line-height: 1.4;
+
+  a {
+    color: $primary-color;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  code {
+    background-color: rgba($dark-color, 0.1);
+    padding: 2px 4px;
+    border-radius: $border-radius-xs;
+    font-family: 'Courier New', monospace;
+    font-size: $mini-font-size;
+    word-break: break-all;
+  }
+
+  strong {
+    color: $dark-color;
+    font-weight: 600;
+  }
+}
