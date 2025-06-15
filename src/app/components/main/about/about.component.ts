@@ -45,6 +45,10 @@ export class AboutComponent implements OnInit {
 
   getSafeHtml(content: string | undefined): SafeHtml {
     if (!content) return '';
-    return this.sanitizer.bypassSecurityTrustHtml(content);
+    try {
+      return this.sanitizer.bypassSecurityTrustHtml(content);
+    } catch (error) {
+      return content || '';
+    }
   }
 }
