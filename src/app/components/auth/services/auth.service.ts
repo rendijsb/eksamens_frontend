@@ -2,7 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { RoleEnum, User } from "../models/user.models";
 import { Router } from "@angular/router";
-import { tap } from "rxjs";
+import {switchMap, tap} from "rxjs";
 import {ApiUrlService} from "../../../shared/services/api.service";
 
 interface AuthResponse {
@@ -13,19 +13,17 @@ interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly tokenKey = 'auth_token';
   private readonly userKey = 'user_data';
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly apiUrlService = inject(ApiUrlService);
 
   private currentUser = signal<User | null>(this.getUserFromStorage());
-  private token = signal<string | null>(this.getTokenFromStorage());
 
   readonly isAdmin = computed(() => this.currentUser()?.role === RoleEnum.ADMIN);
   readonly isModerator = computed(() => this.currentUser()?.role === RoleEnum.MODERATOR);
   readonly isClient = computed(() => this.currentUser()?.role === RoleEnum.CLIENT);
-  readonly isAuthenticated = computed(() => !!this.token() && !!this.currentUser());
+  readonly isAuthenticated = computed(() => !!this.currentUser());
 
   private getUserFromStorage(): User | null {
     const userData = localStorage.getItem(this.userKey);
@@ -37,8 +35,11 @@ export class AuthService {
   }
 
   register(data: FormData) {
-    return this.http.post<AuthResponse>(this.apiUrlService.getUrl('api/auth/register'), data)
+    return this.http.get(this.apiUrlService.getUrl('sanctum/csrf-cookie'))
       .pipe(
+        switchMap(() =>
+          this.http.post<AuthResponse>(this.apiUrlService.getUrl('api/auth/register'), data)
+        ),
         tap(response => {
           const user = response.data;
           this.setUserData(user);
@@ -49,8 +50,14 @@ export class AuthService {
   }
 
   login(data: FormData) {
-    return this.http.post<AuthResponse>(this.apiUrlService.getUrl('api/auth/login'), data)
+    return this.http.get(this.apiUrlService.getUrl('sanctum/csrf-cookie'))
       .pipe(
+        switchMap(() =>
+          this.http.post<AuthResponse>(
+            this.apiUrlService.getUrl('api/auth/login'),
+            data
+          )
+        ),
         tap(response => {
           const user = response.data;
           this.setUserData(user);
@@ -61,30 +68,18 @@ export class AuthService {
   }
 
   logout() {
-    return this.http.post(this.apiUrlService.getUrl('api/auth/logout'), {}).pipe(
-      tap(() => {
-        localStorage.removeItem(this.tokenKey);
-        localStorage.removeItem(this.userKey);
-        this.currentUser.set(null);
-        this.token.set(null);
-        this.checkAuthStatus();
-        this.router.navigate(['/login']);
-      })
-    );
+    return this.http.post(this.apiUrlService.getUrl('api/auth/logout'), {})
+      .pipe(
+        tap(() => {
+          localStorage.removeItem(this.userKey);
+          this.currentUser.set(null);
+          this.router.navigate(['/login']);
+        })
+      );
   }
 
   private setUserData(user: User) {
-    localStorage.setItem(this.tokenKey, <string>user.token);
     localStorage.setItem(this.userKey, JSON.stringify(user));
-    this.token.set(user.token || null);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
-  }
-
-  private getTokenFromStorage(): string | null {
-    return localStorage.getItem(this.tokenKey);
   }
 
   private redirectBasedOnRole(role: RoleEnum) {
@@ -120,7 +115,7 @@ export class AuthService {
   }
 
   getCurrentUser(): User | null {
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem(this.userKey);
     if (userData) {
       try {
         return JSON.parse(userData);
@@ -132,21 +127,17 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getCurrentUser() && !!localStorage.getItem('token');
+    return !!this.getCurrentUser();
   }
 
   checkAuthStatus(): void {
-    const token = this.getTokenFromStorage();
     const userData = this.getUserFromStorage();
 
-    if (token && userData) {
+    if (userData) {
       this.currentUser.set(userData);
-      this.token.set(token);
     } else {
-      localStorage.removeItem(this.tokenKey);
       localStorage.removeItem(this.userKey);
       this.currentUser.set(null);
-      this.token.set(null);
     }
   }
 
