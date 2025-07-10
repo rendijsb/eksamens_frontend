@@ -1,94 +1,237 @@
-<div class="categories-container">
-  <div class="categories-header">
-    <h1>Kategorijas</h1>
-    <p class="subtitle">Atklājiet mūsu produktu kategorijas</p>
+<div class="categories-page">
+  <div class="page-header">
+    <div class="container">
+      <div class="header-content">
+        <h1 class="page-title">Produktu kategorijas</h1>
+        <p class="page-description">
+          Atrodiet produktus pēc kategorijām ērtai iepirkšanās pieredzei
+        </p>
+        @if (!isLoading() && !hasError()) {
+          <div class="category-stats">
+            <span class="stat-item">
+              <i class="fas fa-folder"></i>
+              {{ totalCategories() }} kategorijas
+            </span>
+            @if (activeCategories().length !== totalCategories()) {
+              <span class="stat-item">
+                <i class="fas fa-check-circle"></i>
+                {{ activeCategories().length }} aktīvas
+              </span>
+            }
+          </div>
+        }
+      </div>
+    </div>
   </div>
 
-  @if (isLoading()) {
-    <div class="loading-container">
-      <div class="spinner"></div>
-      <p>Ielādē kategorijas...</p>
-    </div>
-  } @else if (hasError()) {
-    <div class="error-state">
-      <i class="fas fa-exclamation-triangle"></i>
-      <h2>Neizdevās ielādēt kategorijas</h2>
-      <p>Radās kļūda ielādējot kategorijas. Lūdzu, mēģiniet vēlreiz.</p>
-      <div class="error-actions">
-        <button class="btn-primary" (click)="retryLoading()">
-          <i class="fas fa-redo"></i> Mēģināt vēlreiz
-        </button>
-        <a routerLink="/products" class="btn-secondary">Skatīt visus produktus</a>
+  <div class="container">
+    @if (isLoading()) {
+      <div class="loading-container">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <p class="loading-text">Ielādē kategorijas...</p>
       </div>
-    </div>
-  } @else if (categories().length === 0) {
-    <div class="empty-state">
-      <div class="empty-state-icon">
-        <i class="fas fa-folder-open"></i>
-      </div>
-      <h2>Pašlaik nav aktīvas kategorijas</h2>
-      <p>Mūsu kategorijas tiek atjauninātas. Tikmēr jūs varat aplūkot visus pieejamos produktus.</p>
-      <div class="empty-state-actions">
-        <a routerLink="/products" class="btn-primary">
-          <i class="fas fa-shopping-bag"></i> Skatīt visus produktus
-        </a>
-        <button class="btn-secondary" (click)="retryLoading()">
-          <i class="fas fa-refresh"></i> Atjaunot
-        </button>
-      </div>
-      <div class="empty-state-suggestions">
-        <p class="suggestions-title">Vai meklējat kaut ko īpašu?</p>
-        <div class="suggestion-links">
-          <a routerLink="/sale" class="suggestion-link">
-            <i class="fas fa-tag"></i> Skatīt atlaides
-          </a>
-          <a routerLink="/contact" class="suggestion-link">
-            <i class="fas fa-envelope"></i> Sazināties ar mums
-          </a>
+    }
+
+    @if (hasError()) {
+      <div class="error-container">
+        <div class="error-content">
+          <i class="fas fa-exclamation-triangle error-icon"></i>
+          <h3 class="error-title">Kļūda ielādējot kategorijas</h3>
+          <p class="error-message">
+            Neizdevās ielādēt kategorijas. Lūdzu, mēģiniet vēlreiz.
+          </p>
+          <button class="btn btn-primary" (click)="retryLoading()">
+            <i class="fas fa-refresh"></i>
+            Mēģināt vēlreiz
+          </button>
         </div>
       </div>
-    </div>
-  } @else {
-    <div class="categories-grid">
-      @for (category of categories(); track category.id) {
-        <div class="category-card" (click)="navigateToProducts(category.id)">
-          <div class="category-image">
-            @if (category.image) {
-              <img [src]="category.image" alt="{{ category.name }} attēls">
-            } @else {
-              <div class="placeholder-image">
-                <i class="fas fa-box-open"></i>
+    }
+
+    @if (shouldShowEmptyState()) {
+      <div class="empty-container">
+        <div class="empty-content">
+          <i class="fas fa-folder-open empty-icon"></i>
+          <h3 class="empty-title">Nav kategoriju</h3>
+          <p class="empty-message">
+            Pašlaik nav pieejamas produktu kategorijas.
+          </p>
+          <button class="btn btn-secondary" (click)="refreshCategories()">
+            <i class="fas fa-refresh"></i>
+            Atjaunot
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (shouldShowCategories()) {
+      <div class="categories-content">
+
+        @if (getFeaturedCategories().length > 0) {
+          <section class="featured-categories">
+            <div class="section-header">
+              <h2 class="section-title">Populārākās kategorijas</h2>
+              <p class="section-description">Mūsu klientu iemīļotākās kategorijas</p>
+            </div>
+
+            <div class="categories-grid featured-grid">
+              @for (category of getFeaturedCategories(); track trackByCategory($index, category)) {
+                <div
+                  class="category-card featured-card"
+                  (click)="navigateToCategoryProducts(category)"
+                  [attr.aria-label]="'Doties uz ' + category.name + ' kategoriju'"
+                  role="button"
+                  tabindex="0"
+                  (keydown.enter)="navigateToCategoryProducts(category)"
+                  (keydown.space)="navigateToCategoryProducts(category, $event)">
+
+                  <div class="category-image-container">
+                    <img
+                      [src]="getCategoryImage(category)"
+                      [alt]="category.name"
+                      class="category-image"
+                      loading="lazy"
+                      onerror="this.src='/assets/images/default-category.jpg'">
+
+                    @if (hasProducts(category)) {
+                      <div class="product-count-badge">
+                        {{ getProductCount(category) }}
+                      </div>
+                    }
+                  </div>
+
+                  <div class="category-content">
+                    <h3 class="category-name">{{ category.name }}</h3>
+                    <p class="category-description">
+                      {{ getCategoryDescription(category) }}
+                    </p>
+                    <div class="category-meta">
+                      <span class="product-count">
+                        <i class="fas fa-box"></i>
+                        {{ getProductCountText(category) }}
+                      </span>
+                      <i class="fas fa-arrow-right category-arrow"></i>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </section>
+        }
+
+        <section class="all-categories">
+          <div class="section-header">
+            <h2 class="section-title">Visas kategorijas</h2>
+            <p class="section-description">Pilns kategoriju saraksts</p>
+          </div>
+
+          <div class="view-controls">
+            <div class="view-toggle">
+              <button
+                class="view-btn"
+                [class.active]="true"
+                title="Režģa skats">
+                <i class="fas fa-th"></i>
+              </button>
+            </div>
+
+            <div class="category-count">
+              Rāda {{ getDisplayCategories().length }} kategorijas
+            </div>
+          </div>
+
+          <div class="categories-grid">
+            @for (category of getDisplayCategories(); track trackByCategory($index, category)) {
+              <div
+                class="category-card"
+                (click)="navigateToCategoryProducts(category)"
+                [attr.aria-label]="'Doties uz ' + category.name + ' kategoriju'"
+                role="button"
+                tabindex="0"
+                (keydown.enter)="navigateToCategoryProducts(category)"
+                (keydown.space)="navigateToCategoryProducts(category, $event)">
+
+                <div class="category-image-container">
+                  <img
+                    [src]="getCategoryImage(category)"
+                    [alt]="category.name"
+                    class="category-image"
+                    loading="lazy"
+                    onerror="this.src='/assets/images/default-category.jpg'">
+
+                  @if (!hasProducts(category)) {
+                    <div class="status-badge">
+                      Nav produktu
+                    </div>
+                  }
+
+                  @if (hasProducts(category)) {
+                    <div class="product-count-badge">
+                      {{ getProductCount(category) }}
+                    </div>
+                  }
+                </div>
+
+                <div class="category-content">
+                  <h3 class="category-name">{{ category.name }}</h3>
+                  <p class="category-description">
+                    {{ getCategoryDescription(category) }}
+                  </p>
+
+                  <div class="category-meta">
+                    <span class="product-count">
+                      <i class="fas fa-box"></i>
+                      {{ getProductCountText(category) }}
+                    </span>
+                    <i class="fas fa-arrow-right category-arrow"></i>
+                  </div>
+                </div>
+
+                <div class="category-overlay">
+                  <div class="overlay-content">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Iepirkties tagad</span>
+                  </div>
+                </div>
               </div>
             }
           </div>
-          <div class="category-content">
-            <h3>{{ category.name }}</h3>
-            <p class="category-description">{{ category.description }}</p>
-            <div class="category-stats">
-              @if (category.active_products_count === 1) {
-                <span>{{ category.active_products_count }} produkts</span>
-              } @else {
-                <span>{{ category.active_products_count }} produkti</span>
-              }
-            </div>
-            <button class="view-products-btn">
-              Skatīt produktus
-              <i class="fas fa-arrow-right"></i>
-            </button>
-          </div>
-        </div>
-      }
-    </div>
+        </section>
 
-    <div class="categories-banner">
-      <div class="banner-content">
-        <h2>Izpētiet mūsu jaunākos papildinājumus</h2>
-        <p>Atklājiet jaunākos produktus un specializētos piedāvājumus</p>
-        <div class="banner-buttons">
-          <a routerLink="/products" class="btn-secondary">Visi produkti</a>
-          <a routerLink="/sale" class="btn-primary">Skatīt atlaides</a>
+        <div class="quick-actions">
+          <button
+            class="btn btn-outline-primary"
+            (click)="navigateToProducts()"
+            type="button">
+            <i class="fas fa-th-large"></i>
+            Skatīt visus produktus
+          </button>
+
+          <button
+            class="btn btn-outline-secondary"
+            (click)="refreshCategories()"
+            type="button">
+            <i class="fas fa-refresh"></i>
+            Atjaunot kategorijas
+          </button>
         </div>
       </div>
-    </div>
-  }
+    }
+  </div>
 </div>
+
+<nav class="breadcrumb-nav" aria-label="Breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a routerLink="/" class="breadcrumb-link">
+        <i class="fas fa-home"></i>
+        Sākums
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Kategorijas
+    </li>
+  </ol>
+</nav>

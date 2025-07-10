@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /profile/
+Disallow: /checkout/
+Disallow: /cart/
+Disallow: /login/
+Disallow: /register/
+Disallow: /reset-password/
+Disallow: /forgot-password/
+
+Sitemap: https://yourdomain.com/sitemap.xml
+
+Crawl-delay: 1

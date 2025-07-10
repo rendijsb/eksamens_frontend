@@ -4,18 +4,57 @@
       <h1>{{ aboutPage()?.title || 'Par mums' }}</h1>
       <div class="hero-decoration"></div>
     </div>
+
+    <div class="hero-visual">
+      <div class="floating-elements">
+        <div class="element element-1"></div>
+        <div class="element element-2"></div>
+        <div class="element element-3"></div>
+      </div>
+    </div>
   </div>
 
   <div class="about-content">
     @if (isLoading()) {
       <div class="loading-spinner">
-        <div class="spinner"></div>
+        <div class="spinner-ring">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
         <span>Ielādē informāciju...</span>
       </div>
-    } @else if (aboutPage()) {
+    } @else if (hasError()) {
+      <div class="no-content">
+        <div class="no-content-icon">⚠️</div>
+        <h3>Kļūda ielādējot informāciju</h3>
+        <p>Neizdevās ielādēt informāciju par mums. Lūdzu, mēģiniet vēlreiz.</p>
+        <button class="contact-btn" (click)="retryLoading()">
+          <span>Mēģināt vēlreiz</span>
+          <span class="btn-arrow">🔄</span>
+        </button>
+      </div>
+    } @else if (aboutPage() && hasValidContent()) {
       <div class="content-wrapper">
         <div class="content-card">
+          @if (aboutPage()?.updated_at) {
+            <div class="content-meta">
+              <small class="last-updated">
+                Pēdējo reizi atjaunināts: {{ getFormattedDate(aboutPage()?.updated_at) }}
+              </small>
+            </div>
+          }
+
           <div class="content-text" [innerHTML]="getSafeHtml(aboutPage()?.content)"></div>
+
+          <div class="content-cta">
+            <p>Vai jums ir jautājumi? Mēs labprāt palīdzēsim!</p>
+            <a routerLink="/contact" class="contact-btn">
+              <span>Sazināties ar mums</span>
+              <span class="btn-arrow">→</span>
+            </a>
+          </div>
         </div>
       </div>
     } @else {
@@ -32,22 +71,35 @@
   </div>
 
   <div class="about-features">
+    <div class="section-header">
+      <h2 class="section-title">Mūsu vērtības</h2>
+      <p class="section-description">Kas mūs dara īpašus</p>
+    </div>
+
     <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon">🎯</div>
-        <h3>Mūsu misija</h3>
-        <p>Nodrošināt kvalitatīvus produktus un izcilu klientu apkalpošanu</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⭐</div>
-        <h3>Kvalitāte</h3>
-        <p>Augstākā kvalitāte visos mūsu produktos un pakalpojumos</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🤝</div>
-        <h3>Uzticamība</h3>
-        <p>Ilgtermiņa attiecības ar mūsu klientiem un partneriem</p>
-      </div>
+      @for (feature of getFeatureCards(); track $index) {
+        <div class="feature-card">
+          <div class="feature-icon">{{ feature.icon }}</div>
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.description }}</p>
+        </div>
+      }
     </div>
   </div>
 </div>
+
+<nav class="breadcrumb-nav" aria-label="Breadcrumb">
+  <div class="container">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a routerLink="/" class="breadcrumb-link">
+          <i class="fas fa-home"></i>
+          Sākums
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Par mums
+      </li>
+    </ol>
+  </div>
+</nav>
